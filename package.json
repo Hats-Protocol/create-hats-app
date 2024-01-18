@@ -1,0 +1,32 @@
+{
+  "name": "create-template-app",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "bin": {
+    "create-template-app": "./dist/index.js"
+  },
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "commander": "^11.1.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
+    "parser": "link:@typescript/eslint/parser",
+    "picocolors": "^1.0.0",
+    "simple-git": "^3.22.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@types/prompts": "^2.4.9",
+    "prompts": "^2.4.2"
+  }
+}
