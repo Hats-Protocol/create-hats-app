@@ -62,7 +62,7 @@ const ConnectWallet = () => {
 
             if (chain.unsupported) {
               return (
-                <Button onClick={openChainModal} type="button">
+                <Button onClick={openChainModal} variant="outline">
                   Wrong network
                 </Button>
               );
@@ -87,7 +87,7 @@ const ConnectWallet = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline">
-                        <div className="flex flex-row items-center">
+                        <div className="flex flex-row items-center  gap-2">
                           {ensAvatar || blockie ? (
                             <div
                               className={

@@ -4,7 +4,7 @@ import ConnectWallet from './connect-wallet';
 
 export default function Header() {
   return (
-    <div className="flex w-full  items-center justify-between shadow-md px-8 py-2">
+    <div className="flex w-full items-center justify-between shadow-md px-8 py-2 ">
       <div className="flex flex-row items-center">
         <Link to="/">
           <div className="flex flex-row items-center">

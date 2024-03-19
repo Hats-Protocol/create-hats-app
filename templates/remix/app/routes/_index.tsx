@@ -1,5 +1,8 @@
+import MetaCard from '@/components/meta-card';
 import Header from '@/components/header';
+
 import type { MetaFunction } from '@remix-run/node';
+import ResponsibilitiesCard from '@/components/responsibilities-card';
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,8 +13,12 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div className="w-full ">
+    <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
-    </div>
+      <div className="grid grid-cols-2 gap-4  py-8 px-16">
+        <MetaCard />
+        <ResponsibilitiesCard />
+      </div>
+    </main>
   );
 }
