@@ -4,14 +4,14 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev --manual",
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix-serve ./build/index.js",
+    "start": "remix-serve ./build/server/index.js",
+    "start:env": "dotenv -e .env remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@remix-run/css-bundle": "^2.6.0",
     "@remix-run/node": "^2.6.0",
     "@remix-run/react": "^2.6.0",
     "@remix-run/serve": "^2.6.0",
