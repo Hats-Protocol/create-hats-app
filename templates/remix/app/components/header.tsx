@@ -1,6 +1,6 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Link } from '@remix-run/react';
 import hatsLogo from '../../src/images/hats-logo.png';
+import ConnectWallet from './connect-wallet';
 
 export default function Header() {
   return (
@@ -16,7 +16,7 @@ export default function Header() {
         </Link>
       </div>
       <div className="h-12">
-        <ConnectButton />
+        <ConnectWallet />
       </div>
     </div>
   );

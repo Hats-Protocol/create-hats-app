@@ -1,0 +1,130 @@
+import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
+import blockies from 'blockies-ts';
+import { useEffect, useState } from 'react';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useAccount, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+import { Button } from './ui/button';
+
+const ConnectWallet = () => {
+  const [blockie, setBlockie] = useState<string | undefined>();
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { data: ensName } = useEnsName({ address, chainId: 1 });
+  const { data: ensAvatar } = useEnsAvatar({
+    name: ensName,
+    chainId: 1,
+    cacheTime: 60,
+  });
+
+  // const [upTo780] = useMediaQuery('(max-width: 780px)');
+
+  useEffect(() => {
+    if (address) {
+      setBlockie(blockies.create({ seed: address.toLowerCase() }).toDataURL());
+    }
+  }, [address]);
+
+  return (
+    <RainbowConnectButton.Custom>
+      {({
+        account,
+        chain,
+        openAccountModal,
+        openChainModal,
+        openConnectModal,
+        mounted,
+        authenticationStatus,
+      }) => {
+        const ready = mounted && authenticationStatus !== 'loading';
+        const connected =
+          ready &&
+          account &&
+          chain &&
+          (!authenticationStatus || authenticationStatus === 'authenticated');
+
+        return !ready ? (
+          <div className="hidden opacity-0 pointer-events-none select-none" />
+        ) : (
+          (() => {
+            if (!connected) {
+              return (
+                <Button onClick={openConnectModal} variant="outline">
+                  Connect Wallet
+                </Button>
+              );
+            }
+
+            if (chain.unsupported) {
+              return (
+                <Button onClick={openChainModal} type="button">
+                  Wrong network
+                </Button>
+              );
+            }
+
+            return (
+              <div className="flex gap-2 rounded-full p-1">
+                <Button
+                  className="flex items-center px-2"
+                  variant="outline"
+                  onClick={openChainModal}
+                >
+                  {chain.hasIcon && chain.iconUrl && (
+                    <img
+                      alt={chain.name ?? 'Chain icon'}
+                      src={chain.iconUrl}
+                      className="h-6 w-6"
+                    />
+                  )}
+                </Button>
+                {connected ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">
+                        <div className="flex flex-row items-center">
+                          {ensAvatar || blockie ? (
+                            <div
+                              className={
+                                'h-5 w-5 rounded-xl overflow-hidden border-blue-500'
+                              }
+                            >
+                              <img
+                                className="h-6 w-6"
+                                src={ensAvatar || blockie}
+                                alt="User Avatar"
+                              />
+                            </div>
+                          ) : (
+                            <div className="h-7 w-7 rounded-md bg-blue-500" />
+                          )}
+
+                          <div>{ensName || account.displayName}</div>
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={openAccountModal}>
+                        Wallet
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => disconnect()}>
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
+              </div>
+            );
+          })()
+        );
+      }}
+    </RainbowConnectButton.Custom>
+  );
+};
+
+export default ConnectWallet;
