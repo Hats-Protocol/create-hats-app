@@ -77,7 +77,8 @@ export default function WearersListCard({
             <li className="py-0.5" key={wearer.id}>
               <div className="flex flex-row justify-between w-full">
                 <span className="text-gray-600 hover:text-gray-800 hover:cursor-pointer transition-colors ease-in-out duration-300">
-                  {wearer.ensName ?? wearer.id}
+                  {wearer.ensName ??
+                    `${wearer.id.slice(0, 6)}...${wearer.id.slice(-4)}`}
                 </span>
                 <div className="flex flex-row items-center gap-2">
                   <CopyButton itemToCopy={wearer.id} />
