@@ -26,7 +26,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { optimismSepolia } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider, publicProvider } from 'wagmi/providers/public';
+import { publicProvider } from 'wagmi/providers/public';
 
 type Env = {
   PUBLIC_ENABLE_TESTNETS?: string;
@@ -85,11 +85,7 @@ export default function App() {
       <body>
         {config && chains ? (
           <WagmiConfig config={config}>
-            <RainbowKitProvider
-              chains={chains}
-              modalSize="compact"
-              theme={darkTheme()}
-            >
+            <RainbowKitProvider chains={chains} modalSize="compact">
               <Outlet />
             </RainbowKitProvider>
           </WagmiConfig>

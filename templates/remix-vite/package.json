@@ -1,5 +1,5 @@
 {
-  "name": "create-hats-remix-app",
+  "name": "create-hats-remix-vite-app",
   "private": true,
   "sideEffects": false,
   "type": "module",
