@@ -1,11 +1,11 @@
 {
-  "name": "create-template-app",
+  "name": "create-hats-app",
   "type": "module",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "bin": {
-    "create-template-app": "./dist/index.js"
+    "create-hats-app": "./dist/index.js"
   },
   "scripts": {
     "lint": "eslint 'src/**/*.ts",
