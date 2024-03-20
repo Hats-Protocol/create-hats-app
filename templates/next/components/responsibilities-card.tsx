@@ -11,7 +11,7 @@ export default function ResponsibilitiesCard() {
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
         <CardTitle>Responsibilities</CardTitle>
-        <CardDescription>Responsibilities & Authoirities</CardDescription>
+        <CardDescription>Responsibilities & Authorities</CardDescription>
       </CardHeader>
     </Card>
   );

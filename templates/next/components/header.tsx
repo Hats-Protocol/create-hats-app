@@ -11,8 +11,8 @@ export default function Header() {
             <Image
               src="/hats-logo.png"
               alt="Hats Logo"
-              width={25}
-              height={25}
+              width={64}
+              height={64}
             />
             <div className="flex items-center gap-4 text-xl">
               Create Hats App
