@@ -27,7 +27,6 @@ import { optimismSepolia } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider, publicProvider } from 'wagmi/providers/public';
-import { s } from 'node_modules/vite/dist/node/types.d-FdqQ54oU';
 
 type Env = {
   PUBLIC_ENABLE_TESTNETS?: string;
@@ -57,7 +56,7 @@ export default function App() {
     );
 
     const { connectors } = getDefaultWallets({
-      appName: 'Intuition App Template - Remix',
+      appName: 'Hats App Template - Remix',
       chains,
       projectId: env.WALLETCONNECT_PROJECT_ID ?? '',
     });
