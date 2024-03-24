@@ -1,3 +1,5 @@
+'use client';
+
 import { IHatWearer } from '@/types';
 import {
   Card,
@@ -9,7 +11,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipArrow,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
@@ -17,27 +18,36 @@ import { Input } from './ui/input';
 import { ChevronRight, Copy, Ellipsis } from 'lucide-react';
 import { Button } from './ui/button';
 import { CopyButton } from './copy-button';
+import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
+// import { useDebounce } from '@/hooks';
+import React from 'react';
+import useDebounce from '@/lib/useDebounce';
 
 export interface WearersListProps {
-  // exported for testing
-  chainId: number;
-  hatName: string;
-  hatId: string;
-  wearers: any;
+  wearers: Wearer[] | undefined;
   maxSupply: number;
-  prettyId: string;
-  isAdminUser: boolean;
 }
 
 export default function WearersListCard({
-  chainId,
-  hatName,
-  hatId,
   wearers,
   maxSupply,
-  prettyId,
-  isAdminUser,
 }: WearersListProps) {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const debouncedSearch = useDebounce(searchTerm, 100);
+
+  const filteredWearers = wearers?.filter((wearer) => {
+    const idMatch = wearer.id
+      .toLowerCase()
+      .includes(debouncedSearch.toLowerCase());
+    // const ensMatch = wearer.ensName
+    //   ? wearer.ensName.toLowerCase().includes(debouncedSearch.toLowerCase())
+    //   : false;
+
+    return idMatch;
+  });
+
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
@@ -48,7 +58,7 @@ export default function WearersListCard({
         <div className="flex flex-col  gap-4">
           <div className="flex flex-row items-baseline">
             <span className="text-lg text-gray-800">
-              {wearers.length} Wearer{wearers.length !== 1 ? 's' : ''} of this
+              {wearers?.length} Wearer{wearers?.length !== 1 ? 's' : ''} of this
               Hat&nbsp;
             </span>
             <TooltipProvider>
@@ -69,11 +79,13 @@ export default function WearersListCard({
             <Input
               type="text"
               placeholder="Find by address (0x) or ENS (.eth)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           ) : null}
         </div>
         <ul className="py-4">
-          {wearers.map((wearer) => (
+          {filteredWearers?.map((wearer) => (
             <li className="py-0.5" key={wearer.id}>
               <div className="flex flex-row justify-between w-full">
                 <span className="text-gray-600 hover:text-gray-800 hover:cursor-pointer transition-colors ease-in-out duration-300">

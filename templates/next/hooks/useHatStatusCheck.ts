@@ -31,7 +31,7 @@ const useHatStatusCheck = ({
       setTestingToggle(true);
       const localData = await checkAddressIsContract(
         hatData?.toggle as Hex,
-        chainId,
+        chainId
       );
       setToggleIsContract(localData);
       setTestingToggle(false);
@@ -61,7 +61,7 @@ const useHatStatusCheck = ({
       setIsLoading(true);
 
       const txDescription = `Check Hat Status for ${idToIp(
-        _.get(hatData, 'id'),
+        _.get(hatData, 'id')
       )}`;
 
       toast.info({

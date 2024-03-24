@@ -71,13 +71,8 @@ export default async function HatPage({
         <ResponsibilitiesCard />
         <Suspense fallback={<p>Loading Wearers...</p>}>
           <WearersListCard
-            chainId={mockWearersList.chainId}
-            hatName={mockWearersList.hatName}
-            hatId={mockWearersList.hatId}
             wearers={hatData.wearers}
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
-            prettyId={mockWearersList.prettyId}
-            isAdminUser={mockWearersList.isAdminUser}
           />
         </Suspense>
       </div>
