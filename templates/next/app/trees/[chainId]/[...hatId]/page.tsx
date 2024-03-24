@@ -4,6 +4,9 @@ import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard, {
   WearersListProps,
 } from '@/components/wearers-list-card';
+import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+
+const hatsSubgraphClient = new HatsSubgraphClient({});
 
 const mockWearersList: WearersListProps = {
   chainId: 1,
@@ -27,12 +30,21 @@ const mockWearersList: WearersListProps = {
   isAdminUser: true,
 };
 
-export default function HatPage({
+interface HatDataProps {
+  chainId: number;
+  hatId: string;
+}
+
+export default async function HatPage({
   params,
 }: {
   params: { chainId: number; hatId: string };
 }) {
-  console.log(`chainId: ${params.chainId}, hatId: ${params.hatId}`);
+  const hatData = await getHatData({
+    chainId: params.chainId,
+    hatId: params.hatId,
+  });
+
   return (
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
@@ -52,3 +64,24 @@ export default function HatPage({
     </main>
   );
 }
+
+const getHatData = async ({ chainId, hatId }: HatDataProps) => {
+  const hat = await hatsSubgraphClient.getHat({
+    chainId: chainId,
+    hatId: BigInt(hatId),
+    props: {
+      details: true, // get the hat details
+      imageUri: true,
+      status: true,
+      eligibility: true,
+      currentSupply: true,
+      mutable: true,
+      maxSupply: true, // get the maximum amount of wearers for the hat
+      wearers: {
+        props: {}, // for each wearer, include only its ID (address)
+      },
+    },
+  });
+  console.log('hat', hat);
+  return { hat };
+};

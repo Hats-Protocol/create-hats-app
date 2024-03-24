@@ -26,19 +26,6 @@ export const orderedChains: number[] = [
   // 84532 // baseSepolia
 ];
 
-// celo and gnosis are missing images, also used by NetworkFilter
-export const networkImages: { [key in number]: string } = {
-  1: '/chains/ethereum.svg',
-  10: '/chains/optimism.svg',
-  100: '/chains/gnosis.png',
-  137: '/chains/polygon.svg',
-  8453: '/chains/base.png',
-  42161: '/chains/arbitrum.svg',
-  42220: '/chains/celo.svg',
-  // 84532: '/chains/base-sepolia.svg',
-  11155111: '/chains/sepolia.png',
-};
-
 const extendIcon = (chain: Chain) => ({
   ...chain,
   hasIcon: true,
