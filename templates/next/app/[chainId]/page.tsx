@@ -2,7 +2,7 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { CircleAlert, Terminal } from 'lucide-react';
 
-const supportedChains = [1, 10, 42161, 137, 100, 8453, 42220];
+const supportedChains = [1, 10, 42161, 137, 100, 11155111, 8453, 42220];
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
 export default async function ChainIdPage({

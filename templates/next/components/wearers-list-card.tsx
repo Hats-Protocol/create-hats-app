@@ -23,7 +23,7 @@ export interface WearersListProps {
   chainId: number;
   hatName: string;
   hatId: string;
-  wearers: IHatWearer[];
+  wearers: any;
   maxSupply: number;
   prettyId: string;
   isAdminUser: boolean;

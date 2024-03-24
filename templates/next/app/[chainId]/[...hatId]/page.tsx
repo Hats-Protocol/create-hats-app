@@ -4,7 +4,8 @@ import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard, {
   WearersListProps,
 } from '@/components/wearers-list-card';
-import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
+import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -35,6 +36,14 @@ interface HatDataProps {
   hatId: string;
 }
 
+interface ExtendedHat extends Hat {
+  detailsDecoded: {
+    name: string;
+    description?: string;
+  };
+  imageUri: string;
+}
+
 export default async function HatPage({
   params,
 }: {
@@ -45,27 +54,34 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
+  console.log('hatData', JSON.stringify(hatData, null, 2));
   return (
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
       <div className="grid grid-cols-2 gap-4  py-8 px-16">
-        <MetaCard />
+        <MetaCard
+          details={hatData.detailsDecoded}
+          imageUri={hatData.imageUri}
+        />
         <ResponsibilitiesCard />
-        <WearersListCard
+        {/* <WearersListCard
           chainId={mockWearersList.chainId}
           hatName={mockWearersList.hatName}
           hatId={mockWearersList.hatId}
-          wearers={mockWearersList.wearers}
-          maxSupply={mockWearersList.maxSupply}
+          wearers={hatData.hat.wearers}
+          maxSupply={hatData.hat.maxSupply}
           prettyId={mockWearersList.prettyId}
           isAdminUser={mockWearersList.isAdminUser}
-        />
+        /> */}
       </div>
     </main>
   );
 }
 
-const getHatData = async ({ chainId, hatId }: HatDataProps) => {
+const getHatData = async ({
+  chainId,
+  hatId,
+}: HatDataProps): Promise<ExtendedHat> => {
   const hat = await hatsSubgraphClient.getHat({
     chainId: chainId,
     hatId: BigInt(hatId),
@@ -78,10 +94,29 @@ const getHatData = async ({ chainId, hatId }: HatDataProps) => {
       mutable: true,
       maxSupply: true, // get the maximum amount of wearers for the hat
       wearers: {
-        props: {}, // for each wearer, include only its ID (address)
+        props: {},
       },
     },
   });
-  console.log('hat', hat);
-  return { hat };
+
+  let detailsContent = { name: '', description: '' }; // Default object structure
+  let imageContent: string = '';
+
+  if (hat.details) {
+    const resolvedDetails = await resolveIpfsUri(hat.details);
+    detailsContent = {
+      name: resolvedDetails.name || '',
+      description: resolvedDetails.description || '',
+    };
+  }
+
+  if (hat.imageUri) {
+    imageContent = (await ipfsToHttp(hat.imageUri)) || '';
+  }
+
+  return {
+    ...hat,
+    detailsDecoded: detailsContent,
+    imageUri: imageContent,
+  };
 };
