@@ -1,11 +1,6 @@
 import Image from 'next/image';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from './ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import ReactMarkdown from 'react-markdown';
 
 interface HatsMetaCardProps {
   details: {
@@ -33,13 +28,12 @@ export default function MetaCard({ details, imageUri }: HatsMetaCardProps) {
           </div>
         </div>
         <CardTitle>{details.name}</CardTitle>
-        {details.description && (
-          <CardDescription>{details.description}</CardDescription>
-        )}
       </CardHeader>
-      <CardContent>
-        <p>Hat Markdown Content</p>
-      </CardContent>
+      {details.description && (
+        <CardContent>
+          <ReactMarkdown className="prose">{details.description}</ReactMarkdown>
+        </CardContent>
+      )}
     </Card>
   );
 }

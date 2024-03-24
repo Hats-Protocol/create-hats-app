@@ -6,6 +6,7 @@ import WearersListCard, {
 } from '@/components/wearers-list-card';
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { Suspense } from 'react';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -59,20 +60,24 @@ export default async function HatPage({
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
       <div className="grid grid-cols-2 gap-4  py-8 px-16">
-        <MetaCard
-          details={hatData.detailsDecoded}
-          imageUri={hatData.imageUri}
-        />
+        <Suspense fallback={<p>Loading Meta...</p>}>
+          <MetaCard
+            details={hatData.detailsDecoded}
+            imageUri={hatData.imageUri}
+          />
+        </Suspense>
         <ResponsibilitiesCard />
-        {/* <WearersListCard
-          chainId={mockWearersList.chainId}
-          hatName={mockWearersList.hatName}
-          hatId={mockWearersList.hatId}
-          wearers={hatData.hat.wearers}
-          maxSupply={hatData.hat.maxSupply}
-          prettyId={mockWearersList.prettyId}
-          isAdminUser={mockWearersList.isAdminUser}
-        /> */}
+        <Suspense fallback={<p>Loading Wearers...</p>}>
+          <WearersListCard
+            chainId={mockWearersList.chainId}
+            hatName={mockWearersList.hatName}
+            hatId={mockWearersList.hatId}
+            wearers={hatData.wearers}
+            maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
+            prettyId={mockWearersList.prettyId}
+            isAdminUser={mockWearersList.isAdminUser}
+          />
+        </Suspense>
       </div>
     </main>
   );
