@@ -43,6 +43,7 @@ interface ExtendedHat extends Hat {
     description?: string;
   };
   imageUri: string;
+  errorMessage?: string;
 }
 
 export default async function HatPage({
@@ -55,7 +56,8 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
-  console.log('hatData', JSON.stringify(hatData, null, 2));
+  if (!hatData) return;
+
   return (
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
@@ -86,42 +88,59 @@ export default async function HatPage({
 const getHatData = async ({
   chainId,
   hatId,
-}: HatDataProps): Promise<ExtendedHat> => {
-  const hat = await hatsSubgraphClient.getHat({
-    chainId: chainId,
-    hatId: BigInt(hatId),
-    props: {
-      details: true, // get the hat details
-      imageUri: true,
-      status: true,
-      eligibility: true,
-      currentSupply: true,
-      mutable: true,
-      maxSupply: true, // get the maximum amount of wearers for the hat
-      wearers: {
-        props: {},
+}: HatDataProps): Promise<ExtendedHat | null> => {
+  try {
+    const hat = await hatsSubgraphClient.getHat({
+      chainId: chainId,
+      hatId: BigInt(hatId),
+      props: {
+        details: true, // get the hat details
+        imageUri: true,
+        status: true,
+        eligibility: true,
+        currentSupply: true,
+        mutable: true,
+        maxSupply: true, // get the maximum amount of wearers for the hat
+        wearers: {
+          props: {},
+        },
       },
-    },
-  });
+    });
 
-  let detailsContent = { name: '', description: '' }; // Default object structure
-  let imageContent: string = '';
+    let detailsContent = { name: '', description: '' }; // Default object structure
+    let imageContent: string = '';
 
-  if (hat.details) {
-    const resolvedDetails = await resolveIpfsUri(hat.details);
-    detailsContent = {
-      name: resolvedDetails.name || '',
-      description: resolvedDetails.description || '',
+    if (hat.details) {
+      const resolvedDetails = await resolveIpfsUri(hat.details);
+      detailsContent = {
+        name: resolvedDetails.name || '',
+        description: resolvedDetails.description || '',
+      };
+    }
+
+    if (hat.imageUri) {
+      imageContent = (await ipfsToHttp(hat.imageUri)) || '';
+    }
+
+    return {
+      ...hat,
+      detailsDecoded: detailsContent,
+      imageUri: imageContent,
     };
-  }
+  } catch (error) {
+    if (error) {
+      console.error(
+        `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`
+      );
 
-  if (hat.imageUri) {
-    imageContent = (await ipfsToHttp(hat.imageUri)) || '';
+      return {
+        detailsDecoded: { name: '', description: '' },
+        imageUri: '',
+        errorMessage: `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`,
+      };
+    } else {
+      // Handle other errors or rethrow them
+      throw error;
+    }
   }
-
-  return {
-    ...hat,
-    detailsDecoded: detailsContent,
-    imageUri: imageContent,
-  };
 };

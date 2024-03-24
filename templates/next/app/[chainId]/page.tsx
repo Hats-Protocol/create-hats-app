@@ -17,18 +17,16 @@ export default async function ChainIdPage({
       {isChainSupported ? (
         <div>Chain: {params.chainId}</div>
       ) : (
-        <div>
-          <Alert className="shadow-xl">
-            <CircleAlert className="h-4 w-4" />
-            <AlertTitle>Unsupported chain!</AlertTitle>
-            <AlertDescription>
-              <div className="flex flex-col">
-                <p>Chain ID {params.chainId} is not supported.</p>
-                <p>Supported chains are: {supportedChains.join(', ')}</p>
-              </div>
-            </AlertDescription>
-          </Alert>
-        </div>
+        <Alert className="shadow-xl">
+          <CircleAlert className="h-4 w-4" />
+          <AlertTitle>Unsupported chain!</AlertTitle>
+          <AlertDescription>
+            <div className="flex flex-col">
+              <p>Chain ID {params.chainId} is not supported.</p>
+              <p>Supported chains are: {supportedChains.join(', ')}</p>
+            </div>
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );
