@@ -1,6 +1,6 @@
-import { ZERO_ID } from "@hatsprotocol/sdk-v1-core";
-import { Hat } from "@hatsprotocol/sdk-v1-subgraph";
-import { useQuery } from "wagmi";
+import { ZERO_ID } from '@hatsprotocol/sdk-v1-core';
+import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { useQuery } from 'wagmi';
 
 const useHatDetails = ({
   hatId,
