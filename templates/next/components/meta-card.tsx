@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import ReactMarkdown from 'react-markdown';
+import { convertPrettyId } from '@/lib/utils';
 
 interface HatsMetaCardProps {
+  prettyId: string;
   details: {
     name: string;
     description?: string;
@@ -10,7 +12,13 @@ interface HatsMetaCardProps {
   imageUri: string;
 }
 
-export default function MetaCard({ details, imageUri }: HatsMetaCardProps) {
+export default function MetaCard({
+  prettyId,
+  details,
+  imageUri,
+}: HatsMetaCardProps) {
+  const prettyIdDisplay = convertPrettyId(prettyId);
+
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
@@ -18,13 +26,16 @@ export default function MetaCard({ details, imageUri }: HatsMetaCardProps) {
           <Image
             src={imageUri ? imageUri : '/hats-logo.png'}
             alt={imageUri ? `${details.name} Hat Image` : 'Hats Logo'}
-            width={64}
-            height={64}
+            width={100}
+            height={100}
             placeholder="blur"
             blurDataURL={imageUri ? imageUri : '/hats-logo.png'}
+            className="rounded-sm"
           />
           <div className="align-baseline">
-            <span className="font-semibold text-gray-500 ">#123.12.12</span>
+            <span className="font-semibold text-gray-500 ">
+              #{prettyIdDisplay}
+            </span>
           </div>
         </div>
         <CardTitle>{details.name}</CardTitle>
