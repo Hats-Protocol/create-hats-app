@@ -2,7 +2,8 @@ import Header from '@/components/header';
 import MetaCard from '@/components/meta-card';
 import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard from '@/components/wearers-list-card';
-import { IpfsDetails, ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
+import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
+import { IpfsDetails } from '@/types';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
 
@@ -42,7 +43,10 @@ export default async function HatPage({
             imageUri={hatData.imageUri}
           />
         </Suspense>
-        <ResponsibilitiesCard />
+        <ResponsibilitiesCard
+          authorities={hatData.detailsDecoded.authorities}
+          responsibilities={hatData.detailsDecoded.responsibilities}
+        />
         <Suspense fallback={<p>Loading Wearers...</p>}>
           <WearersListCard
             wearers={hatData.wearers}

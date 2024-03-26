@@ -1,3 +1,5 @@
+import { IpfsDetails } from '@/types';
+
 const IPFS_PREFIX = 'ipfs://';
 const GATEWAY_URL = 'https://ipfs.io/ipfs/';
 
@@ -10,35 +12,6 @@ export const ipfsToHttp = (ipfsUrl: string) => {
   const cid = ipfsUrl.split('://')[1];
   return `${GATEWAY_URL}${cid}`;
 };
-
-interface Authority {
-  label: string;
-  link: string;
-  gate: string;
-  description: string;
-}
-
-interface Responsibility {
-  label: string;
-  description: string;
-  link: string;
-}
-
-interface EligibilityToggle {
-  manual: boolean;
-  criteria: any[];
-}
-
-export interface IpfsDetails {
-  name: string;
-  description: string;
-  guilds: any[]; // @TODO: type this
-  spaces: any[]; // @TODO: type this
-  responsibilities: Responsibility[];
-  authorities: Authority[];
-  eligibility: EligibilityToggle;
-  toggle: EligibilityToggle;
-}
 
 export const resolveIpfsUri = async (uri: string): Promise<IpfsDetails> => {
   const ipfsGateway = 'https://ipfs.io/ipfs/';
