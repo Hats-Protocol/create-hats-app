@@ -11,9 +11,36 @@ export const ipfsToHttp = (ipfsUrl: string) => {
   return `${GATEWAY_URL}${cid}`;
 };
 
-export const resolveIpfsUri = async (
-  uri: string
-): Promise<{ name: string; description: string }> => {
+interface Authority {
+  label: string;
+  link: string;
+  gate: string;
+  description: string;
+}
+
+interface Responsibility {
+  label: string;
+  description: string;
+  link: string;
+}
+
+interface EligibilityToggle {
+  manual: boolean;
+  criteria: any[];
+}
+
+export interface IpfsDetails {
+  name: string;
+  description: string;
+  guilds: any[]; // @TODO: type this
+  spaces: any[]; // @TODO: type this
+  responsibilities: Responsibility[];
+  authorities: Authority[];
+  eligibility: EligibilityToggle;
+  toggle: EligibilityToggle;
+}
+
+export const resolveIpfsUri = async (uri: string): Promise<IpfsDetails> => {
   const ipfsGateway = 'https://ipfs.io/ipfs/';
   const cid = uri.split('ipfs://')[1];
   const response = await fetch(`${ipfsGateway}${cid}`);
@@ -21,9 +48,14 @@ export const resolveIpfsUri = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   const data = await response.json();
-  console.log('data', data);
   return {
-    name: data.data.name,
-    description: data.data.description,
+    name: data.data.name ?? '',
+    description: data.data.description ?? '',
+    guilds: data.data.guilds ?? [],
+    spaces: data.data.spaces ?? [],
+    responsibilities: data.data.responsibilities ?? [],
+    authorities: data.data.authorities ?? [],
+    eligibility: data.data.eligibility ?? { manual: false, criteria: [] },
+    toggle: data.data.toggle ?? { manual: false, criteria: [] },
   };
 };

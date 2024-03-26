@@ -1,11 +1,8 @@
 import Header from '@/components/header';
 import MetaCard from '@/components/meta-card';
 import ResponsibilitiesCard from '@/components/responsibilities-card';
-import WearersListCard, {
-  WearersListProps,
-} from '@/components/wearers-list-card';
-import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
-import { convertPrettyId } from '@/lib/utils';
+import WearersListCard from '@/components/wearers-list-card';
+import { IpfsDetails, ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
 
@@ -17,10 +14,7 @@ interface HatDataProps {
 }
 
 interface ExtendedHat extends Hat {
-  detailsDecoded: {
-    name: string;
-    description?: string;
-  };
+  detailsDecoded: IpfsDetails;
   imageUri: string;
   errorMessage?: string;
 }
@@ -88,9 +82,19 @@ const getHatData = async ({
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
+      console.log('hat details', resolvedDetails);
       detailsContent = {
-        name: resolvedDetails.name || '',
-        description: resolvedDetails.description || '',
+        name: resolvedDetails.name ?? '',
+        description: resolvedDetails.description ?? '',
+        guilds: resolvedDetails.guilds ?? [],
+        spaces: resolvedDetails.spaces ?? [],
+        responsibilities: resolvedDetails.responsibilities ?? [],
+        authorities: resolvedDetails.authorities ?? [],
+        eligibility: resolvedDetails.eligibility ?? {
+          manual: false,
+          criteria: [],
+        },
+        toggle: resolvedDetails.toggle ?? { manual: false, criteria: [] },
       };
     }
 
@@ -98,7 +102,7 @@ const getHatData = async ({
       imageContent = (await ipfsToHttp(hat.imageUri)) || '';
     }
 
-    console.log('hat', hat);
+    // console.log('hat', hat);
     return {
       ...hat,
       detailsDecoded: detailsContent,

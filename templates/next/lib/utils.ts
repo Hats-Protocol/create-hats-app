@@ -5,6 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// this is unneeded -- remove
 export function convertPrettyId(prettyId: string): string {
   // Split the prettyId by '.' to separate the hexadecimal parts
   const parts = prettyId.split('.');
