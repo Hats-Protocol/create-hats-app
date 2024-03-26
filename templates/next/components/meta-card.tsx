@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import ReactMarkdown from 'react-markdown';
-import { convertPrettyId } from '@/lib/utils';
+import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
+import { Hex } from 'viem';
 
 interface HatsMetaCardProps {
-  prettyId: string;
+  id: Hex;
   details: {
     name: string;
     description?: string;
@@ -13,11 +14,13 @@ interface HatsMetaCardProps {
 }
 
 export default function MetaCard({
-  prettyId,
+  id,
   details,
   imageUri,
 }: HatsMetaCardProps) {
-  const prettyIdDisplay = convertPrettyId(prettyId);
+  const idDisplay = id && hatIdDecimalToIp(BigInt(id));
+
+  if (!details) return null;
 
   return (
     <Card className="max-w-2xl shadow-xl">
@@ -34,7 +37,7 @@ export default function MetaCard({
           />
           <div className="align-baseline">
             <span className="font-semibold text-gray-500 ">
-              #{prettyIdDisplay}
+              #{idDisplay}
             </span>
           </div>
         </div>
