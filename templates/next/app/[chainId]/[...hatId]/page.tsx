@@ -6,6 +6,8 @@ import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
+import Loading from '../../../components/loading';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -36,18 +38,31 @@ export default async function HatPage({
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
       <div className="grid grid-cols-2 gap-4  py-8 px-16">
-        <Suspense fallback={<p>Loading Meta...</p>}>
+        {/* <Suspense fallback={<Loading />}> */}
+        <Suspense
+          fallback={
+            <>
+              <div className="h-10">
+                <Skeleton className="w-full h-30" />
+              </div>
+            </>
+          }
+        >
           <MetaCard
             prettyId={hatData.prettyId}
             details={hatData.detailsDecoded}
             imageUri={hatData.imageUri}
           />
         </Suspense>
-        <ResponsibilitiesCard
-          authorities={hatData.detailsDecoded.authorities}
-          responsibilities={hatData.detailsDecoded.responsibilities}
-        />
-        <Suspense fallback={<p>Loading Wearers...</p>}>
+        {/* <Suspense fallback={<Loading />}> */}
+        <Suspense fallback={<p>Loading...</p>}>
+          <ResponsibilitiesCard
+            authorities={hatData.detailsDecoded.authorities}
+            responsibilities={hatData.detailsDecoded.responsibilities}
+          />
+        </Suspense>
+        {/* <Suspense fallback={<Loading />}> */}
+        <Suspense fallback={<p>Loading...</p>}>
           <WearersListCard
             wearers={hatData.wearers}
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
@@ -62,6 +77,8 @@ const getHatData = async ({
   chainId,
   hatId,
 }: HatDataProps): Promise<ExtendedHat | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   try {
     const hat = await hatsSubgraphClient.getHat({
       chainId: chainId,
