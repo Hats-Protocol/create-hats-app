@@ -32,7 +32,7 @@ export default function Home() {
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
       <div className="grid grid-cols-2 gap-4  py-8 px-16">
-        <MetaCard />
+        {/* <MetaCard />
         <ResponsibilitiesCard />
         <WearersListCard
           chainId={mockWearersList.chainId}
@@ -42,7 +42,7 @@ export default function Home() {
           maxSupply={mockWearersList.maxSupply}
           prettyId={mockWearersList.prettyId}
           isAdminUser={mockWearersList.isAdminUser}
-        />
+        /> */}
       </div>
     </main>
   );

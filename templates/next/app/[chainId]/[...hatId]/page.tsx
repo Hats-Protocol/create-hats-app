@@ -4,8 +4,10 @@ import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard from '@/components/wearers-list-card';
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
+import { hatIdDecimalToHex, hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
+import _ from 'lodash';
 import Loading from '../../../components/loading';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -13,7 +15,7 @@ const hatsSubgraphClient = new HatsSubgraphClient({});
 
 interface HatDataProps {
   chainId: number;
-  hatId: string;
+  hatId: string[];
 }
 
 interface ExtendedHat extends Hat {
@@ -25,7 +27,7 @@ interface ExtendedHat extends Hat {
 export default async function HatPage({
   params,
 }: {
-  params: { chainId: number; hatId: string };
+  params: { chainId: number; hatId: any }; // this is potentially an array?
 }) {
   const hatData = await getHatData({
     chainId: params.chainId,
@@ -49,7 +51,7 @@ export default async function HatPage({
           }
         >
           <MetaCard
-            prettyId={hatData.prettyId}
+            id={hatData.id}
             details={hatData.detailsDecoded}
             imageUri={hatData.imageUri}
           />
@@ -65,6 +67,7 @@ export default async function HatPage({
         <Suspense fallback={<p>Loading...</p>}>
           <WearersListCard
             wearers={hatData.wearers}
+            currentSupply={_.toNumber(hatData.currentSupply)}
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
           />
         </Suspense>
@@ -77,12 +80,15 @@ const getHatData = async ({
   chainId,
   hatId,
 }: HatDataProps): Promise<ExtendedHat | null> => {
+  const trueHatId = _.first(hatId);
+  if (!trueHatId) return null;
+  const localHatId = hatIdIpToDecimal(trueHatId);
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
   try {
     const hat = await hatsSubgraphClient.getHat({
       chainId: chainId,
-      hatId: BigInt(hatId),
+      hatId: BigInt(localHatId),
       props: {
         details: true, // get the hat details
         imageUri: true,
@@ -94,11 +100,12 @@ const getHatData = async ({
         prettyId: true,
         wearers: {
           props: {},
+          filters: { first: 5 },
         },
       },
     });
 
-    let detailsContent = { name: '', description: '' }; // Default object structure
+    let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
 
     if (hat.details) {
@@ -131,6 +138,7 @@ const getHatData = async ({
     };
   } catch (error) {
     if (error) {
+      console.log(error);
       console.error(
         `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`
       );

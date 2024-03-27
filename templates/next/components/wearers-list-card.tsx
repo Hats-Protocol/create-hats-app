@@ -27,12 +27,14 @@ import useDebounce from '@/lib/useDebounce';
 
 export interface WearersListProps {
   wearers: Wearer[] | undefined;
-  maxSupply: number;
+  maxSupply: number | undefined;
+  currentSupply: number | undefined;
 }
 
 export default function WearersListCard({
   wearers,
   maxSupply,
+  currentSupply,
 }: WearersListProps) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearch = useDebounce(searchTerm, 100);
@@ -58,7 +60,7 @@ export default function WearersListCard({
         <div className="flex flex-col  gap-4">
           <div className="flex flex-row items-baseline">
             <span className="text-lg text-gray-800">
-              {wearers?.length} Wearer{wearers?.length !== 1 ? 's' : ''} of this
+              {currentSupply} Wearer{currentSupply !== 1 ? 's' : ''} of this
               Hat&nbsp;
             </span>
             <TooltipProvider>
@@ -75,7 +77,7 @@ export default function WearersListCard({
               </Tooltip>
             </TooltipProvider>
           </div>
-          {wearers.length > 1 ? (
+          {wearers && wearers.length > 1 ? (
             <Input
               type="text"
               placeholder="Find by address (0x) or ENS (.eth)"

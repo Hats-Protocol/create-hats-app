@@ -31,7 +31,7 @@ export default function ResponsibilitiesCard({
           this Hat
         </span>
         {authorities.map((authority) => (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" key={authority.label}>
             <div className="flex flex-row items-center gap-2 justify-between">
               <div className="flex flex-row items-center gap-2">
                 <Key className="h-4 w-4  text-violet-500" />
@@ -64,7 +64,7 @@ export default function ResponsibilitiesCard({
             expected of Hat Wearers
           </span>
           {responsibilities.map((responsibility) => (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" key={responsibility.label}>
               <div className="flex flex-row items-center gap-2">
                 <SquareCheckBig className="h-4 w-4 bg-cyan-50 text-cyan-500" />
                 <span className="text-md">{responsibility.label}</span>
