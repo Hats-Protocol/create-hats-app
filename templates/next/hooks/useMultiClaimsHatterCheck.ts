@@ -6,7 +6,7 @@ import { Hex } from 'viem';
 
 import useIsAdmin from './useIsAdmin';
 import useModuleDetails from './useModuleDetails';
-import useModulesDetails from './useModulesDetails';
+
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 import { createSubgraphClient } from '@/lib/hats';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
@@ -27,7 +27,7 @@ const fetchHattersHelper = async (chainId: number, hats: Hex[]) => {
 
 const fetchHatters = async (
   chainId: number | undefined,
-  allHatIds: Hex[] | undefined,
+  allHatIds: Hex[] | undefined
 ) => {
   if (!chainId || !allHatIds) return undefined;
   const result = await fetchHattersHelper(chainId, allHatIds);
@@ -38,17 +38,17 @@ const getHatterHat = async (
   claimsHatterData: Hat[] | undefined,
   storedModuleDetails: Module[] | undefined,
   storedData: Partial<FormData>[] | undefined,
-  chainId: number | undefined,
+  chainId: number | undefined
 ) => {
   if (!chainId) return {};
 
   const onchainHatId = _.first(
-    _.compact(_.map(claimsHatterData, 'claimableBy[0].id')),
+    _.compact(_.map(claimsHatterData, 'claimableBy[0].id'))
   );
 
   const claimsHatterIndex = _.findIndex(
     storedModuleDetails,
-    (result: Module) => _.get(result, 'name') === CLAIMS_HATTER_MODULE_NAME,
+    (result: Module) => _.get(result, 'name') === CLAIMS_HATTER_MODULE_NAME
   );
   const storedDataHatId = _.get(storedData, `[${claimsHatterIndex}].id`);
 
@@ -115,8 +115,8 @@ const useMultiClaimsHatterCheck = ({
       _.flatMap(storedData, ({ eligibility, toggle }: Partial<any>) => [
         eligibility,
         toggle,
-      ]),
-    ),
+      ])
+    )
   );
 
   const { modulesDetails, isLoading: modulesLoading } = useModulesDetails({
@@ -132,7 +132,7 @@ const useMultiClaimsHatterCheck = ({
         return _.get(storedData, `[${index}].id`);
       }
       return null;
-    }),
+    })
   );
 
   const hats = _.uniq(_.concat(claimableHats, storedDataClaimableHats));

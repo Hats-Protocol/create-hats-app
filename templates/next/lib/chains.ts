@@ -29,7 +29,7 @@ export const orderedChains: number[] = [
 const extendIcon = (chain: Chain) => ({
   ...chain,
   hasIcon: true,
-  iconUrl: networkImages[chain.id as number],
+  // iconUrl: networkImages[chain.id as number],
   iconBackground: 'none',
 });
 

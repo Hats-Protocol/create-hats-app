@@ -37,6 +37,7 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
+  console.log('hat data', JSON.stringify(hatData, null, 2));
   if (!hatData) return;
 
   return (
@@ -79,7 +80,10 @@ export default async function HatPage({
           <ControllersCard />
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
-          <ModuleDetailsCard />
+          <ModuleDetailsCard
+            chainId={params.chainId}
+            eligibilityAddress={hatData.eligibility}
+          />
         </Suspense>
       </div>
     </main>
@@ -93,7 +97,7 @@ const getHatData = async ({
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
   const localHatId = hatIdIpToDecimal(trueHatId);
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
 
   try {
     const hat = await hatsSubgraphClient.getHat({
@@ -117,20 +121,31 @@ const getHatData = async ({
 
     let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
+    console.log('hat.details', hat.details);
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
-      console.log('hat details', resolvedDetails);
+      const criteriaDetails = resolvedDetails.eligibility?.criteria.map(
+        (criterion) => {
+          return {
+            link: criterion.link,
+            label: criterion.label,
+          };
+        }
+      );
+      console.log('criteriaDetails', criteriaDetails);
+      console.log('hat details with resolved', resolvedDetails);
       detailsContent = {
         name: resolvedDetails.name ?? '',
         description: resolvedDetails.description ?? '',
+
         guilds: resolvedDetails.guilds ?? [],
         spaces: resolvedDetails.spaces ?? [],
         responsibilities: resolvedDetails.responsibilities ?? [],
         authorities: resolvedDetails.authorities ?? [],
         eligibility: resolvedDetails.eligibility ?? {
           manual: false,
-          criteria: [],
+          criteria: criteriaDetails ?? [],
         },
         toggle: resolvedDetails.toggle ?? { manual: false, criteria: [] },
       };

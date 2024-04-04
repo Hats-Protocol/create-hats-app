@@ -1,8 +1,8 @@
 import { createHatsModulesClient } from '@/lib/hats';
 import { Module, ModuleParameter } from '@hatsprotocol/modules-sdk';
 import { FALLBACK_ADDRESS } from '@hatsprotocol/sdk-v1-core';
-// import { useQuery } from '@tanstack/react-query';
 import { Hex, zeroAddress } from 'viem';
+import { useQuery } from '@tanstack/react-query';
 
 const useModuleDetails = ({
   address,
@@ -19,13 +19,19 @@ const useModuleDetails = ({
     if (!chainId || !address) return null;
 
     const moduleClient = await createHatsModulesClient(chainId);
+
     if (!moduleClient) return null;
+
+    const moduleTest = await moduleClient.getModuleByInstance(
+      '0xa8bcb7b600b7f155b22f2d9cb3aa640417aa212a'
+    );
 
     const promises = [
       moduleClient.getModuleByInstance(address),
       moduleClient.getInstanceParameters(address),
     ];
     const [moduleData, localModuleParameters] = await Promise.all(promises);
+
     if (!moduleData) return null;
 
     return {
@@ -34,21 +40,21 @@ const useModuleDetails = ({
     };
   };
 
-  // const { data, isLoading, fetchStatus } = useQuery({
-  //   queryKey: ['moduleDetails', address],
-  //   queryFn: getModuleData,
-  //   enabled:
-  //     !!address &&
-  //     address !== FALLBACK_ADDRESS &&
-  //     address !== zeroAddress &&
-  //     enabled,
-  //   staleTime: editMode ? Infinity : 1000 * 60 * 15, // 15 minutes
-  // });
+  const { data, isLoading, fetchStatus } = useQuery({
+    queryKey: ['moduleDetails', address],
+    queryFn: getModuleData,
+    enabled:
+      !!address &&
+      address !== FALLBACK_ADDRESS &&
+      address !== zeroAddress &&
+      enabled,
+    staleTime: editMode ? Infinity : 1000 * 60 * 15, // 15 minutes
+  });
 
   return {
-    details: undefined, // data?.details,
-    parameters: [], // data?.parameters,
-    isLoading: false, // isLoading && fetchStatus !== 'idle',
+    details: data?.details,
+    parameters: data?.parameters,
+    isLoading: isLoading && fetchStatus !== 'idle',
   };
 };
 

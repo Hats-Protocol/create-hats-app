@@ -1,31 +1,46 @@
-import Image from 'next/image';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import ReactMarkdown from 'react-markdown';
-import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
-import { Hex } from 'viem';
+'use client';
+
+import { useModuleDetails } from '@/hooks';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from './ui/card';
 
 interface ModuleDetailsCardProps {
-  // id: Hex;
-  // details: {
-  //   name: string;
-  //   description?: string;
-  // };
-  // imageUri: string;
+  eligibilityAddress?: `0x${string}`;
+  chainId: number;
 }
 
 export default function ModuleDetailsCard({
-  id,
-  details,
-  imageUri,
+  eligibilityAddress,
+  chainId,
 }: ModuleDetailsCardProps) {
-  const idDisplay = id && hatIdDecimalToIp(BigInt(id));
+  console.log('eligibilityAddress', eligibilityAddress);
+  const { details, isLoading } = useModuleDetails({
+    address: eligibilityAddress,
+    chainId,
+  });
 
-  // if (!details) return null;
+  if (isLoading)
+    return (
+      <Card className="max-w-2xl shadow-xl">
+        <CardHeader>
+          <CardTitle>Loading</CardTitle>
+        </CardHeader>
+      </Card>
+    );
 
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
         <CardTitle>Module Details</CardTitle>
+        <CardDescription>
+          Eligibility Address: {eligibilityAddress?.slice(0, 6)}...
+          {eligibilityAddress?.slice(-4)}
+        </CardDescription>
       </CardHeader>
     </Card>
   );

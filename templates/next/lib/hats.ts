@@ -1,4 +1,3 @@
-
 import { HatsModulesClient } from '@hatsprotocol/modules-sdk';
 import { HatsClient } from '@hatsprotocol/sdk-v1-core';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
@@ -20,7 +19,7 @@ declare global {
 const { connectors } = getDefaultWallets({
   appName: 'Hats',
   chains,
-  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID || '',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
 });
 
 // workaround for https://github.com/microsoft/TypeScript/issues/48212
@@ -45,7 +44,7 @@ export const viemPublicClient: any = (chainId: number) => {
 };
 
 export function createHatsClient(
-  chainId: number | undefined,
+  chainId: number | undefined
 ): HatsClient | undefined {
   if (!chainId) return undefined;
   const chain = chainsMap(chainId);
@@ -75,7 +74,7 @@ export function createSubgraphClient(): HatsSubgraphClient {
 }
 
 export async function createHatsModulesClient(
-  chainId: number | undefined,
+  chainId: number | undefined
 ): Promise<HatsModulesClient | undefined> {
   if (!chainId) return undefined;
   const chain = chainsMap(chainId);
