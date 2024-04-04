@@ -44,7 +44,6 @@ export default async function HatPage({
     <main className=" min-h-screen  gap-y-12 w-full">
       <Header />
       <div className="grid grid-cols-2 gap-4  py-8 px-16">
-        {/* <Suspense fallback={<Loading />}> */}
         <Suspense
           fallback={
             <>
@@ -60,14 +59,14 @@ export default async function HatPage({
             imageUri={hatData.imageUri}
           />
         </Suspense>
-        {/* <Suspense fallback={<Loading />}> */}
+
         <Suspense fallback={<p>Loading...</p>}>
           <ResponsibilitiesCard
             authorities={hatData.detailsDecoded.authorities}
             responsibilities={hatData.detailsDecoded.responsibilities}
           />
         </Suspense>
-        {/* <Suspense fallback={<Loading />}> */}
+
         <Suspense fallback={<p>Loading...</p>}>
           <WearersListCard
             wearers={hatData.wearers}
@@ -75,7 +74,9 @@ export default async function HatPage({
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
           />
         </Suspense>
-        <ContractInteractionsCard />
+        <Suspense fallback={<p>Loading...</p>}>
+          <ContractInteractionsCard />
+        </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
           <ControllersCard />
         </Suspense>

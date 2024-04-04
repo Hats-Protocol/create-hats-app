@@ -18,21 +18,25 @@ export default function ModuleDetailsCard({
   eligibilityAddress,
   chainId,
 }: ModuleDetailsCardProps) {
-  console.log('eligibilityAddress', eligibilityAddress);
-  const { details, isLoading } = useModuleDetails({
+  const moduleDetails = useModuleDetails({
     address: eligibilityAddress,
     chainId,
   });
 
+  if (!moduleDetails) {
+    return <div>Loading or error...</div>;
+  }
+
+  const { details, isLoading } = moduleDetails;
+
   if (isLoading)
     return (
       <Card className="max-w-2xl shadow-xl">
-        <CardHeader>
-          <CardTitle>Loading</CardTitle>
-        </CardHeader>
+        <div>Loading</div>
       </Card>
     );
 
+  console.log('details', details);
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
@@ -41,6 +45,15 @@ export default function ModuleDetailsCard({
           Eligibility Address: {eligibilityAddress?.slice(0, 6)}...
           {eligibilityAddress?.slice(-4)}
         </CardDescription>
+        <CardContent className="px-0">
+          <div className="flex flex-col gap-2">
+            <span>{details?.name}</span>
+            {details?.details !== undefined &&
+              details?.details.map((detail, index) => (
+                <p key={index}>{detail}</p>
+              ))}
+          </div>
+        </CardContent>
       </CardHeader>
     </Card>
   );
