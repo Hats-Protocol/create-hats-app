@@ -10,6 +10,9 @@ import { Suspense } from 'react';
 import _ from 'lodash';
 import Loading from '../../../components/loading';
 import { Skeleton } from '@/components/ui/skeleton';
+import ControllersCard from '@/components/controllers-card';
+import ModuleDetailsCard from '@/components/module-details-card';
+import ContractInteractionsCard from '@/components/contract-interactions-card';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -70,6 +73,13 @@ export default async function HatPage({
             currentSupply={_.toNumber(hatData.currentSupply)}
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
           />
+        </Suspense>
+        <ContractInteractionsCard />
+        <Suspense fallback={<p>Loading...</p>}>
+          <ControllersCard />
+        </Suspense>
+        <Suspense fallback={<p>Loading...</p>}>
+          <ModuleDetailsCard />
         </Suspense>
       </div>
     </main>
