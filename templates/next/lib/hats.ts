@@ -12,7 +12,6 @@ const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ethereum: any;
   }
 }
@@ -23,15 +22,11 @@ const { connectors } = getDefaultWallets({
   projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID || '',
 });
 
-// workaround for https://github.com/microsoft/TypeScript/issues/48212
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const wagmiConfig: any = createConfig({
   connectors,
   publicClient,
 });
 
-// workaround for https://github.com/microsoft/TypeScript/issues/48212
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const viemPublicClient: any = (chainId: number) => {
   const chain = chainsMap(chainId);
   let transportUrl = _.first(_.get(chain, 'rpcUrls.default.http')) as string;

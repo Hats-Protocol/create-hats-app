@@ -1,8 +1,8 @@
 import { Module } from '@hatsprotocol/modules-sdk';
 import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
-import { ModuleDetails, SupportedChains } from 'types';
-import { createHatsModulesClient } from 'utils';
+// import { ModuleDetails, SupportedChains } from 'types';
+// import { createHatsModulesClient } from 'utils';
 import { Hex } from 'viem';
 
 const useModulesDetails = ({
@@ -11,17 +11,17 @@ const useModulesDetails = ({
   editMode,
 }: {
   moduleIds: Hex[] | null;
-  chainId: SupportedChains | undefined;
+  chainId: number | undefined; //  SupportedChains | undefined;
   editMode?: boolean;
 }) => {
   const fetchModulesData = async () => {
     if (!chainId || !moduleIds) {
       return [];
     }
-    const moduleClient = await createHatsModulesClient(chainId);
+    const moduleClient = undefined; // await createHatsModulesClient(chainId);
     if (!moduleClient) return [];
 
-    const result = await moduleClient.getModulesByInstances(moduleIds);
+    const result: any[] = []; // await moduleClient.getModulesByInstances(moduleIds);
 
     // map with moduleIds
     const mappedModules = _.map(result, (moduleInfo: Module, index: number) => {
@@ -30,12 +30,11 @@ const useModulesDetails = ({
       const fullDetails = {
         ...moduleInfo,
         id: moduleIds[index],
-      } as ModuleDetails;
+      };
       return fullDetails;
     });
 
-    // thinks it's a true[]
-    return _.compact(mappedModules) as unknown as ModuleDetails[];
+    return _.compact(mappedModules) as unknown as any[];
   };
 
   const { data, isLoading, isSuccess } = useQuery({

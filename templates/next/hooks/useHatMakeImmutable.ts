@@ -41,7 +41,7 @@ const useHatMakeImmutable = ({
     },
     queryKeys: [
       ['hatDetails', { id: selectedHatId, chainId }],
-      ['treeDetails', selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : undefined],
+      ['treeDetails', !!selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {}],
     ],
     enabled:
       !!selectedHatId &&

@@ -47,7 +47,7 @@ const useHatContractWrite = ({
     chainId: Number(chainId),
     abi: HATS_ABI,
     functionName: undefined, // DOOHHHHHHHL?L???????? 'renounceHat',
-    args,
+    args: args as [number, bigint],
     enabled: enabled && !!chainId && userChainId === chainId,
   });
 
@@ -55,6 +55,7 @@ const useHatContractWrite = ({
     writeAsync,
     error: writeError,
     isLoading: writeLoading,
+    // @ts-expect-error something with the missing function name above
   } = useContractWrite({
     ...config,
     onSuccess: async (data) => {

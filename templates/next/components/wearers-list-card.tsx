@@ -25,8 +25,12 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import useDebounce from '@/lib/useDebounce';
 
+interface HatWearer extends Wearer {
+  ensName?: string;
+}
+
 export interface WearersListProps {
-  wearers: Wearer[] | undefined;
+  wearers: HatWearer[] | undefined;
   maxSupply: number | undefined;
   currentSupply: number | undefined;
 }
@@ -87,11 +91,11 @@ export default function WearersListCard({
           ) : null}
         </div>
         <ul className="py-4">
-          {filteredWearers?.map((wearer) => (
+          {filteredWearers?.map((wearer: HatWearer) => (
             <li className="py-0.5" key={wearer.id}>
               <div className="flex flex-row justify-between w-full">
                 <span className="text-gray-600 hover:text-gray-800 hover:cursor-pointer transition-colors ease-in-out duration-300">
-                  {wearer.ensName ??
+                  {wearer?.ensName ??
                     `${wearer.id.slice(0, 6)}...${wearer.id.slice(-4)}`}
                 </span>
                 <div className="flex flex-row items-center gap-2">

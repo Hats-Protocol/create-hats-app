@@ -5,6 +5,11 @@ import _ from 'lodash';
 // import { AppHat } from 'types';
 import { Hex } from 'viem';
 
+const fetchWearersEligibilities = (ids: Hex[], hatId: Hex, chainId: number) => {
+  console.log('fetchWearersEligibilities', ids, hatId, chainId);
+  return null;
+}
+
 /** `useWearersEligibilityCheck` is a hook that checks the eligibility of wearers for a given hat.
  * @param selectedHat - The selected hat
  * @param wearerIds - An optional list of wearer ids (will use the selected hat's wearers if not provided)

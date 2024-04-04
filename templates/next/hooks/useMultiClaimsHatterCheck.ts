@@ -55,7 +55,7 @@ const getHatterHat = async (
   const address = onchainHatId || storedDataHatId;
 
   if (address) {
-    const result = await fetchWearerDetails(address, chainId);
+    const result = { currentHats: [] };// await fetchWearerDetails(address, chainId);
 
     return {
       wearingHat: _.get(result, 'currentHats.[0].id'),
@@ -135,7 +135,8 @@ const useMultiClaimsHatterCheck = ({
     }),
   );
 
-  const hats = _.uniq(_.concat(claimableHats, storedDataClaimableHats));
+  // uhh?
+  const hats = _.uniq(_.concat(claimableHats, storedDataClaimableHats as unknown as Hex[]));
 
   const {
     data: hatterHat,
