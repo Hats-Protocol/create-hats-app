@@ -19,9 +19,11 @@ export default function ModuleDetailsCard({
   chainId,
 }: ModuleDetailsCardProps) {
   const moduleDetails = useModuleDetails({
-    address: eligibilityAddress,
+    address: '0xa472218d908ae3edc05e0bbac7341bd485ea023e',
     chainId,
   });
+
+  console.log('moduleDetails', moduleDetails);
 
   if (!moduleDetails) {
     return <div>Loading or error...</div>;
@@ -47,7 +49,9 @@ export default function ModuleDetailsCard({
         </CardDescription>
         <CardContent className="px-0">
           <div className="flex flex-col gap-2">
-            <span>{details?.name}</span>
+            <span className="text-md font-semibold text-gray-800">
+              {details?.name}
+            </span>
             {details?.details !== undefined &&
               details?.details.map((detail, index) => (
                 <p key={index}>{detail}</p>

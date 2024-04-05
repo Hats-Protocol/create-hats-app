@@ -22,15 +22,13 @@ const useModuleDetails = ({
 
     if (!moduleClient) return null;
 
-    const moduleTest = await moduleClient.getModuleByInstance(
-      '0xa8bcb7b600b7f155b22f2d9cb3aa640417aa212a'
-    );
-
     const promises = [
       moduleClient.getModuleByInstance(address),
       moduleClient.getInstanceParameters(address),
     ];
     const [moduleData, localModuleParameters] = await Promise.all(promises);
+
+    console.log('module detais', moduleData);
 
     if (!moduleData) return null;
 

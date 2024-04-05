@@ -13,6 +13,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import ControllersCard from '@/components/controllers-card';
 import ModuleDetailsCard from '@/components/module-details-card';
 import ContractInteractionsCard from '@/components/contract-interactions-card';
+import { createWalletClient, custom } from 'viem';
+import { mainnet } from 'wagmi';
+import { publicClient } from '@/lib/web3';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -134,8 +137,7 @@ const getHatData = async ({
           };
         }
       );
-      console.log('criteriaDetails', criteriaDetails);
-      console.log('hat details with resolved', resolvedDetails);
+
       detailsContent = {
         name: resolvedDetails.name ?? '',
         description: resolvedDetails.description ?? '',
@@ -156,7 +158,6 @@ const getHatData = async ({
       imageContent = (await ipfsToHttp(hat.imageUri)) || '';
     }
 
-    // console.log('hat', hat);
     return {
       ...hat,
       detailsDecoded: detailsContent,
