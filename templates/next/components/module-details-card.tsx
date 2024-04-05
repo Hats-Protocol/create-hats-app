@@ -19,7 +19,7 @@ export default function ModuleDetailsCard({
   chainId,
 }: ModuleDetailsCardProps) {
   const moduleDetails = useModuleDetails({
-    address: '0xa472218d908ae3edc05e0bbac7341bd485ea023e',
+    address: eligibilityAddress,
     chainId,
   });
 
