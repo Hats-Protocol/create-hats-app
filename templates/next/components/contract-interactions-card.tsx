@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { useHatBurn } from '@/hooks';
@@ -37,16 +39,14 @@ export default function ContractInteractionsCard({
   selectedHat,
 }: ContractInteractionProps) {
   const { isConnected, address } = useAccount();
-
   const [isMintModalOpen, setMintModalIsOpen] = useState(false);
-  const openMintModal = () => setMintModalIsOpen(true);
-
-  // Function to close the mint modal
-  const closeMintModal = () => setMintModalIsOpen(false);
-
   const chainId = useChainId();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
+  const router = useRouter();
+
+  const openMintModal = () => setMintModalIsOpen(true);
+  const closeMintModal = () => setMintModalIsOpen(false);
 
   interface UseHatBurnResult {
     isLoading: boolean;
@@ -79,8 +79,11 @@ export default function ContractInteractionsCard({
       // burnHatAsync !== undefined
     ) {
       try {
-        // await burnHatAsync?.();
-        const burnResult = burnHatAsync?.();
+        const burnResult = await burnHatAsync?.();
+        if (burnResult) {
+          // router.refresh();
+        }
+
         console.log('burnResult', burnResult);
         // const renounceHatResult = await hatsClient.renounceHat({
         //   account: address,

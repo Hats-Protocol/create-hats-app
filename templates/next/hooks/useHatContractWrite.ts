@@ -2,12 +2,19 @@
 // import { useQueryClient } from '@tanstack/react-query';
 // import { useToast } from 'hooks';
 import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
+import { useRouter } from 'next/navigation';
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 // import { HandlePendingTx } from 'types';
 // import { formatFunctionName } from 'utils';
 import { TransactionReceipt } from 'viem';
-import { useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import {
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 
 type ExtractFunctionNames<ABI> = ABI extends {
   name: infer N;
@@ -56,81 +63,43 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   const userChainId = useChainId();
   // const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
+  const [toastShown, setToastShown] = useState(false);
+
+  const router = useRouter();
 
   console.log('functionName', functionName);
   console.log('args', args);
-
-  // const isValidFunctionName = (functionName: string): boolean => {
-  //   const isFunctionOrEvent = (item: any): item is { name: string } =>
-  //     (item.type === 'function' || item.type === 'event') &&
-  //     typeof item.name === 'string';
-
-  //   const validFunctionNames = HATS_ABI.filter(isFunctionOrEvent).map(
-  //     (item) => item.name
-  //   );
-  //   return validFunctionNames.includes(functionName);
-  // };
-
   const { config, error: prepareError } = usePrepareContractWrite({
     address: HATS_V1,
     chainId: Number(chainId),
     abi: HATS_ABI,
-    // functionName: functionName as FunctionName,
-    // functionName: 'renounceHat',
-    // args: args as [number, bigint],
-    // args: args as [bigint],
+
     functionName,
     args,
     enabled: enabled && !!chainId && userChainId === chainId,
   });
 
   const {
+    data,
     writeAsync,
     error: writeError,
     isLoading: writeLoading,
   } = useContractWrite({
     ...config,
-    onSuccess: async (data) => {
-      setIsLoading(true);
-
-      toast.loading('Waiting for your transaction to be accepted...');
-
-      // await handlePendingTx?.({
-      //   hash: data.hash,
-      //   txChainId: chainId,
-      //   txDescription: txDescription, // || formatFunctionName(functionName),
-      //   toastData: onSuccessToastData,
-      //   onSuccess: async (d?: TransactionReceipt) => {
-      //     handleSuccess?.(d);
-      //     await waitForSubgraph?.(d);
-
-      //     // we can remove the timeout after we add waitForSubgraph everywhere
-      //     setTimeout(() => {
-      //       queryKeys.forEach((key) =>
-      //         queryClient.invalidateQueries({
-      //           queryKey: key,
-      //         }),
-      //       );
-      //     }, transactionTimeout);
-      //   },
-      // });
-      setIsLoading(false);
-    },
-    onError: (error) => {
-      if (
-        error.name === 'TransactionExecutionError' &&
-        error.message.includes('User rejected the request')
-      ) {
-        console.log({
-          title: 'Signature rejected!',
-          description: 'Please accept the transaction in your wallet',
-        });
-        toast.error('Please accept the transaction in your wallet.');
-      } else {
-        toast.error('An error occurred while processing the transaction.');
-      }
-    },
   });
+  const { isLoading: txLoading, isSuccess: isSuccessTx } =
+    useWaitForTransaction({
+      hash: data?.hash,
+      onSuccess(data) {
+        console.log('Success', data);
+        toast.success('Transaction successful.');
+        router.refresh();
+      },
+    });
+  if (txLoading && !toastShown) {
+    toast.info('Waiting for your transaction to be accepted...');
+    setToastShown(true);
+  }
 
   const extractErrorMessage = (error: Error | null) => {
     if (!error) return '';
@@ -146,7 +115,8 @@ const useHatContractWrite = <T extends ValidFunctionName>({
 
   return {
     writeAsync,
-    isLoading: isLoading || writeLoading,
+    isLoading: isLoading || writeLoading || txLoading,
+    isSuccess: isSuccessTx,
     prepareError,
     prepareErrorMessage: extractErrorMessage(prepareError),
     writeError,

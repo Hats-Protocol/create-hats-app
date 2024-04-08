@@ -27,6 +27,7 @@ import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { WriteContractResult } from 'wagmi/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface MintFormProps {
   selectedHat: Hat;
@@ -44,6 +45,7 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const publicClient = usePublicClient();
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
+  const router = useRouter();
 
   interface UseHatMintResult {
     isLoading: boolean;
@@ -77,6 +79,9 @@ export default function MintForm({ selectedHat }: MintFormProps) {
     ) {
       try {
         const mintResult = mintHatAsync?.();
+        // if (mintResult) {
+        //   router.refresh();
+        // }
       } catch (error) {}
     }
   };
@@ -91,15 +96,28 @@ export default function MintForm({ selectedHat }: MintFormProps) {
         )
       : false;
   };
+
+  const handleFillAddress = () => {
+    if (address) {
+      setEthAddress(address as `0x${string}`);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <Input
-        placeholder="0x..."
-        value={ethAddress as `0x${string}`}
-        onChange={(e) => {
-          setEthAddress(e.target.value as `0x${string}`);
-        }}
-      />
+      <div className="flex flex-row justify-between gap-2">
+        <Input
+          placeholder="0x..."
+          value={ethAddress as `0x${string}`}
+          onChange={(e) => {
+            setEthAddress(e.target.value as `0x${string}`);
+          }}
+        />
+        <Button onClick={handleFillAddress} variant="outline">
+          Me
+        </Button>
+      </div>
+
       <Button
         onClick={handleMintHat}
         disabled={
