@@ -9,9 +9,23 @@ import { toast } from 'sonner';
 import { TransactionReceipt } from 'viem';
 import { useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
 
-interface ContractInteractionProps {
-  functionName: string;
-  args: unknown[];
+type ExtractFunctionNames<ABI> = ABI extends {
+  name: infer N;
+  type: 'function';
+}[]
+  ? N
+  : never;
+
+type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>;
+
+interface ContractInteractionProps<
+  T extends ValidFunctionName
+  // A extends any[]
+> {
+  functionName: T;
+
+  args?: (string | number | bigint)[];
+  value?: any;
   chainId?: number;
   onSuccessToastData?: { title: string; description?: string };
   txDescription?: string;
@@ -24,7 +38,7 @@ interface ContractInteractionProps {
   waitForSubgraph?: (data?: TransactionReceipt) => void; // passed with handleSuccess
 }
 
-const useHatContractWrite = ({
+const useHatContractWrite = <T extends ValidFunctionName>({
   functionName,
   args,
   chainId,
@@ -37,7 +51,7 @@ const useHatContractWrite = ({
   // handlePendingTx,
   handleSuccess,
   waitForSubgraph,
-}: ContractInteractionProps) => {
+}: ContractInteractionProps<T, A>) => {
   // const toast = useToast();
   const userChainId = useChainId();
   // const queryClient = useQueryClient();
@@ -61,11 +75,13 @@ const useHatContractWrite = ({
     address: HATS_V1,
     chainId: Number(chainId),
     abi: HATS_ABI,
-    functionName: 'renounceHat', // DOOHHHHHHHL?L???????? 'renounceHat',
+    // functionName: functionName as FunctionName,
+    // functionName: 'renounceHat',
     // args: args as [number, bigint],
-    args: args as [bigint],
-    enabled: true,
-    // enabled: enabled && !!chainId && userChainId === chainId,
+    // args: args as [bigint],
+    functionName,
+    args,
+    enabled: enabled && !!chainId && userChainId === chainId,
   });
 
   const {

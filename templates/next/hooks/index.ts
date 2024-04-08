@@ -1,4 +1,5 @@
 export { default as useHatBurn } from './useHatBurn';
+export { default as useHatMint } from './useHatMint';
 export { default as useHatClaimBy } from './useHatClaimBy';
 export { default as useHatClaimFor } from './useHatClaimFor';
 export { default as useHatContractWrite } from './useHatContractWrite';

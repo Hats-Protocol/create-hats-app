@@ -72,28 +72,6 @@ const config = createConfig({
   webSocketPublicClient,
 });
 
-// const config = getDefaultConfig({
-//   appName: 'RainbowKit demo',
-//   projectId: 'YOUR_PROJECT_ID',
-//   wallets: [
-//     ...wallets,
-//     {
-//       groupName: 'Other',
-//       wallets: [argentWallet, trustWallet, ledgerWallet],
-//     },
-//   ],
-//   chains: [
-//     mainnet,
-//     polygon,
-//     optimism,
-//     arbitrum,
-//     base,
-//     zora,
-//     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
-//   ],
-//   ssr: true,
-// });
-
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={config}>

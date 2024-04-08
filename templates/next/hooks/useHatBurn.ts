@@ -29,13 +29,13 @@ const useHatBurn = ({
 
   const { writeAsync, isLoading } = useHatContractWrite({
     functionName: 'renounceHat',
-    args: [hatId],
+    args: [BigInt(hatId)],
     chainId,
     txDescription,
-    // onSuccessToastData: {
-    //   title: 'Hat removed!',
-    //   description: txDescription,
-    // },
+    onSuccessToastData: {
+      title: 'Hat removed!',
+      description: txDescription,
+    },
     // handlePendingTx,
     // waitForSubgraph,
     // queryKeys: [
