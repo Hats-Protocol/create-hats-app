@@ -37,6 +37,8 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
+  console.log('hat data', JSON.stringify(hatData, null, 2));
+
   if (!hatData) return;
 
   return (
@@ -77,7 +79,7 @@ export default async function HatPage({
           />
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
-          <ContractInteractionsCard />
+          <ContractInteractionsCard selectedHat={hatData} />
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
           <ControllersCard
@@ -103,7 +105,7 @@ const getHatData = async ({
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
   const localHatId = hatIdIpToDecimal(trueHatId);
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
+  // await new Promise((resolve) => setTimeout(resolve, 3000)); // comment this out to test the load
 
   try {
     const hat = await hatsSubgraphClient.getHat({

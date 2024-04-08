@@ -64,7 +64,7 @@ const ConnectWallet = () => {
             if (chain.unsupported) {
               return (
                 <Button onClick={openChainModal} variant="outline">
-                  Wrong network
+                  Unsupported network
                 </Button>
               );
             }

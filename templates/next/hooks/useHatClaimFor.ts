@@ -1,10 +1,7 @@
 import { Module } from '@hatsprotocol/modules-sdk';
-import _ from 'lodash';
+import _, { result } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  createHatsClient,
-  createHatsModulesClient,
-} from '@/lib/hats';
+import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
 import { useAccount, useContractRead } from 'wagmi';
 import { hatIdDecimalToHex } from '@hatsprotocol/sdk-v1-core';
@@ -28,7 +25,7 @@ const useHatClaimFor = ({
 
   const claimableForAddress: Hex | undefined = useMemo(
     () => _.get(_.first(_.get(selectedHat, 'claimableForBy')), 'id') as Hex,
-    [selectedHat],
+    [selectedHat]
   );
 
   const { data: isClaimableFor, isLoading: isLoadingClaimableFor } =
@@ -71,6 +68,8 @@ const useHatClaimFor = ({
         hatId: BigInt(selectedHat?.id || '0x'),
         wearer: account,
       });
+
+      console.log('claim result', result);
 
       if (result?.status === 'success') {
         // toast.success({

@@ -23,6 +23,7 @@ import _ from 'lodash';
 import React from 'react';
 import useDebounce from '@/lib/useDebounce';
 import { truncateAddress } from '@/lib/utils';
+import { useAccount } from 'wagmi';
 
 interface HatWearer extends Wearer {
   ensName?: string;
@@ -41,6 +42,8 @@ export default function WearersListCard({
 }: WearersListProps) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearch = useDebounce(searchTerm, 100);
+
+  const { address } = useAccount();
 
   const filteredWearers = wearers?.filter((wearer) => {
     const idMatch = wearer.id
@@ -92,11 +95,18 @@ export default function WearersListCard({
             />
           ) : null}
         </div>
+
         <ul className="py-4">
           {filteredWearers?.map((wearer: HatWearer) => (
             <li className="py-0.5" key={wearer.id}>
-              <div className="flex flex-row justify-between w-full">
-                <span className="text-gray-600 hover:text-gray-800 hover:cursor-pointer transition-colors ease-in-out duration-300">
+              <div className="flex flex-row justify-between w-full items-baseline">
+                <span
+                  className={`hover:text-gray-800 transition-colors ease-in-out duration-300 ${
+                    wearer.id.toLowerCase() === address?.toLowerCase()
+                      ? 'text-green-600 bg-green-100 py-0.5 px-1'
+                      : 'text-gray-600'
+                  }`}
+                >
                   {wearer?.ensName ?? truncateAddress(wearer.id)}
                 </span>
                 <div className="flex flex-row items-center gap-2">
