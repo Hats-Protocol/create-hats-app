@@ -26,7 +26,7 @@ export const orderedChains: number[] = [
   // 84532 // baseSepolia
 ];
 
-const extendIcon = (chain: Chain) => ({
+export const extendIcon = (chain: Chain) => ({
   ...chain,
   hasIcon: true,
   // iconUrl: networkImages[chain.id as number],
@@ -38,11 +38,11 @@ export const chainsList: { [key in number]: Chain } = {
   10: optimism,
   42161: arbitrum,
   137: polygon,
-  100: extendIcon(gnosis),
+  100: gnosis,
   8453: base,
-  42220: extendIcon(celo),
+  42220: celo,
 
   // TESTNETS
-  11155111: extendIcon(sepolia),
+  11155111: sepolia,
   // 84532: baseSepolia,
 };
