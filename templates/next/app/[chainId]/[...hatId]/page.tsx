@@ -13,9 +13,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import ControllersCard from '@/components/controllers-card';
 import ModuleDetailsCard from '@/components/module-details-card';
 import ContractInteractionsCard from '@/components/contract-interactions-card';
-import { createWalletClient, custom } from 'viem';
-import { mainnet } from 'wagmi';
-import { publicClient } from '@/lib/web3';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -60,6 +57,9 @@ export default async function HatPage({
             id={hatData.id}
             details={hatData.detailsDecoded}
             imageUri={hatData.imageUri}
+            status={hatData.status}
+            mutable={hatData.mutable}
+            levelAtLocalTree={hatData.levelAtLocalTree}
           />
         </Suspense>
 
@@ -109,11 +109,13 @@ const getHatData = async ({
       hatId: BigInt(localHatId),
       props: {
         details: true, // get the hat details
-        imageUri: true,
-        status: true,
-        eligibility: true,
-        currentSupply: true,
+        imageUri: true, // get the hat image uri
+        status: true, //
         mutable: true,
+        levelAtLocalTree: true,
+        eligibility: true,
+        toggle: true,
+        currentSupply: true,
         maxSupply: true, // get the maximum amount of wearers for the hat
         prettyId: true,
         wearers: {
@@ -138,10 +140,11 @@ const getHatData = async ({
         }
       );
 
+      console.log('criteria details', criteriaDetails);
+
       detailsContent = {
         name: resolvedDetails.name ?? '',
         description: resolvedDetails.description ?? '',
-
         guilds: resolvedDetails.guilds ?? [],
         spaces: resolvedDetails.spaces ?? [],
         responsibilities: resolvedDetails.responsibilities ?? [],

@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import ReactMarkdown from 'react-markdown';
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hex } from 'viem';
+import { Badge } from '@/components/ui/badge';
 
 interface HatsMetaCardProps {
   id: Hex;
@@ -10,13 +11,19 @@ interface HatsMetaCardProps {
     name: string;
     description?: string;
   };
-  imageUri: string;
+  imageUri?: string;
+  status?: boolean;
+  mutable?: boolean;
+  levelAtLocalTree?: number;
 }
 
 export default function MetaCard({
   id,
   details,
   imageUri,
+  status,
+  mutable,
+  levelAtLocalTree,
 }: HatsMetaCardProps) {
   const idDisplay = id && hatIdDecimalToIp(BigInt(id));
 
@@ -36,18 +43,27 @@ export default function MetaCard({
             className="rounded-sm"
           />
           <div className="align-baseline">
-            <span className="font-semibold text-gray-500 ">
-              #{idDisplay}
-            </span>
+            <span className="font-semibold text-gray-500 ">#{idDisplay}</span>
           </div>
         </div>
         <CardTitle>{details.name}</CardTitle>
       </CardHeader>
-      {details.description && (
-        <CardContent>
-          <ReactMarkdown className="prose">{details.description}</ReactMarkdown>
-        </CardContent>
-      )}
+      <CardContent>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-1">
+            {mutable && (
+              <Badge>{mutable === true ? 'Mutable' : 'Immutable'}</Badge>
+            )}
+            {status && <Badge>{status === true ? 'Active' : 'Inactive'}</Badge>}
+            {levelAtLocalTree && <Badge>Level {levelAtLocalTree}</Badge>}
+          </div>
+          {details.description && (
+            <ReactMarkdown className="prose">
+              {details.description}
+            </ReactMarkdown>
+          )}
+        </div>
+      </CardContent>
     </Card>
   );
 }

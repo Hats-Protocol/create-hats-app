@@ -23,8 +23,6 @@ export default function ModuleDetailsCard({
     chainId,
   });
 
-  console.log('moduleDetails', moduleDetails);
-
   if (!moduleDetails) {
     return <div>Loading or error...</div>;
   }

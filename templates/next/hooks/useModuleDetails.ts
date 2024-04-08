@@ -28,8 +28,6 @@ const useModuleDetails = ({
     ];
     const [moduleData, localModuleParameters] = await Promise.all(promises);
 
-    console.log('module detais', moduleData);
-
     if (!moduleData) return null;
 
     return {
@@ -37,9 +35,6 @@ const useModuleDetails = ({
       parameters: localModuleParameters as ModuleParameter[],
     };
   };
-
-  if (!address && address === FALLBACK_ADDRESS && address === zeroAddress)
-    return;
 
   const { data, isLoading, fetchStatus } = useQuery({
     queryKey: ['moduleDetails', address],
