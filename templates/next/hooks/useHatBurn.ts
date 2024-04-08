@@ -48,8 +48,6 @@ const useHatBurn = ({
       enabled: Boolean(hatId) && chainId === currentNetworkId,
     });
 
-  console.log('prepareErrorMessage', prepareErrorMessage);
-
   return { writeAsync, isLoading, isSuccess, prepareErrorMessage };
 };
 

@@ -74,14 +74,10 @@ export default function ContractInteractionsCard({
       burnHatAsync !== undefined
     ) {
       try {
-        const burnResult = await burnHatAsync?.();
-        if (burnHatIsSuccess) {
-          console.log('brodast success burn');
-          // router.refresh();
-        }
+        await burnHatAsync?.();
+        // success handled in the hook's onSuccess
       } catch (error) {
-        console.log(burnHatError);
-        console.log('An error has occurred in burn', burnHatError);
+        // handled in the hook's onError
       }
     }
   };
@@ -106,7 +102,9 @@ export default function ContractInteractionsCard({
           >
             <MintForm selectedHat={selectedHat} />
           </Modal>
-          <Button variant="default">Claim</Button>
+          <Button variant="default" disabled>
+            Claim
+          </Button>
           <Button
             onClick={handleBurnHat}
             disabled={
@@ -125,9 +123,9 @@ export default function ContractInteractionsCard({
               'Renounce'
             )}
           </Button>
-          <Button variant="default">Deactivate</Button>
-          <Button variant="default">Test Hat Status</Button>
-          <Button variant="default">Make Immutable</Button>
+          {/* <Button variant="default">Deactivate</Button> */}
+          {/* <Button variant="default">Test Hat Status</Button> */}
+          {/* <Button variant="default">Make Immutable</Button> */}
         </div>
       </CardContent>
     </Card>

@@ -79,6 +79,26 @@ const useHatContractWrite = <T extends ValidFunctionName>({
     isLoading: writeLoading,
   } = useContractWrite({
     ...config,
+    onError(error) {
+      if (
+        error.name === 'TransactionExecutionError' &&
+        error.message.includes('User rejected the request')
+      ) {
+        console.log({
+          title: 'Signature rejected!',
+          description: 'Please accept the transaction in your wallet',
+        });
+        toast.error('Please accept the transaction in your wallet.');
+      } else {
+        console.log({
+          title: 'Error occurred!',
+          description:
+            onErrorToastData?.description ??
+            'An error occurred while processing the transaction.',
+        });
+        toast.error('An error occurred while processing the transaction.');
+      }
+    },
   });
   const { isLoading: txLoading, isSuccess: isSuccessTx } =
     useWaitForTransaction({
