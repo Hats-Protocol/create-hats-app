@@ -1,33 +1,15 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from './ui/button';
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
-} from './ui/form';
 import { Input } from './ui/input';
-import { useHatBurn, useHatMint } from '@/hooks';
-import {
-  useAccount,
-  useChainId,
-  useNetwork,
-  usePublicClient,
-  useWalletClient,
-} from 'wagmi';
-import { HatsClient } from '@hatsprotocol/sdk-v1-core';
+import { useHatMint } from '@/hooks';
+import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { WriteContractResult } from 'wagmi/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { z } from 'zod';
 
 interface MintFormProps {
   selectedHat: Hat;
@@ -41,47 +23,33 @@ const mintFormSchema = z.object({
 
 export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
-  const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
   const router = useRouter();
 
   interface UseHatMintResult {
     isLoading: boolean;
+    isSuccessTx: boolean;
     writeAsync: (() => Promise<WriteContractResult>) | undefined;
   }
 
   const {
     isLoading: mintHatIsLoading,
+    isSuccessTx: mintHatIsSuccess,
     writeAsync: mintHatAsync,
   }: UseHatMintResult = useHatMint({
     selectedHat,
     chainId,
-    wearer: ethAddress,
+    wearer: ethAddress!,
   });
 
   const handleMintHat = async () => {
-    const hatsClient = walletClient
-      ? new HatsClient({
-          chainId,
-          publicClient: publicClient,
-          walletClient: walletClient,
-        })
-      : undefined;
-
-    if (
-      !mintHatIsLoading &&
-      isConnected &&
-      chainId !== undefined &&
-      address &&
-      hatsClient !== undefined
-    ) {
+    if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
       try {
         const mintResult = mintHatAsync?.();
-        // if (mintResult) {
-        //   router.refresh();
-        // }
+        if (mintHatIsSuccess) {
+          console.log('success broadcast');
+        }
       } catch (error) {}
     }
   };
@@ -113,7 +81,11 @@ export default function MintForm({ selectedHat }: MintFormProps) {
             setEthAddress(e.target.value as `0x${string}`);
           }}
         />
-        <Button onClick={handleFillAddress} variant="outline">
+        <Button
+          onClick={handleFillAddress}
+          variant="outline"
+          disabled={ethAddress === undefined}
+        >
           Me
         </Button>
       </div>

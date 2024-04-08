@@ -50,11 +50,13 @@ export default function ContractInteractionsCard({
 
   interface UseHatBurnResult {
     isLoading: boolean;
+    isSuccess: boolean;
     writeAsync: (() => Promise<WriteContractResult>) | undefined;
   }
 
   const {
     isLoading: burnHatIsLoading,
+    isSuccess: burnHatIsSuccess,
     writeAsync: burnHatAsync,
   }: UseHatBurnResult = useHatBurn({
     selectedHat,
@@ -80,17 +82,10 @@ export default function ContractInteractionsCard({
     ) {
       try {
         const burnResult = await burnHatAsync?.();
-        if (burnResult) {
+        if (burnHatIsSuccess) {
+          console.log('brodast success burn');
           // router.refresh();
         }
-
-        console.log('burnResult', burnResult);
-        // const renounceHatResult = await hatsClient.renounceHat({
-        //   account: address,
-        //   hatId: BigInt(selectedHat.id),
-        // });
-
-        // console.log('renounceHatResult', renounceHatResult);
       } catch (error) {}
     }
   };

@@ -23,14 +23,11 @@ type ExtractFunctionNames<ABI> = ABI extends {
   ? N
   : never;
 
-type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>;
+export type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>; // @TODO: fix this issue with the type inference causing functionName to be never
 
-interface ContractInteractionProps<
-  T extends ValidFunctionName
-  // A extends any[]
-> {
+interface ContractInteractionProps<T extends ValidFunctionName> {
   functionName: T;
-
+  // functionName: string;
   args?: (string | number | bigint)[];
   value?: any;
   chainId?: number;
@@ -58,7 +55,7 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   // handlePendingTx,
   handleSuccess,
   waitForSubgraph,
-}: ContractInteractionProps<T, A>) => {
+}: ContractInteractionProps<T>) => {
   // const toast = useToast();
   const userChainId = useChainId();
   // const queryClient = useQueryClient();
@@ -67,13 +64,10 @@ const useHatContractWrite = <T extends ValidFunctionName>({
 
   const router = useRouter();
 
-  console.log('functionName', functionName);
-  console.log('args', args);
   const { config, error: prepareError } = usePrepareContractWrite({
     address: HATS_V1,
     chainId: Number(chainId),
     abi: HATS_ABI,
-
     functionName,
     args,
     enabled: enabled && !!chainId && userChainId === chainId,
@@ -91,7 +85,7 @@ const useHatContractWrite = <T extends ValidFunctionName>({
     useWaitForTransaction({
       hash: data?.hash,
       onSuccess(data) {
-        console.log('Success', data);
+        console.log('success', data);
         toast.success('Transaction successful.');
         router.refresh();
       },

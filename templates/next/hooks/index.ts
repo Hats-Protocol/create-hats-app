@@ -13,3 +13,4 @@ export { default as useModuleDetails } from './useModuleDetails';
 // export { default as useModulesDetails2 } from './useModulesDetails2';
 export { default as useMultiClaimsHatterCheck } from './useMultiClaimsHatterCheck';
 export { default as useWearersEligibilityCheck } from './useWearersEligibilityCheck';
+export { type ValidFunctionName } from './useHatContractWrite';

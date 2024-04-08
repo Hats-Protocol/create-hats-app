@@ -24,8 +24,12 @@ const useHatMint = ({
   const txDescription =
     hatId && `Minted hat ${hatIdDecimalToIp(BigInt(hatId))}`;
 
-  console.log('minting');
-  const { writeAsync, isLoading } = useHatContractWrite({
+
+  const {
+    writeAsync,
+    isLoading,
+    isSuccess: isSuccessTx,
+  } = useHatContractWrite({
     functionName: 'mintHat',
     args: [BigInt(hatId), wearer],
     chainId,
@@ -33,7 +37,7 @@ const useHatMint = ({
     enabled: Boolean(hatId) && chainId === currentNetworkId,
   });
 
-  return { writeAsync, isLoading };
+  return { writeAsync, isLoading, isSuccessTx };
 };
 
 export default useHatMint;

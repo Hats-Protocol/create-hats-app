@@ -4,7 +4,7 @@ import _ from 'lodash';
 // import { AppHat, HandlePendingTx, SupportedChains } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 
-import useHatContractWrite from './useHatContractWrite';
+import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
 const useHatBurn = ({
   selectedHat,
@@ -27,10 +27,10 @@ const useHatBurn = ({
   const txDescription =
     hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;
 
-  const { writeAsync, isLoading } = useHatContractWrite({
-    functionName: 'renounceHat',
+  const { writeAsync, isLoading, isSuccess } = useHatContractWrite({
+    functionName: 'renounceHat' as ValidFunctionName,
     args: [BigInt(hatId)],
-    chainId,
+    chainId: Number(chainId),
     txDescription,
     onSuccessToastData: {
       title: 'Hat removed!',
@@ -43,11 +43,11 @@ const useHatBurn = ({
     //   ['treeDetails', hatIdToTreeId(BigInt(hatId || '')), chainId || ''],
     //   ['orgChartTree'],
     // ],
-    enabled: true,
-    // enabled: Boolean(hatId) && chainId === currentNetworkId,
+    // enabled: true,
+    enabled: Boolean(hatId) && chainId === currentNetworkId,
   });
 
-  return { writeAsync, isLoading };
+  return { writeAsync, isLoading, isSuccess };
 };
 
 export default useHatBurn;
