@@ -14,7 +14,7 @@ export default function Header() {
               width={64}
               height={64}
             />
-            <div className="flex items-center gap-4 text-xl">
+            <div className="hidden md:flex items-center gap-4 text-xl">
               Create Hats App
             </div>
           </div>

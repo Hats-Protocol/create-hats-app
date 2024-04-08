@@ -18,7 +18,7 @@ export default function ContractInteractionsCard({}: ContractInteractionsCardPro
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardContent>
-        <div className="grid grid-cols-2 gap-4 py-8 px-16">
+        <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
           <Button variant="default">Mint</Button>
           <Button variant="default">Claim</Button>
           <Button variant="default">Burn</Button>

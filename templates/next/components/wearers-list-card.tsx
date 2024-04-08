@@ -1,6 +1,5 @@
 'use client';
 
-import { IHatWearer } from '@/types';
 import {
   Card,
   CardHeader,
@@ -15,15 +14,15 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Input } from './ui/input';
-import { ChevronRight, Copy, Ellipsis } from 'lucide-react';
+import { Ellipsis } from 'lucide-react';
 import { Button } from './ui/button';
 import { CopyButton } from './copy-button';
 import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
-// import { useDebounce } from '@/hooks';
+
 import React from 'react';
 import useDebounce from '@/lib/useDebounce';
+import { truncateAddress } from '@/lib/utils';
 
 interface HatWearer extends Wearer {
   ensName?: string;
@@ -47,9 +46,9 @@ export default function WearersListCard({
     const idMatch = wearer.id
       .toLowerCase()
       .includes(debouncedSearch.toLowerCase());
-    // const ensMatch = wearer.ensName
-    //   ? wearer.ensName.toLowerCase().includes(debouncedSearch.toLowerCase())
-    //   : false;
+    const ensMatch = wearer.ensName
+      ? wearer.ensName.toLowerCase().includes(debouncedSearch.toLowerCase())
+      : false;
 
     return idMatch;
   });
@@ -75,7 +74,10 @@ export default function WearersListCard({
                     of {maxSupply} max
                   </span>
                 </TooltipTrigger>
-                <TooltipContent className="bg-gray-900 text-gray-300">
+                <TooltipContent
+                  side="bottom"
+                  className="bg-gray-900 text-gray-300"
+                >
                   {maxSupply}
                 </TooltipContent>
               </Tooltip>
@@ -95,8 +97,7 @@ export default function WearersListCard({
             <li className="py-0.5" key={wearer.id}>
               <div className="flex flex-row justify-between w-full">
                 <span className="text-gray-600 hover:text-gray-800 hover:cursor-pointer transition-colors ease-in-out duration-300">
-                  {wearer?.ensName ??
-                    `${wearer.id.slice(0, 6)}...${wearer.id.slice(-4)}`}
+                  {wearer?.ensName ?? truncateAddress(wearer.id)}
                 </span>
                 <div className="flex flex-row items-center gap-2">
                   <CopyButton itemToCopy={wearer.id} />

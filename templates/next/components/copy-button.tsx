@@ -29,7 +29,6 @@ export const CopyButton = ({ itemToCopy }: { itemToCopy: any }) => {
     setHasCopied(true);
     setTimeout(() => setHasCopied(false), 2000);
     toast.success('Address copied to clipboard.');
-    console.log('success');
   };
 
   const onError = (error: Error) => {

@@ -37,13 +37,12 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
-  console.log('hat data', JSON.stringify(hatData, null, 2));
   if (!hatData) return;
 
   return (
-    <main className=" min-h-screen  gap-y-12 w-full">
+    <main className=" min-h-screen gap-y-12 w-full">
       <Header />
-      <div className="grid grid-cols-2 gap-4  py-8 px-16">
+      <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
         <Suspense
           fallback={
             <>
@@ -81,7 +80,10 @@ export default async function HatPage({
           <ContractInteractionsCard />
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
-          <ControllersCard />
+          <ControllersCard
+            eligibilityAddress={hatData.eligibility}
+            toggleAddress={hatData.toggle}
+          />
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
           <ModuleDetailsCard
