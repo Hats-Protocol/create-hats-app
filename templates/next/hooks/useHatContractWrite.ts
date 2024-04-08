@@ -23,11 +23,10 @@ type ExtractFunctionNames<ABI> = ABI extends {
   ? N
   : never;
 
-export type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>; // @TODO: fix this issue with the type inference causing functionName to be never
+export type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>;
 
 interface ContractInteractionProps<T extends ValidFunctionName> {
   functionName: T;
-  // functionName: string;
   args?: (string | number | bigint)[];
   value?: any;
   chainId?: number;
@@ -85,9 +84,29 @@ const useHatContractWrite = <T extends ValidFunctionName>({
     useWaitForTransaction({
       hash: data?.hash,
       onSuccess(data) {
-        console.log('success', data);
         toast.success('Transaction successful.');
         router.refresh();
+      },
+      onError(error) {
+        console.log('error!!', error);
+        if (
+          error.name === 'TransactionExecutionError' &&
+          error.message.includes('User rejected the request')
+        ) {
+          console.log({
+            title: 'Signature rejected!',
+            description: 'Please accept the transaction in your wallet',
+          });
+          toast.error('Please accept the transaction in your wallet.');
+        } else {
+          console.log({
+            title: 'Error occurred!',
+            description:
+              onErrorToastData?.description ??
+              'An error occurred while processing the transaction.',
+          });
+          toast.error('An error occurred while processing the transaction.');
+        }
       },
     });
   if (txLoading && !toastShown) {

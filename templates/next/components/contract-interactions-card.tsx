@@ -52,33 +52,26 @@ export default function ContractInteractionsCard({
     isLoading: boolean;
     isSuccess: boolean;
     writeAsync: (() => Promise<WriteContractResult>) | undefined;
+    prepareErrorMessage: string;
   }
 
   const {
     isLoading: burnHatIsLoading,
     isSuccess: burnHatIsSuccess,
     writeAsync: burnHatAsync,
+    prepareErrorMessage: burnHatError,
   }: UseHatBurnResult = useHatBurn({
     selectedHat,
     chainId,
   });
 
   const handleBurnHat = async () => {
-    const hatsClient = walletClient
-      ? new HatsClient({
-          chainId,
-          publicClient: publicClient,
-          walletClient: walletClient,
-        })
-      : undefined;
-
     if (
       !burnHatIsLoading &&
       isConnected &&
       chainId !== undefined &&
       address &&
-      hatsClient !== undefined
-      // burnHatAsync !== undefined
+      burnHatAsync !== undefined
     ) {
       try {
         const burnResult = await burnHatAsync?.();
@@ -86,7 +79,10 @@ export default function ContractInteractionsCard({
           console.log('brodast success burn');
           // router.refresh();
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(burnHatError);
+        console.log('An error has occurred in burn', burnHatError);
+      }
     }
   };
 

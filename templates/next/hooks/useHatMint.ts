@@ -3,7 +3,7 @@ import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
 import { useAccount, useChainId } from 'wagmi';
 
-import useHatContractWrite from './useHatContractWrite';
+import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
 const useHatMint = ({
   selectedHat,
@@ -24,20 +24,22 @@ const useHatMint = ({
   const txDescription =
     hatId && `Minted hat ${hatIdDecimalToIp(BigInt(hatId))}`;
 
-
   const {
     writeAsync,
     isLoading,
     isSuccess: isSuccessTx,
+    prepareErrorMessage,
   } = useHatContractWrite({
-    functionName: 'mintHat',
+    functionName: 'mintHat' as ValidFunctionName,
     args: [BigInt(hatId), wearer],
     chainId,
     txDescription,
     enabled: Boolean(hatId) && chainId === currentNetworkId,
   });
 
-  return { writeAsync, isLoading, isSuccessTx };
+  console.log('prepareErrorMessage', prepareErrorMessage);
+
+  return { writeAsync, isLoading, isSuccessTx, prepareErrorMessage };
 };
 
 export default useHatMint;

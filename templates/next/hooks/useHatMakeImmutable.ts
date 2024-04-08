@@ -1,4 +1,8 @@
-import { hatIdDecimalToIp, hatIdHexToDecimal, hatIdToTreeId } from '@hatsprotocol/sdk-v1-core';
+import {
+  hatIdDecimalToIp,
+  hatIdHexToDecimal,
+  hatIdToTreeId,
+} from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 // import { useWaitForSubgraph } from 'hooks';
 import _ from 'lodash';
@@ -6,8 +10,7 @@ import _ from 'lodash';
 // import { fetchHatDetails } from 'utils';
 import { useChainId } from 'wagmi';
 
-import useHatContractWrite from './useHatContractWrite';
-
+import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
 const useHatMakeImmutable = ({
   selectedHat,
@@ -15,8 +18,8 @@ const useHatMakeImmutable = ({
   chainId,
   isAdminUser,
   mutable,
-  // handlePendingTx,
-}: UseHatMakeImmutableProps) => {
+}: // handlePendingTx,
+UseHatMakeImmutableProps) => {
   const currentNetworkId = useChainId();
   const selectedHatId = selectedHat?.id;
 
@@ -26,7 +29,7 @@ const useHatMakeImmutable = ({
   // });
 
   const { writeAsync, isLoading } = useHatContractWrite({
-    functionName: 'makeHatImmutable',
+    functionName: 'makeHatImmutable' as ValidFunctionName,
     args: [hatIdHexToDecimal(selectedHatId)],
     chainId: Number(chainId),
     // handlePendingTx,
@@ -36,12 +39,15 @@ const useHatMakeImmutable = ({
       description:
         selectedHatId &&
         `Successfully made hat #${hatIdDecimalToIp(
-          BigInt(selectedHatId),
+          BigInt(selectedHatId)
         )} immutable`,
     },
     queryKeys: [
       ['hatDetails', { id: selectedHatId, chainId }],
-      ['treeDetails', !!selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {}],
+      [
+        'treeDetails',
+        !!selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {},
+      ],
     ],
     enabled:
       !!selectedHatId &&

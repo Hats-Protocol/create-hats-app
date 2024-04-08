@@ -27,27 +27,30 @@ const useHatBurn = ({
   const txDescription =
     hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;
 
-  const { writeAsync, isLoading, isSuccess } = useHatContractWrite({
-    functionName: 'renounceHat' as ValidFunctionName,
-    args: [BigInt(hatId)],
-    chainId: Number(chainId),
-    txDescription,
-    onSuccessToastData: {
-      title: 'Hat removed!',
-      description: txDescription,
-    },
-    // handlePendingTx,
-    // waitForSubgraph,
-    // queryKeys: [
-    //   ['hatDetails', { id: hatId, chainId }],
-    //   ['treeDetails', hatIdToTreeId(BigInt(hatId || '')), chainId || ''],
-    //   ['orgChartTree'],
-    // ],
-    // enabled: true,
-    enabled: Boolean(hatId) && chainId === currentNetworkId,
-  });
+  const { writeAsync, isLoading, isSuccess, prepareErrorMessage } =
+    useHatContractWrite({
+      functionName: 'renounceHat' as ValidFunctionName,
+      args: [BigInt(hatId)],
+      chainId: Number(chainId),
+      txDescription,
+      onSuccessToastData: {
+        title: 'Hat removed!',
+        description: txDescription,
+      },
+      // handlePendingTx,
+      // waitForSubgraph,
+      // queryKeys: [
+      //   ['hatDetails', { id: hatId, chainId }],
+      //   ['treeDetails', hatIdToTreeId(BigInt(hatId || '')), chainId || ''],
+      //   ['orgChartTree'],
+      // ],
+      // enabled: true,
+      enabled: Boolean(hatId) && chainId === currentNetworkId,
+    });
 
-  return { writeAsync, isLoading, isSuccess };
+  console.log('prepareErrorMessage', prepareErrorMessage);
+
+  return { writeAsync, isLoading, isSuccess, prepareErrorMessage };
 };
 
 export default useHatBurn;

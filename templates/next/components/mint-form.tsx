@@ -25,18 +25,19 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
-  const router = useRouter();
 
   interface UseHatMintResult {
     isLoading: boolean;
     isSuccessTx: boolean;
     writeAsync: (() => Promise<WriteContractResult>) | undefined;
+    prepareErrorMessage: string;
   }
 
   const {
     isLoading: mintHatIsLoading,
     isSuccessTx: mintHatIsSuccess,
     writeAsync: mintHatAsync,
+    prepareErrorMessage: mintHatError,
   }: UseHatMintResult = useHatMint({
     selectedHat,
     chainId,
@@ -50,7 +51,9 @@ export default function MintForm({ selectedHat }: MintFormProps) {
         if (mintHatIsSuccess) {
           console.log('success broadcast');
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log('An error has occurred', mintHatError);
+      }
     }
   };
 
@@ -81,11 +84,7 @@ export default function MintForm({ selectedHat }: MintFormProps) {
             setEthAddress(e.target.value as `0x${string}`);
           }}
         />
-        <Button
-          onClick={handleFillAddress}
-          variant="outline"
-          disabled={ethAddress === undefined}
-        >
+        <Button onClick={handleFillAddress} variant="outline">
           Me
         </Button>
       </div>
