@@ -6,6 +6,7 @@ import { Hex } from 'viem';
 
 import useIsAdmin from './useIsAdmin';
 import useModuleDetails from './useModuleDetails';
+import useModulesDetails from './useModulesDetails';
 
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 import { createSubgraphClient } from '@/lib/hats';
