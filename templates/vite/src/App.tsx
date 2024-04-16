@@ -1,10 +1,10 @@
-// import Header from '@/components/header';
+import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
     <main className="min-h-screen gap-y-12 w-full">
-      {/* <Header /> */}
+      <Header />
       <div className="flex h-full flex-col items-center  pt-[20vh]">
         <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Welcome Hacker!
