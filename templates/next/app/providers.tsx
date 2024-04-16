@@ -15,7 +15,12 @@ import {
   sepolia,
   zora,
 } from 'wagmi/chains';
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
+import {
+  WagmiConfig,
+  configureChains,
+  createConfig,
+  createStorage,
+} from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -65,11 +70,15 @@ const { connectors } = getDefaultWallets({
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
 });
 
+// const storage = createStorage({ storage: window.localStorage });
+const storage = createStorage({ storage: localStorage });
+
 const config = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
   webSocketPublicClient,
+  storage,
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {

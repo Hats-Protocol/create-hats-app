@@ -1,3 +1,4 @@
+export { default as useAttemptAutoConnect } from './useAttemptAutoConnect';
 export { default as useHatBurn } from './useHatBurn';
 export { default as useHatMint } from './useHatMint';
 export { default as useHatClaimBy } from './useHatClaimBy';

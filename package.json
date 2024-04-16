@@ -12,6 +12,8 @@
     "build": "tsc",
     "next:dev": "pnpm run --filter create-hats-next-app dev",
     "next:build": "pnpm run --filter create-hats-next-app build",
+    "vite:dev": "pnpm run --filter create-hats-vite-app dev",
+    "vite:build": "pnpm run --filter create-hats-vite-app build",
     "remix:dev": "pnpm run --filter create-hats-remix-vite-app dev",
     "remix:build": "pnpm run --filter create-hats-remix-vite-app build"
   },
