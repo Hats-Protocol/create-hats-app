@@ -1,5 +1,6 @@
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
@@ -28,7 +29,7 @@ export default function Home() {
               variant="link"
               className="font-semibold text-cyan-500"
             >
-              {/* <Link href="/10/1.3.2.2">Explore a Hat</Link> */}
+              <Link to="/10/1.3.2.2">Explore a Hat</Link>
             </Button>
           </div>
         </div>

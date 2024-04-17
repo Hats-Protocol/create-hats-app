@@ -1,17 +1,12 @@
-// import { CONFIG } from '@hatsprotocol/constants';
-
 import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
-import { config } from 'process';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
-
 import { TransactionReceipt } from 'viem';
 import {
   useChainId,
   useContractWrite,
   usePrepareContractWrite,
-  // useQueryClient,
   useWaitForTransaction,
 } from 'wagmi';
 
@@ -27,7 +22,7 @@ export type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>;
 interface ContractInteractionProps<T extends ValidFunctionName> {
   functionName: T;
   args?: (string | number | bigint)[];
-  value?: any;
+  value?: string | number | bigint;
   chainId?: number;
   onSuccessToastData?: { title: string; description?: string };
   txDescription?: string;
@@ -54,7 +49,7 @@ ContractInteractionProps<T>) => {
   // const toast = useToast();
   const userChainId = useChainId();
   const queryClient = useQueryClient();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [toastShown, setToastShown] = useState(false);
 
   const { config, error: prepareError } = usePrepareContractWrite({
@@ -97,11 +92,9 @@ ContractInteractionProps<T>) => {
   const { isLoading: txLoading, isSuccess: isSuccessTx } =
     useWaitForTransaction({
       hash: data?.hash,
-      onSuccess(data) {
+      onSuccess() {
         toast.success('Transaction successful.');
         queryClient.invalidateQueries({ queryKey: ['hatData', chainId] });
-
-        // router.refresh();
       },
       onError(error) {
         console.log('error!!', error);
