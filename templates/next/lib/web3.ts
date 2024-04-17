@@ -5,7 +5,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { chainsList, orderedChains } from './chains';
 
-const ALCHEMY_ID = import.meta.env.VITE_ALCHEMY_ID;
+const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
 export const chainsMap = (chainId?: number) =>
   chainId

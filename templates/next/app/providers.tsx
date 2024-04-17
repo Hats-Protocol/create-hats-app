@@ -59,7 +59,7 @@ const queryClient = getQueryClient();
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia, mainnet],
   [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || '' }),
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
     publicProvider(),
   ]
 );

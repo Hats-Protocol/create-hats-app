@@ -39,9 +39,6 @@ export default function HatPage() {
     enabled: true,
   });
 
-  // console.log('hat data', JSON.stringify(hatData, null, 2));
-  console.log('hat data', hatData);
-
   if (isLoading) return <p>Loading...</p>;
   if (!hatData) return <p>Could not fetch hat data.</p>;
 

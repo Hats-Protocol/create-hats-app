@@ -19,7 +19,7 @@ import AppRoutes from './routes';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [base, arbitrum, optimism, sepolia, mainnet],
   [
-    alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_RPC_URL || '' }),
+    alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_ID || '' }),
     publicProvider(),
   ]
 );
@@ -48,7 +48,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <WagmiConfig config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider chains={chains} modalSize="compact">
-          {/* <App /> */}
           <AppRoutes />
         </RainbowKitProvider>
       </QueryClientProvider>
