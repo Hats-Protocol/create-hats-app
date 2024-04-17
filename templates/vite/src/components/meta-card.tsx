@@ -27,20 +27,17 @@ export default function MetaCard({
 }: HatsMetaCardProps) {
   const idDisplay = id && hatIdDecimalToIp(BigInt(id));
 
+  console.log('details', details);
   if (!details) return null;
 
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
         <div className="flex items-baseline w-full justify-between">
-          <Image
+          <img
             src={imageUri ? imageUri : '/hats-logo.png'}
             alt={imageUri ? `${details.name} Hat Image` : 'Hats Logo'}
-            width={100}
-            height={100}
-            placeholder="blur"
-            blurDataURL={imageUri ? imageUri : '/hats-logo.png'}
-            className="rounded-sm"
+            className="w-16 h-16 rounded-sm"
           />
           <div className="align-baseline">
             <span className="font-semibold text-gray-500 ">#{idDisplay}</span>

@@ -7,7 +7,7 @@ import { createPublicClient, http, createWalletClient, custom } from 'viem';
 import { createConfig } from 'wagmi';
 import { chains, chainsMap, publicClient } from './web3';
 
-const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+const ALCHEMY_ID = import.meta.env.VITE_ALCHEMY_ID;
 
 declare global {
   interface Window {
@@ -18,7 +18,7 @@ declare global {
 const { connectors } = getDefaultWallets({
   appName: 'Hats',
   chains,
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
+  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || '',
 });
 
 export const wagmiConfig: any = createConfig({
@@ -61,7 +61,7 @@ export function createHatsClient(
 }
 
 export function createSubgraphClient(): HatsSubgraphClient {
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.NODE_ENV === 'development') {
     return new HatsSubgraphClient({});
   }
 

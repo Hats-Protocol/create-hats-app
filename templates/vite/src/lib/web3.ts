@@ -1,11 +1,11 @@
-import _ from "lodash";
-import { Chain } from "viem";
-import { configureChains } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
-import { chainsList, orderedChains } from "./chains";
+import _ from 'lodash';
+import { Chain } from 'viem';
+import { configureChains } from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+import { chainsList, orderedChains } from './chains';
 
-const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+const ALCHEMY_ID = import.meta.env.VITE_ALCHEMY_ID;
 
 export const chainsMap = (chainId?: number) =>
   chainId
@@ -17,12 +17,12 @@ export const explorerUrl = (chainId?: number) =>
   _.get(
     chainsMap(chainId),
     'blockExplorers.etherscan.url',
-    _.get(chainsMap(chainId), 'blockExplorers.default.url'),
+    _.get(chainsMap(chainId), 'blockExplorers.default.url')
   );
 
 const configuredChains: any = configureChains(
   _.map(orderedChains, (c: number) => chainsMap(c)),
-  [alchemyProvider({ apiKey: ALCHEMY_ID || '' }), publicProvider()],
+  [alchemyProvider({ apiKey: ALCHEMY_ID || '' }), publicProvider()]
 );
 
 const { chains, publicClient } = configuredChains;

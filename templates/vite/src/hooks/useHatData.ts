@@ -19,23 +19,34 @@ interface ExtendedHat extends Hat {
   errorMessage?: string;
 }
 
-// Moved outside of useHatData for better separation of concerns
 async function getHatData({
   chainId,
   hatId,
 }: HatDataProps): Promise<ExtendedHat | null> {
+  console.log('getting hat', chainId, hatId);
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
   const localHatId = hatIdIpToDecimal(trueHatId);
 
   try {
     const hat = await hatsSubgraphClient.getHat({
-      chainId,
+      chainId: chainId,
       hatId: BigInt(localHatId),
       props: {
-        details: true,
-        imageUri: true,
-        // Other props...
+        details: true, // get the hat details
+        imageUri: true, // get the hat image uri
+        status: true, //
+        mutable: true,
+        levelAtLocalTree: true,
+        eligibility: true,
+        toggle: true,
+        currentSupply: true,
+        maxSupply: true, // get the maximum amount of wearers for the hat
+        prettyId: true,
+        wearers: {
+          props: {},
+          filters: { first: 5 },
+        },
       },
     });
 
@@ -75,6 +86,8 @@ async function getHatData({
       imageContent = (await ipfsToHttp(hat.imageUri)) || '';
     }
 
+    console.log('...hat', hat);
+
     return {
       ...hat,
       detailsDecoded: detailsContent,
@@ -101,18 +114,22 @@ const useHatData = ({
     address !== zeroAddress &&
     enabled;
 
-  const { data, isLoading, fetchStatus } = useQuery({
-    queryKey: ['hatData', chainId], // Assuming chainId is used to identify the query uniquely
+  const { data, isLoading, fetchStatus, error } = useQuery({
+    queryKey: ['hatData', chainId],
     queryFn: () =>
       chainId !== undefined
         ? getHatData({ chainId, hatId: address ? [address] : [] })
         : Promise.resolve(null),
     enabled: isEnabled,
+    onError: (err: Error) => {
+      console.error('Error fetching hat data:', err);
+    },
   });
 
   return {
-    details: data?.detailsDecoded, // Adjusted based on the returned structure from fetchHatData
+    hatData: data, // Adjusted based on the returned structure from fetchHatData
     isLoading: isLoading && fetchStatus !== 'idle',
+    error, // Include the error in the returned object
   };
 };
 
