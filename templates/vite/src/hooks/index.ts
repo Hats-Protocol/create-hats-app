@@ -12,6 +12,8 @@ export { default as useIsAdmin } from './useIsAdmin';
 export { default as useIsSameChain } from './useIsSameChain';
 export { default as useModuleDetails } from './useModuleDetails';
 
+export { default as useHatData } from './useHatData';
+
 export { default as useMultiClaimsHatterCheck } from './useMultiClaimsHatterCheck';
 export { default as useWearersEligibilityCheck } from './useWearersEligibilityCheck';
 export { type ValidFunctionName } from './useHatContractWrite';
