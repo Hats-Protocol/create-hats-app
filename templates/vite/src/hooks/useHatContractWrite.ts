@@ -4,12 +4,14 @@ import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
 import { config } from 'process';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { TransactionReceipt } from 'viem';
 import {
   useChainId,
   useContractWrite,
   usePrepareContractWrite,
+  // useQueryClient,
   useWaitForTransaction,
 } from 'wagmi';
 
@@ -51,7 +53,7 @@ const useHatContractWrite = <T extends ValidFunctionName>({
 ContractInteractionProps<T>) => {
   // const toast = useToast();
   const userChainId = useChainId();
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [toastShown, setToastShown] = useState(false);
 
@@ -97,6 +99,8 @@ ContractInteractionProps<T>) => {
       hash: data?.hash,
       onSuccess(data) {
         toast.success('Transaction successful.');
+        queryClient.invalidateQueries({ queryKey: ['hatData', chainId] });
+
         // router.refresh();
       },
       onError(error) {
