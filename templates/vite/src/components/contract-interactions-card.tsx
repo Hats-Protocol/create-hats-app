@@ -1,19 +1,14 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
-
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { useHatBurn } from '@/hooks';
 import {
   useAccount,
   useChainId,
-  useNetwork,
   usePublicClient,
   useWalletClient,
 } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import { HatsClient } from '@hatsprotocol/sdk-v1-core';
+
 import { WriteContractResult } from 'wagmi/actions';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -43,7 +38,6 @@ export default function ContractInteractionsCard({
   const chainId = useChainId();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
-  const router = useRouter();
 
   const openMintModal = () => setMintModalIsOpen(true);
   const closeMintModal = () => setMintModalIsOpen(false);

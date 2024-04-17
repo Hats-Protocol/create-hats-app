@@ -81,9 +81,9 @@ export default function HatPage() {
             maxSupply={Number(hatData.maxSupply) || 0}
           />
         </Suspense>
-        {/* <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<p>Loading...</p>}>
           <ContractInteractionsCard selectedHat={hatData} />
-        </Suspense> */}
+        </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
           <ControllersCard
             eligibilityAddress={hatData.eligibility}
