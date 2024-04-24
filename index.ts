@@ -1,54 +1,68 @@
 import { Command } from 'commander';
 import prompts, { PromptObject } from 'prompts';
-import git from 'simple-git';
+import fs from 'fs-extra';
+import path from 'path';
+import { templates } from './templates'; // Make sure this path is correct
 
-type Responses = {
+interface Responses {
   projectName: string;
-};
-
-// const getRepositoryUrl = (responses: Responses): string => {
-//   if (responses.optionOne) {
-//     return 'git-template-url';
-//   } else {
-//     return 'git-template-url';
-//   }
-// };
-
-async function cloneRepository(
-  repoUrl: string,
-  projectName: string
-): Promise<void> {
-  const simpleGit = git();
-  await simpleGit.clone(repoUrl, projectName);
+  template: string;
 }
 
 const program = new Command();
 
-program.description('💾').action(async () => {
-  const questions: PromptObject<string>[] = [
-    {
-      type: 'text',
-      name: 'projectName',
-      message: 'Greetings Hacker! What is your project name? 💾',
-      validate: (name) => (name ? true : 'Please enter a project name'),
-    },
-    {
-      type: 'toggle',
-      name: 'optionOne',
-      message: 'Would you like to use (x)?',
-      initial: false,
-      active: 'yes',
-      inactive: 'no',
-    },
-  ];
+program
+  .name('create-hats-app')
+  .description(
+    'CLI to scaffold Hats ecosystem projects using pre-defined templates with common frameworks.'
+  )
+  .version('1.0.0');
 
-  // Prompt the user
-  console.log('Greetings Hacker! What is your project name? 💾');
-  const responses = (await prompts(questions)) as Responses;
-  // const repoUrl = getRepositoryUrl(responses);
-  // await cloneRepository(repoUrl, responses.projectName);
-  console.log('Building your app. LFG! 🪄');
-});
+program
+  .command('new')
+  .description('Create a new project')
+  .action(async () => {
+    const questions: PromptObject<string>[] = [
+      {
+        type: 'text',
+        name: 'projectName',
+        message: 'What is your project name?',
+        validate: (name) => (name ? true : 'Project name is required'),
+      },
+      {
+        type: 'select',
+        name: 'template',
+        message: 'Choose a template to use',
+        choices: templates.map((template) => ({
+          title: template.display,
+          value: template.name,
+        })),
+        initial: 0,
+      },
+    ];
 
-// Parse arguments
+    console.log('Welcome to create-hats-app! Let’s set up your new project.');
+    const responses: Responses = await prompts(questions);
+
+    const templatesDir = path.join(__dirname, 'templates');
+    const sourceDir = path.join(templatesDir, responses.template);
+    const targetDir = path.join(process.cwd(), responses.projectName);
+
+    if (!fs.existsSync(sourceDir)) {
+      console.error(
+        `The requested template "${responses.template}" does not exist.`
+      );
+      return;
+    }
+
+    try {
+      await fs.copy(sourceDir, targetDir);
+      console.log(
+        `Project ${responses.projectName} created successfully in ${targetDir}`
+      );
+    } catch (error) {
+      console.error('Error creating project:', error);
+    }
+  });
+
 program.parse(process.argv);
