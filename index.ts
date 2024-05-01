@@ -58,8 +58,7 @@ cli
         questions as prompts.PromptObject<string>[],
         {
           onCancel: () => {
-            console.log(`${pc.red('✖')} Operation cancelled`);
-            process.exit(1); // Exit with a non-zero status code
+            throw new Error('Operation cancelled by user.');
           },
         }
       );
@@ -76,8 +75,9 @@ cli
         options.template
       );
 
-      console.log(`Template chosen: ${responses.template}`);
-      console.log(`Template directory being checked: ${templateDir}`);
+      console.log(
+        `${responses.template} template being scaffolded in: ${templateDir}`
+      );
 
       if (!fs.existsSync(templateDir)) {
         console.error(
@@ -87,7 +87,9 @@ cli
       }
 
       await fs.promises.cp(templateDir, targetDir, { recursive: true });
-      console.log(`Project created successfully in ${targetDir}`);
+      console.log(`\nScaffolding complete. Time to build!\n`);
+      console.log(`\nProject created successfully in ${targetDir}\n`);
+      console.log(`cd into ${targetDir} and run pnpm install`);
     } catch (error) {
       console.error((error as Error).message);
       return;
