@@ -29,8 +29,7 @@ cli
           },
           {
             onCancel: () => {
-              console.log(`Operation cancelled by user.`);
-              process.exit(1); // Exit with a non-zero status code
+              throw new Error('Operation cancelled by user.');
             },
           }
         );
@@ -44,8 +43,6 @@ cli
       }
 
       console.log(`Creating project at: ${targetDir}`);
-
-      const projectName = path.basename(targetDir);
 
       const questions = [
         {
@@ -92,7 +89,8 @@ cli
       await fs.promises.cp(templateDir, targetDir, { recursive: true });
       console.log(`Project created successfully in ${targetDir}`);
     } catch (error) {
-      console.error('Error creating project:', error);
+      console.error((error as Error).message);
+      return;
     }
   });
 
