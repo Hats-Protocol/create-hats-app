@@ -29,7 +29,7 @@ cli
           },
           {
             onCancel: () => {
-              throw new Error('Operation cancelled by user.');
+              throw new Error(`${pc.red('✖')} Operation cancelled by user.`);
             },
           }
         );
@@ -42,14 +42,15 @@ cli
         targetDir = path.resolve(process.cwd(), projectDirectory);
       }
 
-      console.log(`Creating project at: ${targetDir}`);
-
       const questions = [
         {
           type: 'select',
           name: 'template',
           message: 'Choose a template to use',
-          choices: templates.map((t) => ({ title: t.display, value: t.name })),
+          choices: templates.map((template) => ({
+            title: template.color(template.display),
+            value: template.name,
+          })),
           initial: 0,
         },
       ];
@@ -58,7 +59,7 @@ cli
         questions as prompts.PromptObject<string>[],
         {
           onCancel: () => {
-            throw new Error('Operation cancelled by user.');
+            throw new Error(`\n ${pc.red('✖')} Operation cancelled by user.`);
           },
         }
       );
@@ -76,7 +77,7 @@ cli
       );
 
       console.log(
-        `${responses.template} template being scaffolded in: ${templateDir}`
+        `\n ⚙️ ${responses.template} template being scaffolded in: ${targetDir}`
       );
 
       if (!fs.existsSync(templateDir)) {
@@ -87,9 +88,9 @@ cli
       }
 
       await fs.promises.cp(templateDir, targetDir, { recursive: true });
-      console.log(`\nScaffolding complete. Time to build!\n`);
-      console.log(`\nProject created successfully in ${targetDir}\n`);
-      console.log(`cd into ${targetDir} and run pnpm install`);
+      console.log(`\n 🧢 Scaffolding complete. Time to build!`);
+      console.log(`\n 🧢 Project created successfully in ${targetDir}`);
+      console.log(`\n 🧢 cd into ${targetDir} and run pnpm install`);
     } catch (error) {
       console.error((error as Error).message);
       return;

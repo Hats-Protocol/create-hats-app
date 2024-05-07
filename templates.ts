@@ -15,7 +15,6 @@ export type Template = {
   name: string;
   display: string;
   color: ColorFunc;
-  // variants: readonly TemplateVariant[];
 };
 
 // I don't think that we need to use the TemplateVariant approach since our templates are currently flat
@@ -25,7 +24,7 @@ export const templates: readonly Template[] = [
   {
     name: 'next',
     display: 'Next (App Router)',
-    color: pc.green,
+    color: pc.cyan,
   },
   {
     name: 'vite',
