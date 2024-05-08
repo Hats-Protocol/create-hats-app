@@ -81,15 +81,6 @@ cli
 
       const prettyTargetDirectory = targetDir.split('/').pop();
 
-      console.log(
-        `\n 🎓 ${
-          responses.template.charAt(0).toUpperCase() +
-          responses.template.slice(1)
-        } template being scaffolded in: ${pc.blue(
-          `./${prettyTargetDirectory}`
-        )}`
-      );
-
       if (!fs.existsSync(templateDir)) {
         console.error(
           `\n ${pc.red('✖')}The requested template "${
@@ -100,18 +91,15 @@ cli
       }
 
       await fs.promises.cp(templateDir, targetDir, { recursive: true });
-      console.log(`\n 🧢 Scaffolding complete. Time to build!`);
       console.log(
-        `\n 🧢 Project created successfully in ${pc.blue(
+        `\n 🧢 ${
+          responses.template.charAt(0).toUpperCase() +
+          responses.template.slice(1)
+        } template created successfully in ${pc.blue(
           `./${prettyTargetDirectory}`
         )}`
       );
-      console.log('\n 🧢 Run the following command to get started:');
-      // console.log(
-      //   pc.bgBlack(
-      //     pc.green(`\n     cd ${prettyTargetDirectory}\n    pnpm install`) // can add in spaces after the \n
-      //   )
-      // );
+      console.log('\n 👒 Run the following command to get started building:');
       console.log(
         pc.green(
           `\n    ${pc.bgBlack(`cd ${prettyTargetDirectory}`)}\n    ${pc.bgBlack(
