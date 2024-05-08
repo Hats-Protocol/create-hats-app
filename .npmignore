@@ -1,6 +1,0 @@
-templates/**/node_modules/
-templates/**/dist/
-templates/**/build/
-
-# Build output
-templates/next/.next/

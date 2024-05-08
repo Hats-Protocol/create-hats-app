@@ -1,14 +1,14 @@
 {
   "name": "create-hats-app",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.13",
   "description": "",
   "main": "dist/index.js",
   "bin": {
     "create-hats-app": "./dist/index.js"
   },
   "scripts": {
-    "lint": "eslint 'src/**/*.ts",
+    "lint": "eslint 'src/**/*.ts'",
     "build": "tsc",
     "next:dev": "pnpm run --filter create-hats-next-app dev",
     "next:build": "pnpm run --filter create-hats-next-app build",

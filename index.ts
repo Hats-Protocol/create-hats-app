@@ -5,6 +5,7 @@ import { cac } from 'cac';
 import prompts from 'prompts';
 import pc from 'picocolors';
 import { templates } from './templates.js';
+import { fileURLToPath } from 'node:url';
 
 const cli = cac('create-hats-app');
 
@@ -70,27 +71,54 @@ cli
 
       options.template = responses.template;
 
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
       const templateDir = path.resolve(
-        process.cwd(),
+        __dirname,
+        '..',
         'templates',
         options.template
       );
 
+      const prettyTargetDirectory = targetDir.split('/').pop();
+
       console.log(
-        `\n ⚙️ ${responses.template} template being scaffolded in: ${targetDir}`
+        `\n 🎓 ${
+          responses.template.charAt(0).toUpperCase() +
+          responses.template.slice(1)
+        } template being scaffolded in: ${pc.blue(
+          `./${prettyTargetDirectory}`
+        )}`
       );
 
       if (!fs.existsSync(templateDir)) {
         console.error(
-          `The requested template "${responses.template}" does not exist.`
+          `\n ${pc.red('✖')}The requested template "${
+            responses.template
+          }" does not exist.`
         );
         return;
       }
 
       await fs.promises.cp(templateDir, targetDir, { recursive: true });
       console.log(`\n 🧢 Scaffolding complete. Time to build!`);
-      console.log(`\n 🧢 Project created successfully in ${targetDir}`);
-      console.log(`\n 🧢 cd into ${targetDir} and run pnpm install`);
+      console.log(
+        `\n 🧢 Project created successfully in ${pc.blue(
+          `./${prettyTargetDirectory}`
+        )}`
+      );
+      console.log('\n 🧢 Run the following command to get started:');
+      // console.log(
+      //   pc.bgBlack(
+      //     pc.green(`\n     cd ${prettyTargetDirectory}\n    pnpm install`) // can add in spaces after the \n
+      //   )
+      // );
+      console.log(
+        pc.green(
+          `\n    ${pc.bgBlack(`cd ${prettyTargetDirectory}`)}\n    ${pc.bgBlack(
+            'pnpm install'
+          )}`
+        ) // can add in spaces after the \n
+      );
     } catch (error) {
       console.error((error as Error).message);
       return;
