@@ -20,6 +20,8 @@
   "files": [
     "dist/**/*",
     "templates/**/*",
+    "!templates/**/node_modules",
+    "!templates/**/dist",
     "bin/**/*"
   ],
   "keywords": [],
