@@ -17,13 +17,13 @@
     "remix:dev": "pnpm run --filter create-hats-remix-vite-app dev",
     "remix:build": "pnpm run --filter create-hats-remix-vite-app build"
   },
-  "files": [
-    "dist/**/*",
-    "templates/**/*",
-    "!templates/**/node_modules",
-    "!templates/**/dist",
-    "bin/**/*"
-  ],
+"files": [
+  "dist/**/*",
+  "templates/**/*",
+  "!templates/**/node_modules/**",  
+  "!templates/**/dist/**", 
+  "bin/**/*"
+],
   "keywords": [],
   "author": "",
   "license": "ISC",
