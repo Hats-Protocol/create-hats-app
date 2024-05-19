@@ -2,6 +2,12 @@
 // import { useQueryClient } from '@tanstack/react-query';
 // import { useToast } from 'hooks';
 import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
+import {
+  useFetcher,
+  useLocation,
+  useNavigate,
+  useNavigate,
+} from '@remix-run/react';
 import { config } from 'process';
 
 import { useState } from 'react';
@@ -98,12 +104,15 @@ const useHatContractWrite = <T extends ValidFunctionName>({
       }
     },
   });
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { isLoading: txLoading, isSuccess: isSuccessTx } =
     useWaitForTransaction({
       hash: data?.hash,
       onSuccess(data) {
         toast.success('Transaction successful.');
-        // router.refresh();
+        navigate(location.pathname, { replace: true });
       },
       onError(error) {
         console.log('error!!', error);

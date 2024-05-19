@@ -23,19 +23,23 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { getEnv } from './.server/env';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+import { head } from 'lodash';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return json({ env: getEnv() });
 }
 
 export default function App() {
-  const { env } = useLoaderData<LoaderData>();
-  console.log('env', env);
+  const { env } = useLoaderData<typeof loader>();
 
   const [{ config, chains }] = useState(() => {
     const { chains, publicClient, webSocketPublicClient } = configureChains(
       [sepolia, mainnet],
-      [alchemyProvider({ apiKey: env.ALCHEMY_RPC_URL || '' }), publicProvider()]
+      [
+        alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_ID || '' }),
+        publicProvider(),
+      ]
     );
 
     const { connectors } = getDefaultWallets({
@@ -97,6 +101,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <Toaster />
         {config && chains ? (
           <WagmiConfig config={config}>
             <QueryClientProvider client={queryClient}>
@@ -107,11 +112,6 @@ export default function App() {
           </WagmiConfig>
         ) : null}
         <ScrollRestoration />
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(env)}`,
-          }}
-        /> */}
         <Scripts />
       </body>
     </html>
