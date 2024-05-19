@@ -1,7 +1,8 @@
+'use client';
+
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import blockies from 'blockies-ts';
 import { useEffect, useState } from 'react';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,7 +64,7 @@ const ConnectWallet = () => {
             if (chain.unsupported) {
               return (
                 <Button onClick={openChainModal} variant="outline">
-                  Wrong network
+                  Unsupported network
                 </Button>
               );
             }

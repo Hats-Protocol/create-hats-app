@@ -17,33 +17,14 @@ import {
   mainnet,
   sepolia,
 } from 'wagmi';
-import {
-  RainbowKitProvider,
-  darkTheme,
-  getDefaultWallets,
-} from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
-import { optimismSepolia } from 'wagmi/chains';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-
-type Env = {
-  PUBLIC_ENABLE_TESTNETS?: string;
-  ALCHEMY_RPC_URL: string;
-  WALLETCONNECT_PROJECT_ID: string;
-};
-
-type LoaderData = { env: Env };
+import { getEnv } from './.server/env';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const env: Env = {
-    PUBLIC_ENABLE_TESTNETS: import.meta.env.PUBLIC_ENABLE_TESTNETS || 'false',
-    ALCHEMY_RPC_URL: import.meta.env.VITE_ALCHEMY_RPC_URL,
-    WALLETCONNECT_PROJECT_ID: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID,
-  };
-  console.log('env in loader', env);
-  return json({ env });
+  return json({ env: getEnv() });
 }
 
 export default function App() {

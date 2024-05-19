@@ -3,7 +3,7 @@ import { installGlobals } from '@remix-run/node';
 import { defineConfig } from 'vite';
 import { flatRoutes } from 'remix-flat-routes';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import path from 'path';
 
 installGlobals();
 
@@ -23,15 +23,12 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
-    nodePolyfills({
-      globals: {
-        Buffer: true, // can also be 'build', 'dev', or false
-        global: true,
-        process: true,
-      },
-      protocolImports: false,
-    }),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './app'),
+    },
+  },
   server: {
     port: 3000,
     host: true,
