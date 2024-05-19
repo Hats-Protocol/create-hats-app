@@ -1,6 +1,4 @@
-import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import ReactMarkdown from 'react-markdown';
 import { CopyButton } from './copy-button';
 import { truncateAddress } from '../lib/utils';
 import {

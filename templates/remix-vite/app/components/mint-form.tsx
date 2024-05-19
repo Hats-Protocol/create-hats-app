@@ -47,12 +47,9 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const handleMintHat = async () => {
     if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
       try {
-        const mintResult = mintHatAsync?.();
-        if (mintHatIsSuccess) {
-          console.log('success broadcast');
-        }
+        mintHatAsync?.();
       } catch (error) {
-        console.log('An error has occurred', mintHatError);
+        console.error('An error has occurred', mintHatError);
       }
     }
   };

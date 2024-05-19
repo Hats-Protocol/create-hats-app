@@ -1,8 +1,8 @@
 'use client';
 
+import * as React from 'react';
 import { Check, Copy } from 'lucide-react';
 import { Button } from './ui/button';
-import * as React from 'react';
 import { toast } from 'sonner';
 
 const handleCopy = (

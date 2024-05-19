@@ -4,10 +4,7 @@ import {
   hatIdToTreeId,
 } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-// import { useWaitForSubgraph } from 'hooks';
 import _ from 'lodash';
-// import { AppHat, HandlePendingTx, SupportedChains } from 'types';
-// import { fetchHatDetails } from 'utils';
 import { useChainId } from 'wagmi';
 
 import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
@@ -23,17 +20,10 @@ UseHatMakeImmutableProps) => {
   const currentNetworkId = useChainId();
   const selectedHatId = selectedHat?.id;
 
-  // const waitForSubgraph = useWaitForSubgraph({
-  //   fetchHelper: () => fetchHatDetails(selectedHat.id, chainId),
-  //   checkResult: (hatDetails) => !hatDetails?.mutable,
-  // });
-
   const { writeAsync, isLoading } = useHatContractWrite({
     functionName: 'makeHatImmutable' as ValidFunctionName,
     args: [hatIdHexToDecimal(selectedHatId)],
     chainId: Number(chainId),
-    // handlePendingTx,
-    // waitForSubgraph,
     onSuccessToastData: {
       title: 'Hat Updated!',
       description:
@@ -71,5 +61,4 @@ interface UseHatMakeImmutableProps {
   chainId: number | undefined; // SupportedChains | undefined;
   isAdminUser?: boolean;
   mutable?: boolean;
-  // handlePendingTx?: HandlePendingTx | undefined;
 }

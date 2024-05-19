@@ -10,7 +10,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  console.log('error', error);
   return (
     <div>
       <Alert className="shadow-xl">

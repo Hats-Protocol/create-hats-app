@@ -36,8 +36,6 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
-  console.log('hatData', hatData);
-
   if (!hatData) return;
 
   return (
@@ -103,10 +101,7 @@ const getHatData = async ({
 }: HatDataProps): Promise<ExtendedHat | null> => {
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
-  console.log('hatId', hatId);
-  console.log('trueHatId', trueHatId);
   const localHatId = hatIdIpToDecimal(trueHatId);
-  console.log('localHatId', localHatId);
 
   try {
     const hat = await hatsSubgraphClient.getHat({
@@ -132,11 +127,9 @@ const getHatData = async ({
 
     let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
-    console.log('hat.details', hat.details);
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
-      console.log('resolvedDetails', resolvedDetails);
 
       const criteriaDetails = resolvedDetails.eligibility?.criteria.map(
         (criterion) => {
@@ -146,8 +139,6 @@ const getHatData = async ({
           };
         }
       );
-
-      console.log('criteria details', criteriaDetails);
 
       detailsContent = {
         name: resolvedDetails.name ?? '',

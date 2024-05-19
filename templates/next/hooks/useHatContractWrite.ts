@@ -1,13 +1,7 @@
-// import { CONFIG } from '@hatsprotocol/constants';
-// import { useQueryClient } from '@tanstack/react-query';
-// import { useToast } from 'hooks';
 import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
 import { useRouter } from 'next/navigation';
-
 import { useState } from 'react';
 import { toast } from 'sonner';
-// import { HandlePendingTx } from 'types';
-// import { formatFunctionName } from 'utils';
 import { TransactionReceipt } from 'viem';
 import {
   useChainId,
@@ -36,7 +30,6 @@ interface ContractInteractionProps<T extends ValidFunctionName> {
   queryKeys?: (object | string | number)[][];
   transactionTimeout?: number;
   enabled: boolean;
-  // handlePendingTx?: HandlePendingTx; // pass both handlePendingTx and handleSuccess to useHatContractWrite
   handleSuccess?: (data?: TransactionReceipt) => void; // passed with handlePendingTx
   waitForSubgraph?: (data?: TransactionReceipt) => void; // passed with handleSuccess
 }
@@ -45,19 +38,10 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   functionName,
   args,
   chainId,
-  onSuccessToastData,
-  txDescription,
   onErrorToastData,
-  queryKeys = [],
-  transactionTimeout = 500,
   enabled,
-  // handlePendingTx,
-  handleSuccess,
-  waitForSubgraph,
 }: ContractInteractionProps<T>) => {
-  // const toast = useToast();
   const userChainId = useChainId();
-  // const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [toastShown, setToastShown] = useState(false);
 
@@ -108,7 +92,7 @@ const useHatContractWrite = <T extends ValidFunctionName>({
         router.refresh();
       },
       onError(error) {
-        console.log('error!!', error);
+        console.log('Error!!', error);
         if (
           error.name === 'TransactionExecutionError' &&
           error.message.includes('User rejected the request')

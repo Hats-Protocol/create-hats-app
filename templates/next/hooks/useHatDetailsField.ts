@@ -1,8 +1,3 @@
-// import { useQuery } from '@tanstack/react-query';
-// import { HatDetails } from 'types';
-// import { handleNestedDetails } from 'hats-utils';
-// import { fetchDetailsIpfs } from 'utils';
-
 // * should keep fetching strategy inline with `useManyHatsDetailsField.ts`
 
 /**
@@ -13,7 +8,7 @@
  */
 const useHatDetailsField = (
   detailsField?: string,
-  editMode = false,
+  editMode = false
 ): {
   data: { type: string; data: any } | undefined;
   isLoading: boolean;
@@ -25,18 +20,6 @@ const useHatDetailsField = (
   const data = undefined;
   const isLoading = false;
   const error = undefined;
-
-  // const { data, isLoading, error } = useQuery({
-  //   queryKey: ['hatDetailsField', detailsField],
-  //   queryFn: async () => {
-  //     const result = await fetchDetailsIpfs(detailsField);
-  //     return result;
-  //   },
-  //   enabled: !!detailsField && isIpfs,
-  //   staleTime: editMode ? Infinity : 1000 * 60 * 15, // 15 minutes
-  // });
-
-  // don't handle schema type here
 
   return {
     data,

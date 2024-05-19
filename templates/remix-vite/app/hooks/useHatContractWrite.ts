@@ -1,19 +1,7 @@
-// import { CONFIG } from '@hatsprotocol/constants';
-// import { useQueryClient } from '@tanstack/react-query';
-// import { useToast } from 'hooks';
 import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
-import {
-  useFetcher,
-  useLocation,
-  useNavigate,
-  useNavigate,
-} from '@remix-run/react';
-import { config } from 'process';
-
+import { useLocation, useNavigate } from '@remix-run/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-// import { HandlePendingTx } from 'types';
-// import { formatFunctionName } from 'utils';
 import { TransactionReceipt } from 'viem';
 import {
   useChainId,

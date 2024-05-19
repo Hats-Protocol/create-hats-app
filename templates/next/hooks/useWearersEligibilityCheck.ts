@@ -1,14 +1,11 @@
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { useQuery } from '@tanstack/react-query';
-// import { fetchWearersEligibilities } from 'hats-utils';
 import _ from 'lodash';
-// import { AppHat } from 'types';
 import { Hex } from 'viem';
 
 const fetchWearersEligibilities = (ids: Hex[], hatId: Hex, chainId: number) => {
-  console.log('fetchWearersEligibilities', ids, hatId, chainId);
   return null;
-}
+};
 
 /** `useWearersEligibilityCheck` is a hook that checks the eligibility of wearers for a given hat.
  * @param selectedHat - The selected hat

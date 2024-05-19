@@ -1,20 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {
-  RainbowKitProvider,
-  darkTheme,
-  getDefaultWallets,
-} from '@rainbow-me/rainbowkit';
-import {
-  arbitrum,
-  base,
-  mainnet,
-  optimism,
-  polygon,
-  sepolia,
-  zora,
-} from 'wagmi/chains';
+import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { mainnet, sepolia } from 'wagmi/chains';
 import {
   WagmiConfig,
   configureChains,
@@ -31,7 +19,6 @@ function makeQueryClient() {
       queries: {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
-
         staleTime: 60 * 1000,
       },
     },
@@ -70,8 +57,20 @@ const { connectors } = getDefaultWallets({
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
 });
 
-// const storage = createStorage({ storage: window.localStorage });
-const storage = createStorage({ storage: localStorage });
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+};
+
+// uses a fallback value noopStorage (saw this example in the wagmi docs) if not on the client
+// this is resolved in wagmi v2 with the "ssr" option in createConfig
+const storage = createStorage({
+  storage:
+    typeof window !== 'undefined' && window.localStorage
+      ? window.localStorage
+      : noopStorage,
+});
 
 const config = createConfig({
   autoConnect: true,

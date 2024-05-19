@@ -27,7 +27,6 @@ export default function MetaCard({
 }: HatsMetaCardProps) {
   const idDisplay = id && hatIdDecimalToIp(BigInt(id));
 
-  console.log('details', details);
   if (!details) return null;
 
   return (

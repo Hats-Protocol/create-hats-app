@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
-import { CircleAlert, Terminal } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 
 const supportedChains = [1, 10, 42161, 137, 100, 11155111, 8453, 42220];
 const hatsSubgraphClient = new HatsSubgraphClient({});
@@ -53,6 +53,6 @@ const getHatData = async ({ chainId }: { chainId: number }) => {
       },
     },
   });
-  console.log('hat', hat);
+
   return hat;
 };

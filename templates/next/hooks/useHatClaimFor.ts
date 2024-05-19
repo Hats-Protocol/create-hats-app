@@ -69,8 +69,6 @@ const useHatClaimFor = ({
         wearer: account,
       });
 
-      console.log('claim result', result);
-
       if (result?.status === 'success') {
         // toast.success({
         //   title: 'Hat claimed',

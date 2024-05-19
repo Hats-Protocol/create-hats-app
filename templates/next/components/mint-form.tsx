@@ -7,7 +7,6 @@ import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { WriteContractResult } from 'wagmi/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 import { z } from 'zod';
 
@@ -47,12 +46,11 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const handleMintHat = async () => {
     if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
       try {
-        const mintResult = mintHatAsync?.();
+        mintHatAsync?.();
         if (mintHatIsSuccess) {
-          console.log('success broadcast');
         }
       } catch (error) {
-        console.log('An error has occurred', mintHatError);
+        console.error('An error has occurred', mintHatError);
       }
     }
   };

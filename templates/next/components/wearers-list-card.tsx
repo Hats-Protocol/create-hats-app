@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import {
   Card,
   CardHeader,
@@ -19,8 +20,6 @@ import { Button } from './ui/button';
 import { CopyButton } from './copy-button';
 import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
-
-import React from 'react';
 import useDebounce from '@/lib/useDebounce';
 import { truncateAddress } from '@/lib/utils';
 import { useAccount } from 'wagmi';
