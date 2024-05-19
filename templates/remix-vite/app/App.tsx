@@ -4,11 +4,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  json,
   useLoaderData,
 } from '@remix-run/react';
-import './styles/global.css';
-import { LoaderFunctionArgs } from '@remix-run/node';
 import { useState } from 'react';
 import {
   WagmiConfig,
@@ -18,15 +15,9 @@ import {
   sepolia,
 } from 'wagmi';
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { getEnv } from './.server/env';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  return json({ env: getEnv() });
-}
 
 export default function App() {
   const { env } = useLoaderData<LoaderData>();
@@ -63,7 +54,6 @@ export default function App() {
         queries: {
           // With SSR, we usually want to set some default staleTime
           // above 0 to avoid refetching immediately on the client
-
           staleTime: 60 * 1000,
         },
       },
@@ -107,11 +97,11 @@ export default function App() {
           </WagmiConfig>
         ) : null}
         <ScrollRestoration />
-        {/* <script
+        <script
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(env)}`,
           }}
-        /> */}
+        />
         <Scripts />
       </body>
     </html>

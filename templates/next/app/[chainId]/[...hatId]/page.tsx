@@ -4,11 +4,10 @@ import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard from '@/components/wearers-list-card';
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
-import { hatIdDecimalToHex, hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
+import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
 import _ from 'lodash';
-import Loading from '../../../components/loading';
 import { Skeleton } from '@/components/ui/skeleton';
 import ControllersCard from '@/components/controllers-card';
 import ModuleDetailsCard from '@/components/module-details-card';
@@ -37,7 +36,7 @@ export default async function HatPage({
     hatId: params.hatId,
   });
 
-  console.log('hat data', JSON.stringify(hatData, null, 2));
+  console.log('hatData', hatData);
 
   if (!hatData) return;
 
@@ -104,8 +103,10 @@ const getHatData = async ({
 }: HatDataProps): Promise<ExtendedHat | null> => {
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
+  console.log('hatId', hatId);
+  console.log('trueHatId', trueHatId);
   const localHatId = hatIdIpToDecimal(trueHatId);
-  // await new Promise((resolve) => setTimeout(resolve, 3000)); // comment this out to test the load
+  console.log('localHatId', localHatId);
 
   try {
     const hat = await hatsSubgraphClient.getHat({
@@ -135,6 +136,8 @@ const getHatData = async ({
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
+      console.log('resolvedDetails', resolvedDetails);
+
       const criteriaDetails = resolvedDetails.eligibility?.criteria.map(
         (criterion) => {
           return {

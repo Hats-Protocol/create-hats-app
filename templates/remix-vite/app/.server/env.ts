@@ -4,6 +4,7 @@ const schema = z.object({
   PUBLIC_ENABLE_TESTNETS: z.string() || 'true',
   WALLETCONNECT_PROJECT_ID: z.string(),
   ALCHEMY_RPC_URL: z.string(),
+  ALCHEMY_ID: z.string(),
 });
 
 declare global {
@@ -39,6 +40,7 @@ export function getEnv() {
     PUBLIC_ENABLE_TESTNETS: process.env.PUBLIC_ENABLE_TESTNETS,
     WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
     ALCHEMY_RPC_URL: process.env.ALCHEMY_MAINNET_RPC_URL,
+    ALCHEMY_ID: process.env.ALCHEMY_ID,
   };
 }
 
