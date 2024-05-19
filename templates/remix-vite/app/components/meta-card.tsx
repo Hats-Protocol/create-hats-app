@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hex } from 'viem';
 import { Badge } from '@/components/ui/badge';

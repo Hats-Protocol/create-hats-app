@@ -1,14 +1,13 @@
 'use client';
 
-import { Input } from './ui/input';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useHatMint } from '@/hooks';
 import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { WriteContractResult } from 'wagmi/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-
-import { Button } from './ui/button';
 import { z } from 'zod';
 
 interface MintFormProps {

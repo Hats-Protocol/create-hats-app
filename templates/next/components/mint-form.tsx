@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from './ui/input';
+import { Input } from '@/components/ui/input';
 import { useHatMint } from '@/hooks';
 import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';

@@ -18,9 +18,10 @@ import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { loader } from './root';
 
 export default function App() {
-  const { env } = useLoaderData<LoaderData>();
+  const { env } = useLoaderData<typeof loader>();
   console.log('env', env);
 
   const [{ config, chains }] = useState(() => {

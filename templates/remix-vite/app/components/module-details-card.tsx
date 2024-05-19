@@ -7,7 +7,7 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-} from './ui/card';
+} from '@/components/ui/card';
 import { truncateAddress } from '@/lib/utils';
 
 interface ModuleDetailsCardProps {

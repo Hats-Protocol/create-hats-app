@@ -28,6 +28,23 @@ interface ExtendedHat extends Hat {
   errorMessage?: string;
 }
 
+interface DetailsContent {
+  name: string;
+  description: string;
+  guilds?: string[];
+  spaces?: string[];
+  responsibilities?: string[];
+  authorities?: string[];
+  eligibility?: {
+    manual: boolean;
+    criteria: { link: string; label: string }[];
+  };
+  toggle?: {
+    manual: boolean;
+    criteria: any[]; // Define more specific type if possible
+  };
+}
+
 export async function loader({
   request,
   params,
@@ -69,8 +86,6 @@ export async function loader({
         },
       },
     });
-
-    console.log('hat', hat);
 
     let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
@@ -128,7 +143,7 @@ export async function loader({
 }
 
 export default function HatPageLayout() {
-  const { chainId, hatId } = useParams<{ chainId: string; hatId: string }>();
+  const { chainId } = useParams<{ chainId: string; hatId: string }>();
   const hatData = useLoaderData<ExtendedHat>();
 
   return (

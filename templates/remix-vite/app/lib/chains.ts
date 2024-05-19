@@ -2,7 +2,6 @@ import {
   arbitrum,
   base,
   celo,
-  // baseSepolia,
   Chain,
   gnosis,
   mainnet,

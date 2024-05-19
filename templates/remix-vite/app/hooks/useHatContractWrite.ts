@@ -39,19 +39,10 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   functionName,
   args,
   chainId,
-  onSuccessToastData,
-  txDescription,
   onErrorToastData,
-  queryKeys = [],
-  transactionTimeout = 500,
   enabled,
-  // handlePendingTx,
-  handleSuccess,
-  waitForSubgraph,
 }: ContractInteractionProps<T>) => {
-  // const toast = useToast();
   const userChainId = useChainId();
-  // const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [toastShown, setToastShown] = useState(false);
 

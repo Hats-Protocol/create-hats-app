@@ -23,8 +23,6 @@ const ConnectWallet = () => {
     cacheTime: 60,
   });
 
-  // const [upTo780] = useMediaQuery('(max-width: 780px)');
-
   useEffect(() => {
     if (address) {
       setBlockie(blockies.create({ seed: address.toLowerCase() }).toDataURL());

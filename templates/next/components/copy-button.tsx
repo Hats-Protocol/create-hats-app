@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Check, Copy } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 const handleCopy = (
