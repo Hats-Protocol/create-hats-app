@@ -8,7 +8,6 @@ import {
   useWalletClient,
 } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-
 import { WriteContractResult } from 'wagmi/actions';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';

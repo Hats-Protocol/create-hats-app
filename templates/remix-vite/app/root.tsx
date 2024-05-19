@@ -24,7 +24,6 @@ import { publicProvider } from 'wagmi/providers/public';
 import { getEnv } from './.server/env';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
-import { head } from 'lodash';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return json({ env: getEnv() });

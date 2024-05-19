@@ -49,7 +49,6 @@ export async function loader({
   request,
   params,
 }: LoaderFunctionArgs): Promise<ExtendedHat | null> {
-  console.log('params in loader', params);
   const chainId = params.chainId;
   const hatId = params.hatId;
 
@@ -91,9 +90,7 @@ export async function loader({
     let imageContent: string = '';
 
     if (hat.details) {
-      console.log('hat.details', hat.details);
       const resolvedDetails = await resolveIpfsUri(hat.details);
-      console.log('resolvedDetails', resolvedDetails);
       const criteriaDetails = resolvedDetails.eligibility?.criteria.map(
         (criterion) => {
           return {
@@ -102,8 +99,6 @@ export async function loader({
           };
         }
       );
-
-      console.log('criteria details', criteriaDetails);
 
       detailsContent = {
         name: resolvedDetails.name ?? '',
@@ -131,7 +126,6 @@ export async function loader({
     };
   } catch (error) {
     if (error) {
-      console.log(error);
       console.error(
         `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`
       );
