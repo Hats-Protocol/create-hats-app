@@ -14,7 +14,7 @@ import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AppRoutes from './routes';
+import AppRoutes from './app-routes';
 import { Toaster } from 'sonner';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(

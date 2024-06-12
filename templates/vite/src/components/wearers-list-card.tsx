@@ -49,9 +49,6 @@ export default function WearersListCard({
     const idMatch = wearer.id
       .toLowerCase()
       .includes(debouncedSearch.toLowerCase());
-    const ensMatch = wearer.ensName
-      ? wearer.ensName.toLowerCase().includes(debouncedSearch.toLowerCase())
-      : false;
 
     return idMatch;
   });

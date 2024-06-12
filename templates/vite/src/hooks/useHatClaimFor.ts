@@ -1,10 +1,9 @@
 import { Module } from '@hatsprotocol/modules-sdk';
-import _, { result } from 'lodash';
+import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
 import { useAccount, useContractRead } from 'wagmi';
-import { hatIdDecimalToHex } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 
@@ -35,11 +34,7 @@ const useHatClaimFor = ({
       chainId,
       functionName: 'isClaimableFor',
       args: [wearer || '0x', selectedHat?.id || '0x'],
-      enabled:
-        !!claimsHatter &&
-        // userChain === chainId &&
-        !!selectedHat &&
-        (!!address || !!wearer),
+      enabled: !!claimsHatter && !!selectedHat && (!!address || !!wearer),
     });
 
   useEffect(() => {
@@ -63,31 +58,15 @@ const useHatClaimFor = ({
     try {
       setIsLoading(true);
 
-      const result = await hatsClient.claimHatFor({
+      await hatsClient.claimHatFor({
         account: address,
         hatId: BigInt(selectedHat?.id || '0x'),
         wearer: account,
       });
 
-      console.log('claim result', result);
-
-      if (result?.status === 'success') {
-        // toast.success({
-        //   title: 'Hat claimed',
-        //   description: selectedHat?.id && address && `Hat ${hatIdDecimalToHex(BigInt(
-        //     selectedHat?.id,
-        //   ))} has been claimed for ${formatAddress(account)}`,
-        // });
-      }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      const err = error as Error;
-      // toast.error({
-      //   title: 'Transaction failed',
-      //   description: err.message,
-      // });
-      // eslint-disable-next-line no-console
       console.error(error);
     }
   };

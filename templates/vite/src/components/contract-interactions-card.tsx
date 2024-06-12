@@ -1,12 +1,7 @@
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { useHatBurn } from '@/hooks';
-import {
-  useAccount,
-  useChainId,
-  usePublicClient,
-  useWalletClient,
-} from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 
 import { WriteContractResult } from 'wagmi/actions';
@@ -36,8 +31,6 @@ export default function ContractInteractionsCard({
   const { isConnected, address } = useAccount();
   const [isMintModalOpen, setMintModalIsOpen] = useState(false);
   const chainId = useChainId();
-  const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
 
   const openMintModal = () => setMintModalIsOpen(true);
   const closeMintModal = () => setMintModalIsOpen(false);
@@ -51,9 +44,7 @@ export default function ContractInteractionsCard({
 
   const {
     isLoading: burnHatIsLoading,
-    isSuccess: burnHatIsSuccess,
     writeAsync: burnHatAsync,
-    prepareErrorMessage: burnHatError,
   }: UseHatBurnResult = useHatBurn({
     selectedHat,
     chainId,

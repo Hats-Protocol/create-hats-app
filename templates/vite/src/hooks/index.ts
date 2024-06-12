@@ -4,8 +4,6 @@ export { default as useHatMint } from './useHatMint';
 export { default as useHatClaimBy } from './useHatClaimBy';
 export { default as useHatClaimFor } from './useHatClaimFor';
 export { default as useHatContractWrite } from './useHatContractWrite';
-export { default as useHatDetails } from './useHatDetails';
-export { default as useHatDetailsField } from './useHatDetailsField';
 export { default as useHatMakeImmutable } from './useHatMakeImmutable';
 
 export { default as useIsAdmin } from './useIsAdmin';

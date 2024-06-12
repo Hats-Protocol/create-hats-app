@@ -2,7 +2,7 @@ import { createHatsModulesClient } from '@/lib/hats';
 import { Module, ModuleParameter } from '@hatsprotocol/modules-sdk';
 import { FALLBACK_ADDRESS } from '@hatsprotocol/sdk-v1-core';
 import { Hex, zeroAddress } from 'viem';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const useModuleDetails = ({
   address,

@@ -121,9 +121,6 @@ const useHatData = ({
         ? getHatData({ chainId, hatId: address ? [address] : [] })
         : Promise.resolve(null),
     enabled: isEnabled,
-    onError: (err: Error) => {
-      console.error('Error fetching hat data:', err);
-    },
   });
 
   return {

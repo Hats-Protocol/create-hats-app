@@ -1,14 +1,9 @@
-// import { CONFIG } from '@hatsprotocol/constants';
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 import { createHatsModulesClient } from '@/lib/hats';
 import { Module } from '@hatsprotocol/modules-sdk';
-import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-// import { useToast, useWaitForSubgraph } from 'hooks';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-// import { AppHat, HandlePendingTx, SupportedChains } from 'types';
-// import { createHatsModulesClient, fetchHatDetails } from 'utils';
 import { Hex } from 'viem';
 import {
   useAccount,
@@ -22,9 +17,8 @@ const useHatClaimBy = ({
   selectedHat,
   chainId,
   wearer,
-  // handlePendingTx,
-  onSuccess,
-}: {
+}: // handlePendingTx,
+{
   selectedHat?: Hat | undefined; // AppHat | null;
   chainId: number | undefined; // SupportedChains | undefined;
   wearer: Hex | undefined;
@@ -49,12 +43,13 @@ const useHatClaimBy = ({
 
   const isWearing = useMemo(
     () => _.includes(_.map(selectedHat?.wearers, 'id'), wearer),
-    [selectedHat, wearer],
+    [selectedHat, wearer]
   );
 
   const claimsHatterAddress: Hex | undefined = useMemo(
-    () => _.get(_.first(_.get(selectedHat, 'claimableBy')), 'id') as unknown as Hex, // TODO ! fix me
-    [selectedHat],
+    () =>
+      _.get(_.first(_.get(selectedHat, 'claimableBy')), 'id') as unknown as Hex, // TODO ! fix me
+    [selectedHat]
   );
 
   const hatter = {
@@ -86,7 +81,7 @@ const useHatClaimBy = ({
 
   const [isClaimable, isClaimableAdmin] = useMemo(
     () => _.map(isClaimableData, 'result') || [false, false],
-    [isClaimableData],
+    [isClaimableData]
   );
 
   useEffect(() => {
@@ -126,41 +121,6 @@ const useHatClaimBy = ({
     isLoading,
   } = useContractWrite({
     ...config,
-    onSuccess: async (data) => {
-      // toast.info({
-      //   title: 'Transaction submitted',
-      //   description: 'Waiting for your transaction to be accepted...',
-      // });
-
-      const txDescription = `You've claimed ${
-        selectedHat?.id
-          ? `hat ID ${hatIdDecimalToIp(BigInt(selectedHat?.id))}`
-          : 'this hat'
-      }.`;
-
-      // await handlePendingTx?.({
-      //   hash: data.hash,
-      //   txChainId: chainId,
-      //   txDescription,
-      //   toastData: {
-      //     title: 'Hat claimed!',
-      //     description: txDescription,
-      //   },
-      //   onSuccess: async () => {
-      //     onSuccess?.();
-      //     // await waitForSubgraph();
-
-      //     queryClient.invalidateQueries({
-      //       queryKey: ['hatDetails', { id: selectedHat?.id, chainId }],
-      //     });
-      //     queryClient.invalidateQueries({
-      //       queryKey: ['wearerDetails', { wearerAddress: address, chainId }],
-      //     });
-      //   },
-      // });
-
-      // TODO Handle clearing/updating hat/wearer data
-    },
     onError: (error) => {
       if (
         error.name === 'TransactionExecutionError' &&
@@ -169,7 +129,7 @@ const useHatClaimBy = ({
         console.log({
           title: 'Signature rejected!',
           description: 'Please accept the transaction in your wallet',
-        })
+        });
         // toast.error({
         //   title: 'Signature rejected!',
         //   description: 'Please accept the transaction in your wallet',
@@ -178,7 +138,7 @@ const useHatClaimBy = ({
         console.log({
           title: 'Error occurred!',
           description: 'An error occurred while processing the transaction.',
-        })
+        });
         // toast.error({
         //   title: 'Error occurred!',
         //   description: 'An error occurred while processing the transaction.',

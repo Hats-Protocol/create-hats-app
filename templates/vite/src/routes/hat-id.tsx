@@ -4,38 +4,19 @@ import Header from '@/components/header';
 import MetaCard from '@/components/meta-card';
 import ResponsibilitiesCard from '@/components/responsibilities-card';
 import WearersListCard from '@/components/wearers-list-card';
-import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
-import { IpfsDetails } from '@/types';
-import { hatIdDecimalToHex, hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
-import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { Suspense } from 'react';
 import _ from 'lodash';
-import Loading from '../../../components/loading';
 import { Skeleton } from '@/components/ui/skeleton';
 import ControllersCard from '@/components/controllers-card';
 import ModuleDetailsCard from '@/components/module-details-card';
 import ContractInteractionsCard from '@/components/contract-interactions-card';
 
-const hatsSubgraphClient = new HatsSubgraphClient({});
-
-interface HatDataProps {
-  chainId: number;
-  hatId: string[];
-}
-
-interface ExtendedHat extends Hat {
-  detailsDecoded: IpfsDetails;
-  imageUri: string;
-  errorMessage?: string;
-}
-
 export default function HatPage() {
   const { chainId, hatId } = useParams<{ chainId: string; hatId: string }>();
-  console.log('params', chainId, hatId);
 
-  const { hatData, isLoading, error } = useHatData({
-    address: hatId,
-    chainId: parseInt(chainId),
+  const { hatData, isLoading } = useHatData({
+    address: hatId as `0x${string}`,
+    chainId: chainId !== undefined ? parseInt(chainId) : 10,
     enabled: true,
   });
 
@@ -89,7 +70,7 @@ export default function HatPage() {
         </Suspense>
         <Suspense fallback={<p>Loading...</p>}>
           <ModuleDetailsCard
-            chainId={chainId}
+            chainId={chainId !== undefined ? parseInt(chainId) : 10}
             eligibilityAddress={hatData.eligibility}
           />
         </Suspense>

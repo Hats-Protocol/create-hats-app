@@ -7,19 +7,11 @@ import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { WriteContractResult } from 'wagmi/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-
 import { Button } from './ui/button';
-import { z } from 'zod';
 
 interface MintFormProps {
   selectedHat: Hat;
 }
-
-const mintFormSchema = z.object({
-  ethAddress: z
-    .string()
-    .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
-});
 
 export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
@@ -47,7 +39,7 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const handleMintHat = async () => {
     if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
       try {
-        const mintResult = mintHatAsync?.();
+        mintHatAsync?.();
         if (mintHatIsSuccess) {
           console.log('success broadcast');
         }

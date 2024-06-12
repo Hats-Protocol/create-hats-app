@@ -32,6 +32,7 @@ export const CopyButton = ({ itemToCopy }: { itemToCopy: any }) => {
   };
 
   const onError = (error: Error) => {
+    console.error('Error:', error);
     toast.error('Address unable to be copied to clipboard. Please try again.');
   };
 
