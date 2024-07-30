@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hatsprotocol/modules-sdk": "^0.15.2",
-    "@hatsprotocol/sdk-v1-core": "^0.8.1",
+    "@hatsprotocol/modules-sdk": "^1.3.0",
+    "@hatsprotocol/sdk-v1-core": "^0.10.0",
     "@hatsprotocol/sdk-v1-subgraph": "^1.0.0",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -19,7 +19,7 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
-    "@rainbow-me/rainbowkit": "^1.0.0",
+    "@rainbow-me/rainbowkit": "^2.1.3",
     "blockies-ts": "^1.0.0",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",
@@ -33,8 +33,8 @@
     "react-router-dom": "^6.22.3",
     "sonner": "^1.4.3",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^1.7.0",
-    "wagmi": "^1.4.12",
+    "viem": "^2.18.5",
+    "wagmi": "^2.12.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

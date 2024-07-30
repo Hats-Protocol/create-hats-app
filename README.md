@@ -2,6 +2,10 @@
 
 Create Hats App is a tool for bootstrapping a new Hats app. Running create-hats-app (or via npx create-hats-app) initializes a command line interface where builders can enter an app name, choose a supported framework, and then a boilerplate app will be created using the selected framework template. Each template is a functional, deployable application that builders can use to begin building in the Hats ecosystem.
 
+- [Next Template](https://create-next-hats-app.vercel.app/)
+- [Vite Template](https://create-next-hats-app.vercel.app/)
+- [Remix Template](https://create-next-hats-app.vercel.app/)
+
 ## Prerequisites
 
 Before you begin, ensure you have [Node.js](https://nodejs.org/en/) version 18 or later installed on your machine. Note that the Vite template may work best with 20+.

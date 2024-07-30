@@ -1,67 +1,55 @@
 import { HatsModulesClient } from '@hatsprotocol/modules-sdk';
 import { HatsClient } from '@hatsprotocol/sdk-v1-core';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import _ from 'lodash';
-import { createPublicClient, http, createWalletClient, custom } from 'viem';
-import { createConfig } from 'wagmi';
-import { chains, chainsMap, publicClient } from './web3';
+import { first, get, has } from 'lodash';
+import { createPublicClient, http } from 'viem';
+import { chainsMap, RPC_URLS, wagmiConfig } from './web3';
+import { getWalletClient } from 'wagmi/actions';
 
-const ALCHEMY_ID = import.meta.env.VITE_ALCHEMY_ID;
-
-declare global {
-  interface Window {
-    ethereum: any;
+export const getRpcUrl = (chainId: number) => {
+  if (!has(RPC_URLS, chainId)) {
+    const chain = chainsMap(chainId);
+    return first(get(chain, 'rpcUrls.default.http'));
   }
-}
 
-const { connectors } = getDefaultWallets({
-  appName: 'Hats',
-  chains,
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || '',
-});
+  return get(RPC_URLS, chainId);
+};
 
-export const wagmiConfig: any = createConfig({
-  connectors,
-  publicClient,
-});
-
-export const viemPublicClient: any = (chainId: number) => {
-  const chain = chainsMap(chainId);
-  let transportUrl = _.first(_.get(chain, 'rpcUrls.default.http')) as string;
-  const alchemyUrl = _.get(chain, 'rpcUrls.alchemy.http');
-  if (alchemyUrl) transportUrl = `${alchemyUrl}/${ALCHEMY_ID}`;
-
+export const viemPublicClient = (chainId: number) => {
   return createPublicClient({
-    chain,
-    transport: http(transportUrl, { batch: true }),
+    chain: chainsMap(chainId),
+    transport: http(getRpcUrl(chainId), { batch: true }),
   });
 };
 
-export function createHatsClient(
+export async function createHatsClient(
   chainId: number | undefined
-): HatsClient | undefined {
+): Promise<HatsClient | undefined> {
   if (!chainId) return undefined;
-  const chain = chainsMap(chainId);
 
-  const localPublicClient = viemPublicClient(chainId);
+  const publicClient = viemPublicClient(chainId);
 
-  const localWalletClient = createWalletClient({
-    chain,
-    transport: custom(window.ethereum),
-  });
+  try {
+    const walletClient = await getWalletClient(wagmiConfig);
 
-  const hatsClient = new HatsClient({
-    chainId,
-    publicClient: localPublicClient,
-    walletClient: localWalletClient,
-  });
+    const hatsClient = new HatsClient({
+      chainId,
+      publicClient,
+      walletClient,
+    });
 
-  return hatsClient;
+    return Promise.resolve(hatsClient);
+  } catch (e) {
+    // If we can't create a wallet client, we can still create a public client
+    return Promise.resolve(new HatsClient({
+      chainId,
+      publicClient,
+    }));
+  }
 }
 
 export function createSubgraphClient(): HatsSubgraphClient {
-  if (import.meta.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     return new HatsSubgraphClient({});
   }
 
@@ -72,21 +60,25 @@ export async function createHatsModulesClient(
   chainId: number | undefined
 ): Promise<HatsModulesClient | undefined> {
   if (!chainId) return undefined;
-  const chain = chainsMap(chainId);
 
-  const localWalletClient = createWalletClient({
-    chain,
-    transport: custom(window.ethereum),
-  });
+  const publicClient = viemPublicClient(chainId);
 
-  const localPublicClient = viemPublicClient(chainId);
+  try {
 
-  const hatsModulesClient = new HatsModulesClient({
-    publicClient: localPublicClient,
-    walletClient: localWalletClient,
-  });
+    const walletClient = await getWalletClient(wagmiConfig);
 
-  await hatsModulesClient.prepare();
+    const hatsModulesClient = new HatsModulesClient({
+      publicClient,
+      walletClient,
+    });
 
-  return hatsModulesClient as HatsModulesClient;
+    await hatsModulesClient.prepare();
+
+    return Promise.resolve(hatsModulesClient as HatsModulesClient);
+  } catch (e) {
+    // If we can't create a wallet client, we can still create a public client
+    return Promise.resolve(new HatsModulesClient({
+      publicClient,
+    }));
+  }
 }

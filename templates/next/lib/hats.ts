@@ -1,24 +1,24 @@
 import { HatsModulesClient } from '@hatsprotocol/modules-sdk';
 import { HatsClient } from '@hatsprotocol/sdk-v1-core';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import _ from 'lodash';
-import { createPublicClient, http, createWalletClient, custom } from 'viem';
-import { createConfig } from 'wagmi';
-import { chainsMap, wagmiConfig } from './web3';
+import { first, get, has } from 'lodash';
+import { chainsMap, wagmiConfig, RPC_URLS } from './web3';
 import { getWalletClient } from 'wagmi/actions';
+import { createPublicClient, http } from 'viem';
 
-const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+export const getRpcUrl = (chainId: number) => {
+  if (!has(RPC_URLS, chainId)) {
+    const chain = chainsMap(chainId);
+    return first(get(chain, 'rpcUrls.default.http'));
+  }
 
-export const viemPublicClient: any = (chainId: number) => {
-  const chain = chainsMap(chainId);
-  let transportUrl = _.first(_.get(chain, 'rpcUrls.default.http')) as string;
-  const alchemyUrl = _.get(chain, 'rpcUrls.alchemy.http');
-  if (alchemyUrl) transportUrl = `${alchemyUrl}/${ALCHEMY_ID}`;
+  return get(RPC_URLS, chainId);
+};
 
+export const viemPublicClient = (chainId: number) => {
   return createPublicClient({
-    chain,
-    transport: http(transportUrl, { batch: true }),
+    chain: chainsMap(chainId),
+    transport: http(getRpcUrl(chainId), { batch: true }),
   });
 };
 
@@ -60,7 +60,6 @@ export async function createHatsModulesClient(
   chainId: number | undefined
 ): Promise<HatsModulesClient | undefined> {
   if (!chainId) return undefined;
-  const chain = chainsMap(chainId);
 
   const publicClient = viemPublicClient(chainId);
 
@@ -82,6 +81,4 @@ export async function createHatsModulesClient(
       publicClient,
     }));
   }
-
-
 }

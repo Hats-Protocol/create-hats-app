@@ -1,11 +1,12 @@
 import { Module } from '@hatsprotocol/modules-sdk';
-import _ from 'lodash';
+import { first, get } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
-import { useAccount, useContractRead, useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
+import _ from 'lodash';
 
 const useHatClaimFor = ({
   selectedHat,
@@ -23,7 +24,7 @@ const useHatClaimFor = ({
   const [canClaimForAccount, setCanClaimForAccount] = useState<boolean>();
 
   const claimableForAddress: Hex | undefined = useMemo(
-    () => _.get(_.first(_.get(selectedHat, 'claimableForBy')), 'id') as Hex,
+    () => get(first(get(selectedHat, 'claimableForBy')), 'id') as Hex,
     [selectedHat]
   );
 

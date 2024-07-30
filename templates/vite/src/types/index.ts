@@ -1,3 +1,5 @@
+export type SupportedChains = 1 | 10 | 8453 | 42161 | 11155111
+
 export interface IHatWearer {
   id: `0x${string}`;
   ensName?: string | null;

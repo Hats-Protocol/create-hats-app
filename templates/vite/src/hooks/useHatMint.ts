@@ -1,7 +1,7 @@
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import _ from 'lodash';
-import { useAccount, useChainId } from 'wagmi';
+// import _ from 'lodash';
+import { useChainId } from 'wagmi';
 
 import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
@@ -15,12 +15,10 @@ const useHatMint = ({
   wearer: `0x${string}`;
 }) => {
   const currentNetworkId = useChainId();
-  const { address } = useAccount();
+  // const { address } = useAccount();
   const hatId = selectedHat?.id;
 
-  const wearers = selectedHat?.wearers || [];
-  const currentlyWearing = _.findKey(wearers, ['id', _.toLower(address)]);
-  console.log('currently wearing hat', currentlyWearing);
+  // const wearers = selectedHat?.wearers || [];
 
   const txDescription =
     hatId && `Minted hat ${hatIdDecimalToIp(BigInt(hatId))}`;
@@ -28,8 +26,6 @@ const useHatMint = ({
   const {
     writeAsync,
     isLoading,
-    isSuccess: isSuccessTx,
-    prepareErrorMessage,
   } = useHatContractWrite({
     functionName: 'mintHat' as ValidFunctionName,
     args: [BigInt(hatId), wearer],
@@ -38,9 +34,7 @@ const useHatMint = ({
     enabled: Boolean(hatId) && chainId === currentNetworkId,
   });
 
-  console.log('prepareErrorMessage', prepareErrorMessage);
-
-  return { writeAsync, isLoading, isSuccessTx, prepareErrorMessage };
+  return { writeAsync, isLoading };
 };
 
 export default useHatMint;

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 
@@ -28,18 +28,17 @@ const useHatClaimFor = ({
   );
 
   const { data: isClaimableFor, isLoading: isLoadingClaimableFor } =
-    useContractRead({
+    useReadContract({
       address: claimableForAddress,
       abi: claimsHatter?.abi,
       chainId,
       functionName: 'isClaimableFor',
       args: [wearer || '0x', selectedHat?.id || '0x'],
-      enabled: !!claimsHatter && !!selectedHat && (!!address || !!wearer),
     });
 
   useEffect(() => {
     const getCanClaimForAccount = async () => {
-      const hatsClient = createHatsClient(chainId);
+      const hatsClient = await createHatsClient(chainId);
       if (!hatsClient || !wearer || !isAddress(wearer)) return;
       const canClaimFor = await hatsClient.canClaimForAccount({
         hatId: BigInt(selectedHat?.id || '0x'),
@@ -52,21 +51,35 @@ const useHatClaimFor = ({
   }, [chainId, selectedHat, wearer]);
 
   const claimHatFor = async (account: Hex) => {
-    const hatsClient = createHatsClient(chainId);
+    const hatsClient = await createHatsClient(chainId);
     if (!hatsClient || !address) return;
 
     try {
       setIsLoading(true);
 
-      await hatsClient.claimHatFor({
+      const result = await hatsClient.claimHatFor({
         account: address,
         hatId: BigInt(selectedHat?.id || '0x'),
         wearer: account,
       });
 
+      if (result?.status === 'success') {
+        // toast.success({
+        //   title: 'Hat claimed',
+        //   description: selectedHat?.id && address && `Hat ${hatIdDecimalToHex(BigInt(
+        //     selectedHat?.id,
+        //   ))} has been claimed for ${formatAddress(account)}`,
+        // });
+      }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
+      // const err = error as Error;
+      // toast.error({
+      //   title: 'Transaction failed',
+      //   description: err.message,
+      // });
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   };
@@ -75,7 +88,7 @@ const useHatClaimFor = ({
     const getHatter = async () => {
       const moduleClient = await createHatsModulesClient(chainId);
       if (!moduleClient) return;
-      const modules = moduleClient?.getAllModules();
+      const modules = moduleClient?.getModules();
       if (!modules) return;
       const moduleData = _.find(modules, {
         name: CLAIMS_HATTER_MODULE_NAME,
