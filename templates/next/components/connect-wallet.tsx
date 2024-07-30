@@ -18,9 +18,8 @@ const ConnectWallet = () => {
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address, chainId: 1 });
   const { data: ensAvatar } = useEnsAvatar({
-    name: ensName,
-    chainId: 1,
-    cacheTime: 60,
+    name: ensName as string,
+    chainId: 1
   });
 
   useEffect(() => {

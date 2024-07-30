@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['pino-pretty'],
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.externals.push("pino-pretty", "lokijs", "encoding"); // Rainbowkit polyfills
+
+    return config;
   },
   images: {
-    domains: ['ipfs.io'],
+    domains: ["ipfs.io"],
   },
 };
 

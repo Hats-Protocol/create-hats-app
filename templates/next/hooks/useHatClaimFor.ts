@@ -1,10 +1,9 @@
 import { Module } from '@hatsprotocol/modules-sdk';
-import _, { result } from 'lodash';
+import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
-import { useAccount, useContractRead } from 'wagmi';
-import { hatIdDecimalToHex } from '@hatsprotocol/sdk-v1-core';
+import { useAccount, useContractRead, useReadContract } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
 
@@ -29,22 +28,17 @@ const useHatClaimFor = ({
   );
 
   const { data: isClaimableFor, isLoading: isLoadingClaimableFor } =
-    useContractRead({
+    useReadContract({
       address: claimableForAddress,
       abi: claimsHatter?.abi,
       chainId,
       functionName: 'isClaimableFor',
       args: [wearer || '0x', selectedHat?.id || '0x'],
-      enabled:
-        !!claimsHatter &&
-        // userChain === chainId &&
-        !!selectedHat &&
-        (!!address || !!wearer),
     });
 
   useEffect(() => {
     const getCanClaimForAccount = async () => {
-      const hatsClient = createHatsClient(chainId);
+      const hatsClient = await createHatsClient(chainId);
       if (!hatsClient || !wearer || !isAddress(wearer)) return;
       const canClaimFor = await hatsClient.canClaimForAccount({
         hatId: BigInt(selectedHat?.id || '0x'),
@@ -57,7 +51,7 @@ const useHatClaimFor = ({
   }, [chainId, selectedHat, wearer]);
 
   const claimHatFor = async (account: Hex) => {
-    const hatsClient = createHatsClient(chainId);
+    const hatsClient = await createHatsClient(chainId);
     if (!hatsClient || !address) return;
 
     try {
@@ -94,7 +88,7 @@ const useHatClaimFor = ({
     const getHatter = async () => {
       const moduleClient = await createHatsModulesClient(chainId);
       if (!moduleClient) return;
-      const modules = moduleClient?.getAllModules();
+      const modules = moduleClient?.getModules();
       if (!modules) return;
       const moduleData = _.find(modules, {
         name: CLAIMS_HATTER_MODULE_NAME,

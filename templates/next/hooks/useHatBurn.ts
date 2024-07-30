@@ -22,7 +22,7 @@ const useHatBurn = ({
   const txDescription =
     hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;
 
-  const { writeAsync, isLoading, isSuccess, prepareErrorMessage } =
+  const { writeAsync, isLoading } =
     useHatContractWrite({
       functionName: 'renounceHat' as ValidFunctionName,
       args: [BigInt(hatId)],
@@ -35,7 +35,7 @@ const useHatBurn = ({
       enabled: Boolean(hatId) && chainId === currentNetworkId,
     });
 
-  return { writeAsync, isLoading, isSuccess, prepareErrorMessage };
+  return { writeAsync, isLoading };
 };
 
 export default useHatBurn;

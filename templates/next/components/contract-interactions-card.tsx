@@ -1,22 +1,15 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { Card, CardContent } from './ui/card';
-import { Button } from './ui/button';
-import { useHatBurn } from '@/hooks';
-import {
-  useAccount,
-  useChainId,
-  useNetwork,
-  usePublicClient,
-  useWalletClient,
-} from 'wagmi';
-import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import { WriteContractResult } from 'wagmi/actions';
-import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
-import Modal from './modal';
-import MintForm from './mint-form';
+import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import { useHatBurn } from "@/hooks";
+import { useAccount, useChainId } from "wagmi";
+import { Hat } from "@hatsprotocol/sdk-v1-subgraph";
+import { WriteContractReturnType } from "wagmi/actions";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import Modal from "./modal";
+import MintForm from "./mint-form";
 
 interface ContractInteractionProps {
   selectedHat: Hat;
@@ -24,11 +17,11 @@ interface ContractInteractionProps {
 
 const isWearingHat = (
   wearers: { id: string }[],
-  connectedAddress: string | undefined
+  connectedAddress: string | undefined,
 ): boolean => {
   return connectedAddress
     ? wearers.some(
-        (wearer) => wearer.id.toLowerCase() === connectedAddress.toLowerCase()
+        (wearer) => wearer.id.toLowerCase() === connectedAddress.toLowerCase(),
       )
     : false;
 };
@@ -43,17 +36,7 @@ export default function ContractInteractionsCard({
   const openMintModal = () => setMintModalIsOpen(true);
   const closeMintModal = () => setMintModalIsOpen(false);
 
-  interface UseHatBurnResult {
-    isLoading: boolean;
-    isSuccess: boolean;
-    writeAsync: (() => Promise<WriteContractResult>) | undefined;
-    prepareErrorMessage: string;
-  }
-
-  const {
-    isLoading: burnHatIsLoading,
-    writeAsync: burnHatAsync,
-  }: UseHatBurnResult = useHatBurn({
+  const { isLoading: burnHatIsLoading, writeAsync: burnHatAsync } = useHatBurn({
     selectedHat,
     chainId,
   });
@@ -113,7 +96,7 @@ export default function ContractInteractionsCard({
                 In Progress...
               </div>
             ) : (
-              'Renounce'
+              "Renounce"
             )}
           </Button>
           {/* <Button variant="default">Deactivate</Button> */}

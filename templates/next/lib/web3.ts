@@ -1,11 +1,8 @@
 import _ from 'lodash';
 import { Chain } from 'viem';
-import { configureChains } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
-import { chainsList, orderedChains } from './chains';
-
-const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+import { chainsList } from './chains';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { sepolia, mainnet, arbitrum, base, optimism, polygon } from 'viem/chains';
 
 export const chainsMap = (chainId?: number) =>
   chainId
@@ -20,11 +17,10 @@ export const explorerUrl = (chainId?: number) =>
     _.get(chainsMap(chainId), 'blockExplorers.default.url')
   );
 
-const configuredChains: any = configureChains(
-  _.map(orderedChains, (c: number) => chainsMap(c)),
-  [alchemyProvider({ apiKey: ALCHEMY_ID || '' }), publicProvider()]
-);
 
-const { chains, publicClient } = configuredChains;
-
-export { chains, publicClient };
+export const wagmiConfig = getDefaultConfig({
+  appName: 'Create Hats Next App',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
+  chains: [mainnet, optimism, base, arbitrum, polygon, sepolia],
+  ssr: true, // If your dApp uses server side rendering (SSR)
+});

@@ -5,26 +5,10 @@ import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 import _ from 'lodash';
 import { createPublicClient, http, createWalletClient, custom } from 'viem';
 import { createConfig } from 'wagmi';
-import { chains, chainsMap, publicClient } from './web3';
+import { chainsMap, wagmiConfig } from './web3';
+import { getWalletClient } from 'wagmi/actions';
 
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID;
-
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
-
-const { connectors } = getDefaultWallets({
-  appName: 'Hats',
-  chains,
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
-});
-
-export const wagmiConfig: any = createConfig({
-  connectors,
-  publicClient,
-});
 
 export const viemPublicClient: any = (chainId: number) => {
   const chain = chainsMap(chainId);
@@ -38,26 +22,30 @@ export const viemPublicClient: any = (chainId: number) => {
   });
 };
 
-export function createHatsClient(
+export async function createHatsClient(
   chainId: number | undefined
-): HatsClient | undefined {
+): Promise<HatsClient | undefined> {
   if (!chainId) return undefined;
-  const chain = chainsMap(chainId);
 
-  const localPublicClient = viemPublicClient(chainId);
+  const publicClient = viemPublicClient(chainId);
 
-  const localWalletClient = createWalletClient({
-    chain,
-    transport: custom(window.ethereum),
-  });
+  try {
+    const walletClient = await getWalletClient(wagmiConfig);
 
-  const hatsClient = new HatsClient({
-    chainId,
-    publicClient: localPublicClient,
-    walletClient: localWalletClient,
-  });
+    const hatsClient = new HatsClient({
+      chainId,
+      publicClient,
+      walletClient,
+    });
 
-  return hatsClient;
+    return Promise.resolve(hatsClient);
+  } catch (e) {
+    // If we can't create a wallet client, we can still create a public client
+    return Promise.resolve(new HatsClient({
+      chainId,
+      publicClient,
+    }));
+  }
 }
 
 export function createSubgraphClient(): HatsSubgraphClient {
@@ -74,19 +62,26 @@ export async function createHatsModulesClient(
   if (!chainId) return undefined;
   const chain = chainsMap(chainId);
 
-  const localWalletClient = createWalletClient({
-    chain,
-    transport: custom(window.ethereum),
-  });
+  const publicClient = viemPublicClient(chainId);
 
-  const localPublicClient = viemPublicClient(chainId);
+  try {
 
-  const hatsModulesClient = new HatsModulesClient({
-    publicClient: localPublicClient,
-    walletClient: localWalletClient,
-  });
+    const walletClient = await getWalletClient(wagmiConfig);
 
-  await hatsModulesClient.prepare();
+    const hatsModulesClient = new HatsModulesClient({
+      publicClient,
+      walletClient,
+    });
 
-  return hatsModulesClient as HatsModulesClient;
+    await hatsModulesClient.prepare();
+
+    return Promise.resolve(hatsModulesClient as HatsModulesClient);
+  } catch (e) {
+    // If we can't create a wallet client, we can still create a public client
+    return Promise.resolve(new HatsModulesClient({
+      publicClient,
+    }));
+  }
+
+
 }

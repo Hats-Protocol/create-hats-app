@@ -1,17 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { mainnet, sepolia } from 'wagmi/chains';
 import {
-  WagmiConfig,
-  configureChains,
-  createConfig,
+  WagmiProvider,
   createStorage,
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { wagmiConfig } from '@/lib/web3';
 
 function makeQueryClient() {
   return new QueryClient({
@@ -43,20 +40,6 @@ function getQueryClient() {
 
 const queryClient = getQueryClient();
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [sepolia, mainnet],
-  [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
-    publicProvider(),
-  ]
-);
-
-const { connectors } = getDefaultWallets({
-  appName: 'Hats App Template - Next',
-  chains,
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '',
-});
-
 const noopStorage = {
   getItem: () => null,
   setItem: () => {},
@@ -72,22 +55,15 @@ const storage = createStorage({
       : noopStorage,
 });
 
-const config = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
-  storage,
-});
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiConfig config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider chains={chains} modalSize="compact">
+        <RainbowKitProvider modalSize="compact">
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 }
