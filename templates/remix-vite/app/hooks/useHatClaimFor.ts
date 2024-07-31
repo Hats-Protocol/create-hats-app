@@ -1,12 +1,13 @@
 import { Module } from '@hatsprotocol/modules-sdk';
-import _, { result } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
-import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
-import { Hex, isAddress } from 'viem';
-import { useAccount, useContractRead } from 'wagmi';
-import { hatIdDecimalToHex } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { first, get } from 'lodash';
+import _ from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+import { Hex, isAddress } from 'viem';
+import { useAccount, useReadContract } from 'wagmi';
+
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
+import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 
 const useHatClaimFor = ({
   selectedHat,
@@ -24,27 +25,22 @@ const useHatClaimFor = ({
   const [canClaimForAccount, setCanClaimForAccount] = useState<boolean>();
 
   const claimableForAddress: Hex | undefined = useMemo(
-    () => _.get(_.first(_.get(selectedHat, 'claimableForBy')), 'id') as Hex,
+    () => get(first(get(selectedHat, 'claimableForBy')), 'id') as Hex,
     [selectedHat]
   );
 
   const { data: isClaimableFor, isLoading: isLoadingClaimableFor } =
-    useContractRead({
+    useReadContract({
       address: claimableForAddress,
       abi: claimsHatter?.abi,
       chainId,
       functionName: 'isClaimableFor',
       args: [wearer || '0x', selectedHat?.id || '0x'],
-      enabled:
-        !!claimsHatter &&
-        // userChain === chainId &&
-        !!selectedHat &&
-        (!!address || !!wearer),
     });
 
   useEffect(() => {
     const getCanClaimForAccount = async () => {
-      const hatsClient = createHatsClient(chainId);
+      const hatsClient = await createHatsClient(chainId);
       if (!hatsClient || !wearer || !isAddress(wearer)) return;
       const canClaimFor = await hatsClient.canClaimForAccount({
         hatId: BigInt(selectedHat?.id || '0x'),
@@ -57,7 +53,7 @@ const useHatClaimFor = ({
   }, [chainId, selectedHat, wearer]);
 
   const claimHatFor = async (account: Hex) => {
-    const hatsClient = createHatsClient(chainId);
+    const hatsClient = await createHatsClient(chainId);
     if (!hatsClient || !address) return;
 
     try {
@@ -68,8 +64,6 @@ const useHatClaimFor = ({
         hatId: BigInt(selectedHat?.id || '0x'),
         wearer: account,
       });
-
-      console.log('claim result', result);
 
       if (result?.status === 'success') {
         // toast.success({
@@ -82,7 +76,7 @@ const useHatClaimFor = ({
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      const err = error as Error;
+      // const err = error as Error;
       // toast.error({
       //   title: 'Transaction failed',
       //   description: err.message,
@@ -96,7 +90,7 @@ const useHatClaimFor = ({
     const getHatter = async () => {
       const moduleClient = await createHatsModulesClient(chainId);
       if (!moduleClient) return;
-      const modules = moduleClient?.getAllModules();
+      const modules = moduleClient?.getModules();
       if (!modules) return;
       const moduleData = _.find(modules, {
         name: CLAIMS_HATTER_MODULE_NAME,

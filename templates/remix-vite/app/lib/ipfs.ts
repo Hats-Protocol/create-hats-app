@@ -17,7 +17,6 @@ export const resolveIpfsUri = async (uri: string): Promise<IpfsDetails> => {
   const ipfsGateway = 'https://ipfs.io/ipfs/';
   const cid = uri.split('ipfs://')[1];
   const response = await fetch(`${ipfsGateway}${cid}`);
-  console.log('uri', uri);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }

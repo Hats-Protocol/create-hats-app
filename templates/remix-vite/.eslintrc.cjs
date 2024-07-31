@@ -1,17 +1,19 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  plugins: ['@typescript-eslint'], // Use the TypeScript plugin
+  plugins: ['@typescript-eslint', 'simple-import-sort'], // Use the TypeScript plugin
   parser: '@typescript-eslint/parser', // Use the TypeScript parser for ESLint,
-  parserOptions: {
-    project: './tsconfig.json', // Set the TS-config file
-  },
   extends: [
-    '@remix-run/eslint-config',
-    '@remix-run/eslint-config/node',
-    'plugin:storybook/recommended',
-    // 'plugin:@typescript-eslint/recommended', // Use TypeScript recommended rules
+    'plugin:@typescript-eslint/recommended', // Use TypeScript recommended rules
+    'prettier',
   ],
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'warn',
+    // import sort
+    // increase the severity of rules so they are auto-fixable
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+  },
 };
 
 // /**

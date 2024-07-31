@@ -24,7 +24,6 @@ async function getHatData({
   chainId,
   hatId,
 }: HatDataProps): Promise<ExtendedHat | null> {
-  console.log('getting hat', chainId, hatId);
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
   const localHatId = hatIdIpToDecimal(trueHatId);
@@ -53,7 +52,6 @@ async function getHatData({
 
     let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
-    console.log('hat.details', hat.details);
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
@@ -65,8 +63,6 @@ async function getHatData({
           };
         }
       );
-
-      console.log('criteria details', criteriaDetails);
 
       detailsContent = {
         name: resolvedDetails.name ?? '',
@@ -86,8 +82,6 @@ async function getHatData({
     if (hat.imageUri) {
       imageContent = (await ipfsToHttp(hat.imageUri)) || '';
     }
-
-    console.log('...hat', hat);
 
     return {
       ...hat,

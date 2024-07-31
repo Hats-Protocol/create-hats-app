@@ -1,12 +1,13 @@
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { CopyButton } from './copy-button';
-import { truncateAddress } from '../lib/utils';
 import {
-  TooltipProvider,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+import { truncateAddress } from '../lib/utils';
+import { CopyButton } from './copy-button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface ControllersCardProps {
   eligibilityAddress?: `0x${string}`;
@@ -24,12 +25,12 @@ export default function ControllersCard({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
-          <div className="flex flex-row justify-between items-baseline w-full">
+          <div className="flex w-full flex-row items-baseline justify-between">
             {eligibilityAddress && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="text-gray-600 hover:text-gray-800  transition-colors ease-in-out duration-300">
+                    <span className="text-gray-600 transition-colors  duration-300 ease-in-out hover:text-gray-800">
                       Eligibility Address: {truncateAddress(eligibilityAddress)}
                     </span>
                   </TooltipTrigger>
@@ -46,12 +47,12 @@ export default function ControllersCard({
               <CopyButton itemToCopy={eligibilityAddress} />
             </div>
           </div>
-          <div className="flex flex-row justify-between items-baseline w-full ">
+          <div className="flex w-full flex-row items-baseline justify-between ">
             {toggleAddress && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="text-gray-600 hover:text-gray-800  transition-colors ease-in-out duration-300">
+                    <span className="text-gray-600 transition-colors  duration-300 ease-in-out hover:text-gray-800">
                       Toggle Address: {truncateAddress(toggleAddress)}
                     </span>
                   </TooltipTrigger>

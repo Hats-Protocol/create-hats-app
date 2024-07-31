@@ -1,14 +1,14 @@
-import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
-import { useLocation, useNavigate } from '@remix-run/react';
+import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { TransactionReceipt } from 'viem';
 import {
   useChainId,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
+  useWriteContract,
 } from 'wagmi';
+import { waitForTransactionReceipt } from 'wagmi/actions';
+
+import { localWagmiConfig } from '@/lib/hats';
 
 type ExtractFunctionNames<ABI> = ABI extends {
   name: infer N;
@@ -30,7 +30,6 @@ interface ContractInteractionProps<T extends ValidFunctionName> {
   queryKeys?: (object | string | number)[][];
   transactionTimeout?: number;
   enabled: boolean;
-  // handlePendingTx?: HandlePendingTx; // pass both handlePendingTx and handleSuccess to useHatContractWrite
   handleSuccess?: (data?: TransactionReceipt) => void; // passed with handlePendingTx
   waitForSubgraph?: (data?: TransactionReceipt) => void; // passed with handleSuccess
 }
@@ -44,25 +43,28 @@ const useHatContractWrite = <T extends ValidFunctionName>({
 }: ContractInteractionProps<T>) => {
   const userChainId = useChainId();
   const [isLoading, setIsLoading] = useState(false);
-  const [toastShown, setToastShown] = useState(false);
 
-  const { config, error: prepareError } = usePrepareContractWrite({
-    address: HATS_V1,
-    chainId: Number(chainId),
-    abi: HATS_ABI,
-    functionName,
-    args,
-    enabled: enabled && !!chainId && userChainId === chainId,
-  });
+  const { writeContractAsync } = useWriteContract();
 
-  const {
-    data,
-    writeAsync,
-    error: writeError,
-    isLoading: writeLoading,
-  } = useContractWrite({
-    ...config,
-    onError(error) {
+  const handleHatWrite = async () => {
+    if (!enabled || !chainId || userChainId !== chainId) return null;
+    setIsLoading(true);
+
+    // @ts-expect-error - not totally sure what is wrong with the union type here
+    return writeContractAsync({
+      address: HATS_V1,
+      chainId: Number(chainId),
+      abi: HATS_ABI,
+      functionName,
+      args,
+    }).then(async (hash) => {
+      toast.info('Waiting for your transaction to be accepted...');
+
+      await waitForTransactionReceipt(localWagmiConfig, { chainId: chainId as any, hash });
+
+      toast.info('Transaction submitted');
+    }).catch((error) => {
+      console.log('Error!!', error);
       if (
         error.name === 'TransactionExecutionError' &&
         error.message.includes('User rejected the request')
@@ -81,65 +83,15 @@ const useHatContractWrite = <T extends ValidFunctionName>({
         });
         toast.error('An error occurred while processing the transaction.');
       }
-    },
-  });
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const { isLoading: txLoading, isSuccess: isSuccessTx } =
-    useWaitForTransaction({
-      hash: data?.hash,
-      onSuccess(data) {
-        toast.success('Transaction successful.');
-        navigate(location.pathname, { replace: true });
-      },
-      onError(error) {
-        console.log('error!!', error);
-        if (
-          error.name === 'TransactionExecutionError' &&
-          error.message.includes('User rejected the request')
-        ) {
-          console.log({
-            title: 'Signature rejected!',
-            description: 'Please accept the transaction in your wallet',
-          });
-          toast.error('Please accept the transaction in your wallet.');
-        } else {
-          console.log({
-            title: 'Error occurred!',
-            description:
-              onErrorToastData?.description ??
-              'An error occurred while processing the transaction.',
-          });
-          toast.error('An error occurred while processing the transaction.');
-        }
-      },
-    });
-  if (txLoading && !toastShown) {
-    toast.info('Waiting for your transaction to be accepted...');
-    setToastShown(true);
+    })
   }
 
-  const extractErrorMessage = (error: Error | null) => {
-    if (!error) return '';
-
-    let errorMessage = error.message || '';
-    const errorMatch = errorMessage.match(/Error:\s*(.*)/);
-    const [, errorMessageMatch] = errorMatch || [];
-    errorMessage = errorMessageMatch || errorMessage;
-    errorMessage = errorMessage.replace(/\(.*\)/, '').trim();
-
-    return errorMessage || 'An unknown error occurred';
-  };
-
   return {
-    writeAsync,
-    isLoading: isLoading || writeLoading || txLoading,
-    isSuccess: isSuccessTx,
-    prepareError,
-    prepareErrorMessage: extractErrorMessage(prepareError),
-    writeError,
+    writeAsync: handleHatWrite,
+    isLoading,
   };
 };
 
 export default useHatContractWrite;
+
+

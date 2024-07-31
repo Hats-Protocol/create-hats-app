@@ -1,51 +1,37 @@
-// import { CONFIG } from '@hatsprotocol/constants';
-import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
-import { createHatsModulesClient } from '@/lib/hats';
 import { Module } from '@hatsprotocol/modules-sdk';
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-// import { useToast, useWaitForSubgraph } from 'hooks';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-// import { AppHat, HandlePendingTx, SupportedChains } from 'types';
-// import { createHatsModulesClient, fetchHatDetails } from 'utils';
+import { toast } from 'sonner';
 import { Hex } from 'viem';
 import {
   useAccount,
   useChainId,
-  useContractReads,
-  useContractWrite,
-  usePrepareContractWrite,
+  useReadContracts,
+  useWriteContract,
 } from 'wagmi';
+import { waitForTransactionReceipt } from 'wagmi/actions';
+
+import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
+import { createHatsModulesClient } from '@/lib/hats';
+import { localWagmiConfig } from '@/lib/hats';
 
 const useHatClaimBy = ({
   selectedHat,
   chainId,
   wearer,
-  // handlePendingTx,
-  onSuccess,
+  // onSuccess,
 }: {
   selectedHat?: Hat | undefined; // AppHat | null;
   chainId: number | undefined; // SupportedChains | undefined;
   wearer: Hex | undefined;
-  // handlePendingTx?: HandlePendingTx;
-  onSuccess?: () => void;
+  // onSuccess?: () => void;
 }) => {
   const [claimsHatter, setClaimsHatter] = useState<Module | undefined>();
   const { address } = useAccount();
   const userChain = useChainId();
-  // const toast = useToast();
   const isCurrentWearer = address === wearer;
-  // const queryClient = useQueryClient();
-
-  // const waitForSubgraph = useWaitForSubgraph({
-  //   fetchHelper: () => fetchHatDetails(selectedHat?.id, chainId),
-  //   checkResult: (hatDetails: any) =>
-  //     _.some(
-  //       hatDetails?.wearers,
-  //       (w: { id: any }) => _.toLower(w.id) === _.toLower(address),
-  //     ),
-  // });
 
   const isWearing = useMemo(
     () => _.includes(_.map(selectedHat?.wearers, 'id'), wearer),
@@ -63,7 +49,7 @@ const useHatClaimBy = ({
     chainId,
   };
 
-  const { data: isClaimableData } = useContractReads({
+  const { data: isClaimableData } = useReadContracts({
     contracts: [
       {
         ...hatter,
@@ -76,12 +62,6 @@ const useHatClaimBy = ({
         args: [selectedHat?.id || '0x'],
       },
     ],
-    enabled:
-      !!claimsHatter &&
-      !!claimsHatterAddress &&
-      // userChain === chainId &&
-      !!selectedHat &&
-      (!!address || !!wearer),
   });
 
   const [isClaimable, isClaimableAdmin] = useMemo(
@@ -93,7 +73,7 @@ const useHatClaimBy = ({
     const getHatter = async () => {
       const moduleClient = await createHatsModulesClient(chainId);
       if (!moduleClient) return;
-      const modules = moduleClient?.getAllModules();
+      const modules = moduleClient?.getModules();
       if (!modules) return;
       const moduleData = _.find(modules, {
         name: CLAIMS_HATTER_MODULE_NAME,
@@ -104,64 +84,41 @@ const useHatClaimBy = ({
     getHatter();
   }, [chainId]);
 
-  const { config, error: prepareError } = usePrepareContractWrite({
-    address: claimsHatterAddress,
-    chainId,
-    abi: claimsHatter?.abi,
-    functionName: isCurrentWearer ? 'claimHat' : 'claimHatFor',
-    args: isCurrentWearer ? [selectedHat?.id] : [selectedHat?.id, address],
-    enabled:
-      (isCurrentWearer || !!wearer) &&
-      !!isClaimable &&
-      !isWearing &&
-      !!isClaimableAdmin &&
-      !!claimsHatter &&
-      !!claimsHatterAddress &&
-      userChain === chainId,
-  });
+  const { writeContractAsync } = useWriteContract()
 
-  const {
-    write,
-    error: writeError,
-    isLoading,
-  } = useContractWrite({
-    ...config,
-    onSuccess: async (data) => {
-      // toast.info({
-      //   title: 'Transaction submitted',
-      //   description: 'Waiting for your transaction to be accepted...',
-      // });
+  const handleClaimHat = async () => {
+    if (
+      !isCurrentWearer ||
+      !isClaimable ||
+      isWearing ||
+      !isClaimableAdmin ||
+      !claimsHatter ||
+      !claimsHatterAddress ||
+      userChain !== chainId
+    ) {
+      return;
+    }
 
-      const txDescription = `You've claimed ${
-        selectedHat?.id
-          ? `hat ID ${hatIdDecimalToIp(BigInt(selectedHat?.id))}`
-          : 'this hat'
-      }.`;
+    return writeContractAsync({
+      address: claimsHatterAddress,
+      chainId,
+      abi: claimsHatter?.abi,
+      functionName: isCurrentWearer ? 'claimHat' : 'claimHatFor',
+      args: isCurrentWearer ? [selectedHat?.id] : [selectedHat?.id, address],
+    }).then(async (hash) => {
+      toast.info('Transaction submitted');
 
-      // await handlePendingTx?.({
-      //   hash: data.hash,
-      //   txChainId: chainId,
-      //   txDescription,
-      //   toastData: {
-      //     title: 'Hat claimed!',
-      //     description: txDescription,
-      //   },
-      //   onSuccess: async () => {
-      //     onSuccess?.();
-      //     // await waitForSubgraph();
+      await waitForTransactionReceipt(localWagmiConfig, { chainId: chainId as any, hash });
 
-      //     queryClient.invalidateQueries({
-      //       queryKey: ['hatDetails', { id: selectedHat?.id, chainId }],
-      //     });
-      //     queryClient.invalidateQueries({
-      //       queryKey: ['wearerDetails', { wearerAddress: address, chainId }],
-      //     });
-      //   },
-      // });
+      const txDescription = `You've claimed ${selectedHat?.id
+        ? `hat ID ${hatIdDecimalToIp(BigInt(selectedHat?.id))}`
+        : 'this hat'
+        }.`;
 
-      // TODO Handle clearing/updating hat/wearer data
-    },
-    onError: (error) => {
+      toast.success(txDescription)
+
+      // TODO handle invalidate after transaction
+    }).catch((error) => {
       if (
         error.name === 'TransactionExecutionError' &&
         error.message.includes('User rejected the request')
@@ -184,19 +141,15 @@ const useHatClaimBy = ({
         //   description: 'An error occurred while processing the transaction.',
         // });
       }
-    },
-  });
+    })
+  }
 
   return {
-    claimHat: write,
+    claimHat: handleClaimHat,
     isClaimable,
     hatterAddress: claimsHatterAddress,
     hatterIsAdmin: isClaimableAdmin,
-    prepareError,
-    writeError,
-    canClaimFor: isClaimable && write,
-    error: prepareError || writeError,
-    isLoading,
+    canClaimFor: isClaimable,
   };
 };
 

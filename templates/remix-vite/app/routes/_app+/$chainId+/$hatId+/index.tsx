@@ -1,10 +1,9 @@
-import { IpfsDetails } from '@/types';
 import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
-import { HatsSubgraphClient, Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import { LoaderFunctionArgs, json } from '@remix-run/node';
+import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useParams } from '@remix-run/react';
-import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
-import _ from 'lodash';
+import { Suspense } from 'react';
+
 import ContractInteractionsCard from '@/components/contract-interactions-card';
 import ControllersCard from '@/components/controllers-card';
 import Header from '@/components/header';
@@ -13,14 +12,15 @@ import ModuleDetailsCard from '@/components/module-details-card';
 import ResponsibilitiesCard from '@/components/responsibilities-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import WearersListCard from '@/components/wearers-list-card';
-import { Suspense } from 'react';
+import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
+import { IpfsDetails } from '@/types';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
-interface HatDataProps {
-  chainId: string;
-  hatId: string[];
-}
+// interface HatDataProps {
+//   chainId: string;
+//   hatId: string[];
+// }
 
 interface ExtendedHat extends Hat {
   detailsDecoded: IpfsDetails;
@@ -28,25 +28,25 @@ interface ExtendedHat extends Hat {
   errorMessage?: string;
 }
 
-interface DetailsContent {
-  name: string;
-  description: string;
-  guilds?: string[];
-  spaces?: string[];
-  responsibilities?: string[];
-  authorities?: string[];
-  eligibility?: {
-    manual: boolean;
-    criteria: { link: string; label: string }[];
-  };
-  toggle?: {
-    manual: boolean;
-    criteria: any[]; // Define more specific type if possible
-  };
-}
+// interface DetailsContent {
+//   name: string;
+//   description: string;
+//   guilds?: string[];
+//   spaces?: string[];
+//   responsibilities?: string[];
+//   authorities?: string[];
+//   eligibility?: {
+//     manual: boolean;
+//     criteria: { link: string; label: string }[];
+//   };
+//   toggle?: {
+//     manual: boolean;
+//     criteria: any[]; // Define more specific type if possible
+//   };
+// }
 
 export async function loader({
-  request,
+  // request,
   params,
 }: LoaderFunctionArgs): Promise<ExtendedHat | null> {
   const chainId = params.chainId;
@@ -62,7 +62,6 @@ export async function loader({
 
   if (!hatId) return null;
   const localHatId = hatIdIpToDecimal(hatId);
-  console.log('localHatId', localHatId);
 
   try {
     const hat = await hatsSubgraphClient.getHat({
@@ -97,7 +96,7 @@ export async function loader({
             link: criterion.link,
             label: criterion.label,
           };
-        }
+        },
       );
 
       detailsContent = {
@@ -127,7 +126,7 @@ export async function loader({
   } catch (error) {
     if (error) {
       console.error(
-        `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`
+        `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`,
       );
       return null;
     } else {
@@ -141,14 +140,14 @@ export default function HatPageLayout() {
   const hatData = useLoaderData<ExtendedHat>();
 
   return (
-    <main className=" min-h-screen gap-y-12 w-full">
+    <main className=" min-h-screen w-full gap-y-12">
       <Header />
-      <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
+      <div className="grid gap-4 px-4 py-8 md:grid-cols-2 md:px-16">
         <Suspense
           fallback={
             <>
               <div className="h-10">
-                <Skeleton className="w-full h-30" />
+                <Skeleton className="h-30 w-full" />
               </div>
             </>
           }
@@ -173,7 +172,7 @@ export default function HatPageLayout() {
         <Suspense fallback={<p>Loading...</p>}>
           <WearersListCard
             wearers={hatData.wearers}
-            currentSupply={_.toNumber(hatData.currentSupply)}
+            currentSupply={Number(hatData.currentSupply)}
             maxSupply={Number(hatData.maxSupply) || 0} // Convert to number and provide default
           />
         </Suspense>

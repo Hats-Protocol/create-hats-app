@@ -1,16 +1,16 @@
 import { Module } from '@hatsprotocol/modules-sdk';
+import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 import { useMemo } from 'react';
 import { Hex } from 'viem';
 
+import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
+import { createSubgraphClient } from '@/lib/hats';
+
 import useIsAdmin from './useIsAdmin';
 import useModuleDetails from './useModuleDetails';
 import useModulesDetails from './useModulesDetails';
-
-import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
-import { createSubgraphClient } from '@/lib/hats';
-import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 
 const fetchHattersHelper = async (chainId: number, hats: Hex[]) => {
   const subgraphClient = createSubgraphClient();
