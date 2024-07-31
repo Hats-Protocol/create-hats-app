@@ -1,11 +1,12 @@
 import { Module } from '@hatsprotocol/modules-sdk';
+import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 import { Hex, isAddress } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
-import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';
+import { createHatsClient, createHatsModulesClient } from '@/lib/hats';
 
 const useHatClaimFor = ({
   selectedHat,

@@ -1,8 +1,10 @@
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import ReactMarkdown from 'react-markdown';
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
+import ReactMarkdown from 'react-markdown';
 import { Hex } from 'viem';
+
 import { Badge } from '@/components/ui/badge';
+
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface HatsMetaCardProps {
   id: Hex;
@@ -32,11 +34,11 @@ export default function MetaCard({
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardHeader>
-        <div className="flex items-baseline w-full justify-between">
+        <div className="flex w-full items-baseline justify-between">
           <img
             src={imageUri ? imageUri : '/hats-logo.png'}
             alt={imageUri ? `${details.name} Hat Image` : 'Hats Logo'}
-            className="w-16 h-16 rounded-sm"
+            className="h-16 w-16 rounded-sm"
           />
           <div className="align-baseline">
             <span className="font-semibold text-gray-500 ">#{idDisplay}</span>

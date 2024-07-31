@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import _ from 'lodash';
 import { FALLBACK_ADDRESS, hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { useQuery } from '@tanstack/react-query';
+import _ from 'lodash';
+import { Hex, zeroAddress } from 'viem';
+
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
-import { Hex, zeroAddress } from 'viem';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 

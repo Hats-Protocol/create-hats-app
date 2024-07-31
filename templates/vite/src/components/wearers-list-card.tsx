@@ -1,11 +1,16 @@
 'use client';
 
+import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
+import { Ellipsis } from 'lucide-react';
+import React from 'react';
+import { useAccount } from 'wagmi';
+
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from '@/components/ui/card';
 import {
   Tooltip,
@@ -13,17 +18,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Input } from './ui/input';
-import { Ellipsis } from 'lucide-react';
-import { Button } from './ui/button';
-import { CopyButton } from './copy-button';
-import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
-import _ from 'lodash';
-
-import React from 'react';
 import useDebounce from '@/lib/useDebounce';
 import { truncateAddress } from '@/lib/utils';
-import { useAccount } from 'wagmi';
+
+import { CopyButton } from './copy-button';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface HatWearer extends Wearer {
   ensName?: string;
@@ -69,7 +69,7 @@ export default function WearersListCard({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="text-gray-400 text-sm">
+                  <span className="text-sm text-gray-400">
                     {' '}
                     of {maxSupply} max
                   </span>
@@ -96,11 +96,11 @@ export default function WearersListCard({
         <ul className="py-4">
           {filteredWearers?.map((wearer: HatWearer) => (
             <li className="py-0.5" key={wearer.id}>
-              <div className="flex flex-row justify-between w-full items-baseline">
+              <div className="flex w-full flex-row items-baseline justify-between">
                 <span
-                  className={`hover:text-gray-800 transition-colors ease-in-out duration-300 ${
+                  className={`transition-colors duration-300 ease-in-out hover:text-gray-800 ${
                     wearer.id.toLowerCase() === address?.toLowerCase()
-                      ? 'text-green-600 bg-green-100 py-0.5 px-1'
+                      ? 'bg-green-100 px-1 py-0.5 text-green-600'
                       : 'text-gray-600'
                   }`}
                 >

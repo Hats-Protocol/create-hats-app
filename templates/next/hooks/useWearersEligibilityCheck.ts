@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 import { Hex } from 'viem';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const fetchWearersEligibilities = (ids: Hex[], hatId: Hex, chainId: number) => {
   return null;
 };

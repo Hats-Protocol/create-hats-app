@@ -3,8 +3,9 @@ import { HatsClient } from '@hatsprotocol/sdk-v1-core';
 import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { first, get, has } from 'lodash';
 import { createPublicClient, http } from 'viem';
-import { chainsMap, RPC_URLS, wagmiConfig } from './web3';
 import { getWalletClient } from 'wagmi/actions';
+
+import { chainsMap, RPC_URLS, wagmiConfig } from './web3';
 
 export const getRpcUrl = (chainId: number) => {
   if (!has(RPC_URLS, chainId)) {

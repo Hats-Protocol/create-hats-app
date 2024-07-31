@@ -18,8 +18,7 @@ const useHatMakeImmutable = ({
   chainId,
   isAdminUser,
   mutable,
-}: // handlePendingTx,
-UseHatMakeImmutableProps) => {
+}: UseHatMakeImmutableProps) => {
   const currentNetworkId = useChainId();
   const selectedHatId = selectedHat?.id;
 
@@ -46,7 +45,7 @@ UseHatMakeImmutableProps) => {
       ['hatDetails', { id: selectedHatId, chainId }],
       [
         'treeDetails',
-        !!selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {},
+        selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {},
       ],
     ],
     enabled:

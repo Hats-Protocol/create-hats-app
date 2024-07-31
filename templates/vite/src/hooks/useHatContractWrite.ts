@@ -1,5 +1,4 @@
-import { wagmiConfig } from '@/lib/web3';
-import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
+import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { TransactionReceipt } from 'viem';
@@ -8,6 +7,8 @@ import {
   useWriteContract,
 } from 'wagmi';
 import { waitForTransactionReceipt } from 'wagmi/actions';
+
+import { wagmiConfig } from '@/lib/web3';
 
 type ExtractFunctionNames<ABI> = ABI extends {
   name: infer N;

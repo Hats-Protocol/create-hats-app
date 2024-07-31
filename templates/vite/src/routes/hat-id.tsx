@@ -1,15 +1,17 @@
+import _ from 'lodash';
+import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
-import useHatData from '../hooks/useHatData'; // Adjust the import path as necessary
+
+import ContractInteractionsCard from '@/components/contract-interactions-card';
+import ControllersCard from '@/components/controllers-card';
 import Header from '@/components/header';
 import MetaCard from '@/components/meta-card';
-import ResponsibilitiesCard from '@/components/responsibilities-card';
-import WearersListCard from '@/components/wearers-list-card';
-import { Suspense } from 'react';
-import _ from 'lodash';
-import { Skeleton } from '@/components/ui/skeleton';
-import ControllersCard from '@/components/controllers-card';
 import ModuleDetailsCard from '@/components/module-details-card';
-import ContractInteractionsCard from '@/components/contract-interactions-card';
+import ResponsibilitiesCard from '@/components/responsibilities-card';
+import { Skeleton } from '@/components/ui/skeleton';
+import WearersListCard from '@/components/wearers-list-card';
+
+import useHatData from '../hooks/useHatData'; // Adjust the import path as necessary
 
 export default function HatPage() {
   const { chainId, hatId } = useParams<{ chainId: string; hatId: string }>();
@@ -24,14 +26,14 @@ export default function HatPage() {
   if (!hatData) return <p>Could not fetch hat data.</p>;
 
   return (
-    <main className=" min-h-screen gap-y-12 w-full">
+    <main className=" min-h-screen w-full gap-y-12">
       <Header />
-      <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
+      <div className="grid gap-4 px-4 py-8 md:grid-cols-2 md:px-16">
         <Suspense
           fallback={
             <>
               <div className="h-10">
-                <Skeleton className="w-full h-30" />
+                <Skeleton className="h-30 w-full" />
               </div>
             </>
           }

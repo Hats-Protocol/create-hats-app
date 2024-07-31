@@ -15,8 +15,7 @@ const useHatMakeImmutable = ({
   chainId,
   isAdminUser,
   mutable,
-}: // handlePendingTx,
-UseHatMakeImmutableProps) => {
+}: UseHatMakeImmutableProps) => {
   const currentNetworkId = useChainId();
   const selectedHatId = selectedHat?.id;
 

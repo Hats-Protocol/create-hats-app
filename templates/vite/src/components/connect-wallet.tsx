@@ -3,13 +3,15 @@
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import blockies from 'blockies-ts';
 import { useEffect, useState } from 'react';
+import { useAccount, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAccount, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+
 import { Button } from './ui/button';
 
 const ConnectWallet = () => {
@@ -18,9 +20,8 @@ const ConnectWallet = () => {
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address, chainId: 1 });
   const { data: ensAvatar } = useEnsAvatar({
-    name: ensName,
+    name: ensName as string,
     chainId: 1,
-    cacheTime: 60,
   });
 
   // const [upTo780] = useMediaQuery('(max-width: 780px)');
@@ -50,7 +51,7 @@ const ConnectWallet = () => {
           (!authenticationStatus || authenticationStatus === 'authenticated');
 
         return !ready ? (
-          <div className="hidden opacity-0 pointer-events-none select-none" />
+          <div className="pointer-events-none hidden select-none opacity-0" />
         ) : (
           (() => {
             if (!connected) {
@@ -92,7 +93,7 @@ const ConnectWallet = () => {
                           {ensAvatar || blockie ? (
                             <div
                               className={
-                                'h-5 w-5 rounded-xl overflow-hidden border-blue-500'
+                                'h-5 w-5 overflow-hidden rounded-xl border-blue-500'
                               }
                             >
                               <img
