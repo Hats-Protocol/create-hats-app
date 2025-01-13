@@ -1,0 +1,23 @@
+
+> create-hats-app@0.0.14 next:dev /Users/jonathan/Documents/projects/web-projects/hats/create-hats-app
+> nx run create-hats-next-app:serve
+
+
+[0m[7m[1m[33m NX [39m[22m[27m[0m  [33mCustom task runners will no longer be supported in Nx 21.[39m
+
+Use Nx Cloud or the Nx Powerpack caches instead.
+For more information, see https://nx.dev/nx-enterprise/powerpack/custom-caching
+
+
+[0m[7m[1m[33m NX [39m[22m[27m[0m  [33mCustom task runners will no longer be supported in Nx 21.[39m
+
+Use Nx Cloud or the Nx Powerpack caches instead.
+For more information, see https://nx.dev/nx-enterprise/powerpack/custom-caching
+
+
+[0m[7m[1m[31m NX [39m[22m[27m[0m  [31mUnable to resolve @nx/next:server.[39m
+
+Unable to resolve local plugin with import path @nx/next
+Pass --verbose to see the stacktrace.
+
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m

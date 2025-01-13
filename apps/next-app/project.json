@@ -1,0 +1,45 @@
+{
+  "name": "create-hats-next-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/next-app",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/next-app"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/next-app"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "create-hats-next-app:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "create-hats-next-app:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "create-hats-next-app:build:production",
+          "dev": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": []
+}

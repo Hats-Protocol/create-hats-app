@@ -9,6 +9,14 @@ import { fileURLToPath } from 'node:url';
 
 const cli = cac('create-hats-app');
 
+// Update template directory path to use apps instead of templates
+const getTemplatePath = (template: string) => {
+  return path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    `apps/${template}-app`
+  );
+};
+
 cli
   .usage(`${pc.cyan('<project-directory>')} [options]`)
   .command('[project-directory]', 'Create a new project')

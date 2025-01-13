@@ -8,22 +8,21 @@
     "create-hats-app": "./dist/index.js"
   },
   "scripts": {
-    "lint": "eslint 'src/**/*.ts'",
-    "build": "tsc",
-    "next:dev": "pnpm run --filter create-hats-next-app dev",
-    "next:build": "pnpm run --filter create-hats-next-app build",
+    "next:dev": "nx run create-hats-next-app:serve",
+    "next:build": "nx run create-hats-next-app:build",
     "vite:dev": "pnpm run --filter create-hats-vite-app dev",
     "vite:build": "pnpm run --filter create-hats-vite-app build",
     "remix:dev": "pnpm run --filter create-hats-remix-vite-app dev",
-    "remix:build": "pnpm run --filter create-hats-remix-vite-app build"
+    "remix:build": "pnpm run --filter create-hats-remix-vite-app build",
+    "sdk:dev": "pnpm run --filter @hatsprotocol/react-sdk dev",
+    "sdk:build": "pnpm run --filter @hatsprotocol/react-sdk build"
   },
   "files": [
     "dist/**/*",
-    "templates/**/*",
-    "!templates/**/node_modules/**",
-    "!templates/**/dist/**",
-    "!templates/next/.next/**",
-    "bin/**/*"
+    "apps/**/*",
+    "!apps/**/node_modules/**",
+    "!apps/**/dist/**",
+    "!apps/next-app/.next/**"
   ],
   "keywords": [],
   "author": "",
@@ -46,9 +45,26 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@hatsprotocol/modules-sdk": "^1.3.0",
+    "@hatsprotocol/sdk-v1-core": "^0.10.0",
+    "@hatsprotocol/sdk-v1-subgraph": "^1.0.0",
+    "@nrwl/eslint-plugin-nx": "^19.8.4",
+    "@nrwl/node": "^19.8.4",
+    "@nx/devkit": "^20.3.1",
+    "@nx/eslint": "^20.3.1",
+    "@nx/eslint-plugin": "^20.3.1",
+    "@nx/js": "^20.3.1",
+    "@nx/next": "^20.3.1",
+    "@nx/node": "^20.3.1",
+    "@nx/plugin": "^20.3.1",
+    "@nx/react": "^20.3.1",
+    "@nx/remix": "^20.3.1",
+    "@nx/vite": "^20.3.1",
+    "@nx/web": "^20.3.1",
     "@types/prompts": "^2.4.9",
     "cac": "^6.7.14",
     "cross-spawn": "^7.0.3",
+    "nx": "^20.3.1",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2"
   }
