@@ -4,27 +4,28 @@ import { useChainId, useConfig, useWriteContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'wagmi/actions';
 import { useState } from 'react';
 
-// Explicitly define valid function names for writing
-export type ValidFunctionName = 'mintHat' | 'renounceHat';
+// Extract write function names from ABI
+type AbiFunction = (typeof HATS_ABI)[number] & {
+  type: 'function';
+  stateMutability: 'nonpayable' | 'payable';
+};
+export type ValidFunctionName = AbiFunction['name'];
 
 export interface UseHatContractWriteProps<T extends ValidFunctionName> {
   functionName: T;
-  args?: readonly unknown[];
+  args?: (string | number | bigint)[];
   chainId?: number;
-  txDescription?: string;
   enabled?: boolean;
   onSubmitted?: (hash: `0x${string}`) => void;
   onSuccess?: (data: TransactionReceipt) => void;
   onError?: (error: Error) => void;
-  waitForSubgraph?: () => void;
+  waitForSubgraph?: (data?: TransactionReceipt) => void;
 }
 
 export interface UseHatContractWriteResult {
   writeAsync: () => Promise<`0x${string}` | null>;
   isLoading: boolean;
   isPending: boolean;
-  error: Error | undefined;
-  isError: boolean;
 }
 
 const useHatContractWrite = <T extends ValidFunctionName>({
@@ -41,19 +42,19 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   const config = useConfig();
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState<Error>();
 
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
 
   const write = async () => {
     if (!enabled || !chainId || currentChainId !== chainId) return null;
     setIsLoading(true);
-    setError(undefined);
+    setIsPending(true);
 
     try {
       // @ts-expect-error - wagmi types are not fully compatible
-      const hash = await writeContract({
-        address: HATS_V1[chainId as keyof typeof HATS_V1] as `0x${string}`,
+      const hash = await writeContractAsync({
+        address: HATS_V1,
+        chainId: Number(chainId),
         abi: HATS_ABI,
         functionName,
         args,
@@ -62,24 +63,25 @@ const useHatContractWrite = <T extends ValidFunctionName>({
       if (typeof hash === 'string') {
         const txHash = hash as `0x${string}`;
         if (onSubmitted) onSubmitted(txHash);
-        setIsPending(true);
 
         const receipt = await waitForTransactionReceipt(config, {
           hash: txHash,
         });
+
         if (onSuccess) onSuccess(receipt);
-        if (waitForSubgraph) waitForSubgraph();
+        if (waitForSubgraph) waitForSubgraph(receipt);
 
         setIsPending(false);
         return txHash;
       }
 
+      setIsPending(false);
       return null;
     } catch (error: any) {
       const err = error as Error;
-      setError(err);
       if (onError) onError(err);
-      throw error;
+      setIsPending(false);
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -89,8 +91,6 @@ const useHatContractWrite = <T extends ValidFunctionName>({
     writeAsync: write,
     isLoading,
     isPending,
-    error,
-    isError: !!error,
   };
 };
 

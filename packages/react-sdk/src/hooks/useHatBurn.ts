@@ -1,8 +1,6 @@
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { TransactionReceipt } from 'viem';
-import useHatContractWrite, {
-  UseHatContractWriteResult,
-} from './useHatContractWrite';
+import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
 export interface UseHatBurnProps {
   selectedHat: Hat;
@@ -20,16 +18,24 @@ const useHatBurn = ({
   onSuccess,
   onError,
   waitForSubgraph,
-}: UseHatBurnProps): UseHatContractWriteResult => {
-  return useHatContractWrite({
-    functionName: 'renounceHat',
+}: UseHatBurnProps) => {
+  const { writeAsync, isLoading, isPending } = useHatContractWrite({
+    functionName: 'renounceHat' as ValidFunctionName,
     args: [BigInt(selectedHat.id)],
     chainId,
     onSubmitted,
-    onSuccess,
+    onSuccess: (data) => {
+      if (onSuccess) onSuccess(data);
+      if (waitForSubgraph) waitForSubgraph();
+    },
     onError,
-    waitForSubgraph,
   });
+
+  return {
+    writeAsync,
+    isLoading,
+    isPending,
+  };
 };
 
 export default useHatBurn;

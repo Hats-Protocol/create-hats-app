@@ -1,12 +1,10 @@
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { TransactionReceipt } from 'viem';
-import useHatContractWrite, {
-  UseHatContractWriteResult,
-} from './useHatContractWrite';
+import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
 export interface UseHatMintProps {
   selectedHat: Hat;
-  chainId: number;
+  chainId?: number;
   wearer: `0x${string}`;
   onSubmitted?: (hash: `0x${string}`) => void;
   onSuccess?: (data: TransactionReceipt) => void;
@@ -22,16 +20,24 @@ const useHatMint = ({
   onSuccess,
   onError,
   waitForSubgraph,
-}: UseHatMintProps): UseHatContractWriteResult => {
-  return useHatContractWrite({
-    functionName: 'mintHat',
+}: UseHatMintProps) => {
+  const { writeAsync, isLoading, isPending } = useHatContractWrite({
+    functionName: 'mintHat' as ValidFunctionName,
     args: [BigInt(selectedHat.id), wearer],
     chainId,
     onSubmitted,
-    onSuccess,
+    onSuccess: (data) => {
+      if (onSuccess) onSuccess(data);
+      if (waitForSubgraph) waitForSubgraph();
+    },
     onError,
-    waitForSubgraph,
   });
+
+  return {
+    writeAsync,
+    isLoading,
+    isPending,
+  };
 };
 
 export default useHatMint;
