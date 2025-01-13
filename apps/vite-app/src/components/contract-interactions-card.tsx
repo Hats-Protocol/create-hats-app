@@ -1,11 +1,15 @@
+'use client';
+
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@hatsprotocol/hats-ui';
+import { useHatBurn } from '@hatsprotocol/react-sdk';
+import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAccount, useChainId } from 'wagmi';
-
-import { useHatBurn } from '@/hooks';
 
 import { Card, CardContent } from './ui/card';
 import MintForm from './mint-form';
@@ -19,11 +23,12 @@ const isWearingHat = (
   wearers: { id: string }[],
   connectedAddress: string | undefined,
 ): boolean => {
-  return connectedAddress
+  const result = connectedAddress
     ? wearers.some(
         (wearer) => wearer.id.toLowerCase() === connectedAddress.toLowerCase(),
       )
     : false;
+  return result;
 };
 
 export default function ContractInteractionsCard({
@@ -32,28 +37,65 @@ export default function ContractInteractionsCard({
   const { isConnected, address } = useAccount();
   const [isMintModalOpen, setMintModalIsOpen] = useState(false);
   const chainId = useChainId();
+  const navigate = useNavigate();
 
   const openMintModal = () => setMintModalIsOpen(true);
   const closeMintModal = () => setMintModalIsOpen(false);
 
-  const { isLoading: burnHatIsLoading, writeAsync: burnHatAsync } = useHatBurn({
+  const {
+    writeAsync: burnHatAsync,
+    isLoading: burnHatIsLoading,
+    isPending: burnHatIsPending,
+  } = useHatBurn({
     selectedHat,
     chainId,
+    onSubmitted: (hash: `0x${string}`) => {
+      toast.info('Waiting for your transaction to be accepted...', {
+        description: `Transaction hash: ${hash}`,
+        duration: 0,
+      });
+    },
+    onSuccess: () => {
+      const hatId = selectedHat?.id;
+      const txDescription =
+        hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;
+      toast.success('Hat removed!', {
+        description: txDescription,
+      });
+      toast.dismiss();
+      navigate(0); // Refresh the page
+    },
+    onError: (error: Error) => {
+      if (
+        error.name === 'TransactionExecutionError' &&
+        error.message.includes('User rejected the request')
+      ) {
+        toast.error('Please accept the transaction in your wallet.');
+      } else {
+        console.error('Contract write error:', error);
+        toast.error('An error occurred while processing the transaction.');
+      }
+      toast.dismiss();
+    },
   });
 
   const handleBurnHat = async () => {
     if (
       !burnHatIsLoading &&
+      !burnHatIsPending &&
       isConnected &&
       chainId !== undefined &&
       address &&
       burnHatAsync !== undefined
     ) {
       try {
+        toast.loading('Please confirm the transaction in your wallet...', {
+          duration: 0,
+        });
         await burnHatAsync?.();
-        // success handled in the hook's onSuccess
       } catch (error) {
-        // handled in the hook's onError
+        // Error handling is done in the hook's onError callback
+        toast.dismiss();
       }
     }
   };
@@ -63,9 +105,7 @@ export default function ContractInteractionsCard({
       <CardContent>
         <div className="grid gap-4 px-4 py-8 md:grid-cols-2 md:px-16">
           <Button
-            disabled={
-              !isConnected || isWearingHat(selectedHat.wearers || [], address)
-            }
+            disabled={!isConnected || (selectedHat.wearers || []).length > 0}
             onClick={openMintModal}
             variant="default"
           >
@@ -86,7 +126,7 @@ export default function ContractInteractionsCard({
             disabled={
               burnHatIsLoading ||
               !isConnected ||
-              isWearingHat(selectedHat.wearers || [], address) === false
+              !isWearingHat(selectedHat.wearers || [], address)
             }
             variant="default"
           >
@@ -99,9 +139,6 @@ export default function ContractInteractionsCard({
               'Renounce'
             )}
           </Button>
-          {/* <Button variant="default">Deactivate</Button> */}
-          {/* <Button variant="default">Test Hat Status</Button> */}
-          {/* <Button variant="default">Make Immutable</Button> */}
         </div>
       </CardContent>
     </Card>

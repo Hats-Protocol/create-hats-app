@@ -1,39 +1,76 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@hatsprotocol/hats-ui';
+import { useHatMint } from '@hatsprotocol/react-sdk';
+import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAccount, useChainId } from 'wagmi';
 
 import { Input } from '@/components/ui/input';
-import { useHatMint } from '@/hooks';
 
 interface MintFormProps {
   selectedHat: Hat;
 }
 
-// const mintFormSchema = z.object({
-//   ethAddress: z
-//     .string()
-//     .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
-// });
-
 export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
+  const router = useRouter();
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
 
-  const { isLoading: mintHatIsLoading, writeAsync: mintHatAsync } = useHatMint({
+  const {
+    writeAsync: mintHatAsync,
+    isLoading: mintHatIsLoading,
+    isPending: mintHatIsPending,
+  } = useHatMint({
     selectedHat,
     chainId,
     wearer: ethAddress!,
+    onSubmitted: (hash) => {
+      toast.info('Waiting for your transaction to be accepted...', {
+        description: `Transaction hash: ${hash}`,
+      });
+    },
+    onSuccess: () => {
+      const hatId = selectedHat?.id;
+      const txDescription =
+        hatId && `Minted hat ${hatIdDecimalToIp(BigInt(hatId))}`;
+      toast.success('Hat minted!', {
+        description: txDescription,
+      });
+      router.refresh();
+    },
+    onError: (error) => {
+      if (
+        error.name === 'TransactionExecutionError' &&
+        error.message.includes('User rejected the request')
+      ) {
+        toast.error('Please accept the transaction in your wallet.');
+      } else {
+        console.error('Contract write error:', error);
+        toast.error('An error occurred while processing the transaction.');
+      }
+    },
   });
 
   const handleMintHat = async () => {
-    if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
-      mintHatAsync?.();
+    if (
+      !mintHatIsLoading &&
+      !mintHatIsPending &&
+      isConnected &&
+      chainId !== undefined &&
+      address
+    ) {
+      try {
+        await mintHatAsync?.();
+      } catch (error) {
+        // Error handling is done in the hook's onError callback
+      }
     }
   };
 
@@ -74,15 +111,16 @@ export default function MintForm({ selectedHat }: MintFormProps) {
         onClick={handleMintHat}
         disabled={
           mintHatIsLoading ||
+          mintHatIsPending ||
           !isConnected ||
           isWearingHat(selectedHat.wearers || [], address)
         }
         variant="default"
       >
-        {mintHatIsLoading ? (
+        {mintHatIsLoading || mintHatIsPending ? (
           <div className="flex items-center">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            In Progress...
+            {mintHatIsPending ? 'Confirming...' : 'In Progress...'}
           </div>
         ) : (
           'Mint'

@@ -40,6 +40,8 @@ export default async function HatPage({
 
   if (!hatData) return;
 
+  console.log('hatData', hatData);
+
   return (
     <main className=" min-h-screen w-full gap-y-12">
       <Header />
