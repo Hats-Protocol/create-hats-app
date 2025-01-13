@@ -1,14 +1,14 @@
-import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { TransactionReceipt } from 'viem';
-import { useChainId } from 'wagmi';
+import useHatContractWrite, {
+  UseHatContractWriteResult,
+} from './useHatContractWrite';
 
-import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
-
-interface UseHatMintProps {
+export interface UseHatMintProps {
   selectedHat: Hat;
   chainId: number;
   wearer: `0x${string}`;
+  onSubmitted?: (hash: `0x${string}`) => void;
   onSuccess?: (data: TransactionReceipt) => void;
   onError?: (error: Error) => void;
   waitForSubgraph?: () => void;
@@ -18,28 +18,20 @@ const useHatMint = ({
   selectedHat,
   chainId,
   wearer,
+  onSubmitted,
   onSuccess,
   onError,
   waitForSubgraph,
-}: UseHatMintProps) => {
-  const currentNetworkId = useChainId();
-  const hatId = selectedHat?.id;
-
-  const txDescription =
-    hatId && `Minted hat ${hatIdDecimalToIp(BigInt(hatId))}`;
-
-  const { writeAsync, isLoading } = useHatContractWrite({
-    functionName: 'mintHat' as ValidFunctionName,
-    args: [BigInt(hatId), wearer],
+}: UseHatMintProps): UseHatContractWriteResult => {
+  return useHatContractWrite({
+    functionName: 'mintHat',
+    args: [BigInt(selectedHat.id), wearer],
     chainId,
-    txDescription,
-    enabled: Boolean(hatId) && chainId === currentNetworkId,
+    onSubmitted,
     onSuccess,
     onError,
     waitForSubgraph,
   });
-
-  return { writeAsync, isLoading };
 };
 
 export default useHatMint;

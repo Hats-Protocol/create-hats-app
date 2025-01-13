@@ -4,24 +4,27 @@ import { useChainId, useConfig, useWriteContract } from 'wagmi';
 import { waitForTransactionReceipt } from 'wagmi/actions';
 import { useState } from 'react';
 
-type ExtractFunctionNames<ABI> = ABI extends {
-  name: infer N;
-  type: 'function';
-}[]
-  ? N
-  : never;
+// Explicitly define valid function names for writing
+export type ValidFunctionName = 'mintHat' | 'renounceHat';
 
-export type ValidFunctionName = ExtractFunctionNames<typeof HATS_ABI>;
-
-interface UseHatContractWriteProps<T extends ValidFunctionName> {
+export interface UseHatContractWriteProps<T extends ValidFunctionName> {
   functionName: T;
-  args?: (string | number | bigint)[];
-  chainId: number;
+  args?: readonly unknown[];
+  chainId?: number;
   txDescription?: string;
   enabled?: boolean;
+  onSubmitted?: (hash: `0x${string}`) => void;
   onSuccess?: (data: TransactionReceipt) => void;
   onError?: (error: Error) => void;
   waitForSubgraph?: () => void;
+}
+
+export interface UseHatContractWriteResult {
+  writeAsync: () => Promise<`0x${string}` | null>;
+  isLoading: boolean;
+  isPending: boolean;
+  error: Error | undefined;
+  isError: boolean;
 }
 
 const useHatContractWrite = <T extends ValidFunctionName>({
@@ -29,19 +32,23 @@ const useHatContractWrite = <T extends ValidFunctionName>({
   args,
   chainId,
   enabled = true,
+  onSubmitted,
   onSuccess,
   onError,
   waitForSubgraph,
-}: UseHatContractWriteProps<T>) => {
+}: UseHatContractWriteProps<T>): UseHatContractWriteResult => {
   const currentChainId = useChainId();
   const config = useConfig();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<Error>();
 
   const { writeContract } = useWriteContract();
 
   const write = async () => {
     if (!enabled || !chainId || currentChainId !== chainId) return null;
     setIsLoading(true);
+    setError(undefined);
 
     try {
       // @ts-expect-error - wagmi types are not fully compatible
@@ -53,21 +60,38 @@ const useHatContractWrite = <T extends ValidFunctionName>({
       });
 
       if (typeof hash === 'string') {
-        const receipt = await waitForTransactionReceipt(config, { hash });
+        const txHash = hash as `0x${string}`;
+        if (onSubmitted) onSubmitted(txHash);
+        setIsPending(true);
+
+        const receipt = await waitForTransactionReceipt(config, {
+          hash: txHash,
+        });
         if (onSuccess) onSuccess(receipt);
         if (waitForSubgraph) waitForSubgraph();
+
+        setIsPending(false);
+        return txHash;
       }
 
-      return hash;
+      return null;
     } catch (error: any) {
-      if (onError) onError(error);
+      const err = error as Error;
+      setError(err);
+      if (onError) onError(err);
       throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { writeAsync: write, isLoading };
+  return {
+    writeAsync: write,
+    isLoading,
+    isPending,
+    error,
+    isError: !!error,
+  };
 };
 
 export default useHatContractWrite;

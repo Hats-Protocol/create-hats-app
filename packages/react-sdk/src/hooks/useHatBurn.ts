@@ -1,43 +1,35 @@
-import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { TransactionReceipt } from 'viem';
-import { useChainId } from 'wagmi';
+import useHatContractWrite, {
+  UseHatContractWriteResult,
+} from './useHatContractWrite';
 
-import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
-
-interface UseHatBurnProps {
+export interface UseHatBurnProps {
   selectedHat: Hat;
-  chainId: number;
-  waitForSubgraph?: () => void;
+  chainId?: number;
+  onSubmitted?: (hash: `0x${string}`) => void;
   onSuccess?: (data: TransactionReceipt) => void;
   onError?: (error: Error) => void;
+  waitForSubgraph?: () => void;
 }
 
 const useHatBurn = ({
   selectedHat,
   chainId,
-  waitForSubgraph,
+  onSubmitted,
   onSuccess,
   onError,
-}: UseHatBurnProps) => {
-  const currentNetworkId = useChainId();
-  const hatId = selectedHat?.id;
-
-  const txDescription =
-    hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;
-
-  const { writeAsync, isLoading } = useHatContractWrite({
-    functionName: 'renounceHat' as ValidFunctionName,
-    args: [BigInt(hatId)],
-    chainId: Number(chainId),
-    txDescription,
-    enabled: Boolean(hatId) && chainId === currentNetworkId,
+  waitForSubgraph,
+}: UseHatBurnProps): UseHatContractWriteResult => {
+  return useHatContractWrite({
+    functionName: 'renounceHat',
+    args: [BigInt(selectedHat.id)],
+    chainId,
+    onSubmitted,
     onSuccess,
     onError,
     waitForSubgraph,
   });
-
-  return { writeAsync, isLoading };
 };
 
 export default useHatBurn;
