@@ -1,18 +1,27 @@
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { TransactionReceipt } from 'viem';
 import { useChainId } from 'wagmi';
 
 import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
+
+interface UseHatMintProps {
+  selectedHat: Hat;
+  chainId: number;
+  wearer: `0x${string}`;
+  onSuccess?: (data: TransactionReceipt) => void;
+  onError?: (error: Error) => void;
+  waitForSubgraph?: () => void;
+}
 
 const useHatMint = ({
   selectedHat,
   chainId,
   wearer,
-}: {
-  selectedHat: Hat;
-  chainId: number;
-  wearer: `0x${string}`;
-}) => {
+  onSuccess,
+  onError,
+  waitForSubgraph,
+}: UseHatMintProps) => {
   const currentNetworkId = useChainId();
   const hatId = selectedHat?.id;
 
@@ -25,6 +34,9 @@ const useHatMint = ({
     chainId,
     txDescription,
     enabled: Boolean(hatId) && chainId === currentNetworkId,
+    onSuccess,
+    onError,
+    waitForSubgraph,
   });
 
   return { writeAsync, isLoading };

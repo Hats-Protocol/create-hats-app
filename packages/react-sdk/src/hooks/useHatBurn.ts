@@ -1,17 +1,25 @@
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { TransactionReceipt } from 'viem';
 import { useChainId } from 'wagmi';
 
 import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
+interface UseHatBurnProps {
+  selectedHat: Hat;
+  chainId: number;
+  waitForSubgraph?: () => void;
+  onSuccess?: (data: TransactionReceipt) => void;
+  onError?: (error: Error) => void;
+}
+
 const useHatBurn = ({
   selectedHat,
   chainId,
-}: {
-  selectedHat: Hat;
-  chainId: number;
-  waitForSubgraph?: () => void | undefined;
-}) => {
+  waitForSubgraph,
+  onSuccess,
+  onError,
+}: UseHatBurnProps) => {
   const currentNetworkId = useChainId();
   const hatId = selectedHat?.id;
 
@@ -23,11 +31,10 @@ const useHatBurn = ({
     args: [BigInt(hatId)],
     chainId: Number(chainId),
     txDescription,
-    onSuccessToastData: {
-      title: 'Hat removed!',
-      description: txDescription,
-    },
     enabled: Boolean(hatId) && chainId === currentNetworkId,
+    onSuccess,
+    onError,
+    waitForSubgraph,
   });
 
   return { writeAsync, isLoading };

@@ -14,7 +14,10 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "composite": false,
+    "noEmit": false
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
