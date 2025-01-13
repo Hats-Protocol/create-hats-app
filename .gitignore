@@ -13,7 +13,8 @@
 **/.next
 /templates/remix-vite/build
 
-
+# nx
+.nx/
 
 # misc
 **/.DS_Store

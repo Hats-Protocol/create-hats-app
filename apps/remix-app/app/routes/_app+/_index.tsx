@@ -1,8 +1,9 @@
 import type { MetaFunction } from '@remix-run/node';
 import { NavLink } from '@remix-run/react';
 
+import { Button } from '@hatsprotocol/hats-ui';
+
 import Header from '@/components/header';
-import { Button } from '@/components/ui/button';
 
 export const meta: MetaFunction = () => {
   return [

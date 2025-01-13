@@ -1,10 +1,10 @@
 'use client';
 
-import { Check, Copy } from 'lucide-react';
 import * as React from 'react';
-import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@hatsprotocol/hats-ui';
+import { Check, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 const handleCopy = (
   itemToCopy: any, // this is specifically any since it can accept any value

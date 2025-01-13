@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
+import { Button } from '@hatsprotocol/hats-ui';
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import blockies from 'blockies-ts';
-import { useEffect, useState } from 'react';
 import { useAccount, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 
 import {
@@ -11,8 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { Button } from './ui/button';
 
 const ConnectWallet = () => {
   const [blockie, setBlockie] = useState<string | undefined>();

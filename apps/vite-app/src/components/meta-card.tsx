@@ -1,5 +1,6 @@
-import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import ReactMarkdown from 'react-markdown';
+
+import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hex } from 'viem';
 
 import { Badge } from '@/components/ui/badge';

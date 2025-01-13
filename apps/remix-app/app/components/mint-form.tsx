@@ -1,11 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+
+import { Button } from '@hatsprotocol/hats-ui';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useHatMint } from '@/hooks';
 

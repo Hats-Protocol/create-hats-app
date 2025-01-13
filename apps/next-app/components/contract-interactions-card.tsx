@@ -1,16 +1,17 @@
 'use client';
 
+import { useState } from 'react';
+
+import { Button } from '@hatsprotocol/hats-ui';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 
 import { useHatBurn } from '@/hooks';
 
+import { Card, CardContent } from './ui/card';
 import MintForm from './mint-form';
 import Modal from './modal';
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
 
 interface ContractInteractionProps {
   selectedHat: Hat;

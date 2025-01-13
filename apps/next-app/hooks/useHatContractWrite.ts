@@ -1,6 +1,7 @@
-import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { toast } from 'sonner';
 import { TransactionReceipt } from 'viem';
 import {

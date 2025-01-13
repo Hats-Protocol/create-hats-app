@@ -1,6 +1,7 @@
-import _ from 'lodash';
 import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
+
+import _ from 'lodash';
 
 import ContractInteractionsCard from '@/components/contract-interactions-card';
 import ControllersCard from '@/components/controllers-card';

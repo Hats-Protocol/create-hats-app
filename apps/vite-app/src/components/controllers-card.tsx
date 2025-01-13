@@ -6,8 +6,9 @@ import {
 } from '@/components/ui/tooltip';
 
 import { truncateAddress } from '../lib/utils';
-import { CopyButton } from './copy-button';
+
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { CopyButton } from './copy-button';
 
 interface ControllersCardProps {
   eligibilityAddress?: `0x${string}`;

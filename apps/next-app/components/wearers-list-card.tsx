@@ -1,8 +1,10 @@
 'use client';
 
+import React from 'react';
+
+import { Button } from '@hatsprotocol/hats-ui';
 import { Wearer } from '@hatsprotocol/sdk-v1-subgraph';
 import { Ellipsis } from 'lucide-react';
-import React from 'react';
 import { useAccount } from 'wagmi';
 
 import {
@@ -21,9 +23,8 @@ import {
 import useDebounce from '@/lib/useDebounce';
 import { truncateAddress } from '@/lib/utils';
 
-import { CopyButton } from './copy-button';
-import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { CopyButton } from './copy-button';
 
 interface HatWearer extends Wearer {
   ensName?: string;

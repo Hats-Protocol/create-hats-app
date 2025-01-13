@@ -1,8 +1,8 @@
+import { Button } from '@hatsprotocol/hats-ui';
 import { ExternalLink, Key, SquareCheckBig } from 'lucide-react';
 
 import { Authority, Responsibility } from '@/types';
 
-import { Button } from './ui/button';
 import {
   Card,
   CardContent,

@@ -1,5 +1,6 @@
-import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { useState } from 'react';
+
+import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { toast } from 'sonner';
 import { TransactionReceipt } from 'viem';
 import {

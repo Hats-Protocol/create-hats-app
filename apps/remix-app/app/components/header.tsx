@@ -1,5 +1,6 @@
-import HatsLogo from '@images/hats-logo.png';
 import { NavLink } from '@remix-run/react';
+
+import HatsLogo from '@images/hats-logo.png';
 
 import ConnectWallet from '@/components/connect-wallet';
 

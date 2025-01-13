@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
+
 import { Module } from '@hatsprotocol/modules-sdk';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
-import { useMemo } from 'react';
 import { Hex } from 'viem';
 
 import { CLAIMS_HATTER_MODULE_NAME } from '@/lib/constants';

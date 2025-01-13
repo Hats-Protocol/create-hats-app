@@ -1,7 +1,8 @@
+import { Suspense } from 'react';
+
 import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
-import { Suspense } from 'react';
 
 import ContractInteractionsCard from '@/components/contract-interactions-card';
 import ControllersCard from '@/components/controllers-card';

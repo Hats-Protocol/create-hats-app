@@ -1,4 +1,5 @@
 import { Config } from 'tailwindcss';
+
 import baseConfig from '../../packages/hats-ui/tailwind.config';
 
 const config = {

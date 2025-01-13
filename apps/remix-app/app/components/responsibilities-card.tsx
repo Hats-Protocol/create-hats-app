@@ -1,6 +1,6 @@
+import { Button } from '@hatsprotocol/hats-ui';
 import { ExternalLink, Key, SquareCheckBig } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,

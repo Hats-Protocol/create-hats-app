@@ -1,14 +1,4 @@
-import './styles/global.css';
-import '@rainbow-me/rainbowkit/styles.css';
-
-import {
-  connectorsForWallets,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import {
-  rainbowWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets';
+import { useState } from 'react';
 import { LoaderFunction } from '@remix-run/node';
 import {
   json,
@@ -19,8 +9,16 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react';
+
+import {
+  connectorsForWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import {
+  rainbowWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
 import { Toaster } from 'sonner';
 import {
   arbitrum,
@@ -31,6 +29,9 @@ import {
   sepolia,
 } from 'viem/chains';
 import { createConfig, createStorage, http, WagmiProvider } from 'wagmi';
+
+import './styles/global.css';
+import '@rainbow-me/rainbowkit/styles.css';
 
 interface LoaderData {
   ENV: {

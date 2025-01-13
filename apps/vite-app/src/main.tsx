@@ -1,15 +1,16 @@
-import './index.css';
-import '@rainbow-me/rainbowkit/styles.css';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { Toaster } from 'sonner';
 import { WagmiProvider } from 'wagmi';
 
-import AppRoutes from './app-routes';
 import { wagmiConfig } from './lib/web3';
+import AppRoutes from './app-routes';
+
+import './index.css';
+import '@rainbow-me/rainbowkit/styles.css';
 
 const queryClient = new QueryClient();
 

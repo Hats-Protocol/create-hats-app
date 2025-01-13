@@ -35,7 +35,7 @@ const useHatMakeImmutable = ({
       ['hatDetails', { id: selectedHatId, chainId }],
       [
         'treeDetails',
-        !!selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {},
+        selectedHatId ? hatIdToTreeId(BigInt(selectedHatId)) : {},
       ],
     ],
     enabled:

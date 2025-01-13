@@ -1,7 +1,8 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import { Module } from '@hatsprotocol/modules-sdk';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
 import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
 import { Hex, isAddress } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 

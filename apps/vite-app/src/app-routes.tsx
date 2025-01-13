@@ -1,8 +1,8 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
-import App from './App';
 import ChainIdLayout from './routes/chain-id';
 import HatIdLayout from './routes/hat-id';
+import App from './App';
 
 const AppRoutes = () => {
   return (

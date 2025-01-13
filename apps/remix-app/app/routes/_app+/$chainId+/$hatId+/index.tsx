@@ -1,8 +1,9 @@
-import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
-import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { Suspense } from 'react';
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useParams } from '@remix-run/react';
-import { Suspense } from 'react';
+
+import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
+import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 
 import ContractInteractionsCard from '@/components/contract-interactions-card';
 import ControllersCard from '@/components/controllers-card';
