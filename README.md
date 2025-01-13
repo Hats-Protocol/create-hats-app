@@ -1,12 +1,61 @@
 # Create Hats App
 
-Create Hats App will get you building in the Hats ecosystem quickly.
+A monorepo for creating Hats Protocol applications with different frameworks.
+
+## Recent Changes
+
+### 1. Monorepo Structure
+
+We've restructured the project as an Nx monorepo to better manage shared packages and templates. This enables:
+
+- Shared dependencies and configurations
+- Better development workflows across packages
+- Easier maintenance of shared code
+
+### 2. Shared React SDK POC
+
+We've moved the contract interaction hooks from individual app templates into a shared `@hatsprotocol/react-sdk` package. This proof-of-concept:
+
+- Extracts core contract interaction logic into reusable hooks
+- Moves UI feedback (toasts, navigation) to the consuming apps
+- Maintains consistent behavior across Next.js, Vite, and Remix apps
+- Allows framework-specific implementations while sharing core logic
+
+Example of consuming the shared hooks:
+
+```typescript
+import { useHatBurn, useHatMint } from '@hatsprotocol/react-sdk';
+
+// Each app can handle UI feedback its own way while using the same core logic
+const { writeAsync, isLoading, isPending } = useHatBurn({
+  selectedHat,
+  chainId,
+  onSuccess: () => {
+    // Framework-specific navigation
+    router.refresh(); // Next.js
+    // OR
+    navigate(0); // Vite/Remix
+  },
+});
+```
+
+### 3. Shared UI Components
+
+We've introduced `@hatsprotocol/hats-ui`, a shared component library that:
+
+- Provides consistent UI components across all templates
+- Includes Storybook for component development and documentation
+- Uses Shadcn/UI and Tailwind for beautiful, customizable components
+- Ensures consistent styling and UX across all Hats applications
+
+See the [SDK consumption guide](docs/sdk-consumption.md) for detailed implementation examples.
 
 Running `pnpm create hats-app` (or via `npx create-hats-app`) initializes a new app for builders who can choose an app name, a supported framework to use for their template.
 
 ![](https://ipfs.io/ipfs/QmQe9PrVRVfeTGkcw71MrAtUZ9KD2L79wzqoRRRTYxxLXz)
 
 See the templates live:
+
 - [Next Template Demo](https://create-hats-next-app.vercel.app/)
 - [Vite Template Demo](https://create-hats-vite-app.vercel.app/)
 - [Remix Template Demo](https://create-hats-remix-vite-app.vercel.app/)
