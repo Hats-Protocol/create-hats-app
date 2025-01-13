@@ -28,6 +28,10 @@
     "eslint": "^8.56.0",
     "react": "^18.2.0",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@hatsprotocol/sdk-v1-core": "^0.10.0",
+    "@hatsprotocol/sdk-v1-subgraph": "^1.0.0",
+    "viem": "^2.18.5",
+    "wagmi": "^2.12.1"
   }
 }
