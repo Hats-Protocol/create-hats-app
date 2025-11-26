@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { useHatBurn } from "@/hooks";
-import { useAccount, useChainId } from "wagmi";
-import { Hat } from "@hatsprotocol/sdk-v1-subgraph";
-import { WriteContractReturnType } from "wagmi/actions";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import Modal from "./modal";
-import MintForm from "./mint-form";
+import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import { useHatBurn } from '@/hooks';
+
+import MintForm from './mint-form';
+import Modal from './modal';
+import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
 
 interface ContractInteractionProps {
   selectedHat: Hat;
@@ -61,7 +62,7 @@ export default function ContractInteractionsCard({
   return (
     <Card className="max-w-2xl shadow-xl">
       <CardContent>
-        <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
+        <div className="grid gap-4 px-4 py-8 md:grid-cols-2 md:px-16">
           <Button
             disabled={
               !isConnected || isWearingHat(selectedHat.wearers || [], address)
@@ -96,7 +97,7 @@ export default function ContractInteractionsCard({
                 In Progress...
               </div>
             ) : (
-              "Renounce"
+              'Renounce'
             )}
           </Button>
           {/* <Button variant="default">Deactivate</Button> */}

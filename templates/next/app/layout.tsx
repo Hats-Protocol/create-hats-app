@@ -1,21 +1,24 @@
+import '@rainbow-me/rainbowkit/styles.css';
+import './globals.css';
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
-import { Providers } from './providers';
+import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
+
+import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Hats App Template - Next',
-  description: 'Hats App Template - Next',
+  title: 'Create Hats Next App',
+  description: 'Create Hats Next App',
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">

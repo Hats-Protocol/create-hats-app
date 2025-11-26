@@ -1,14 +1,15 @@
 'use client';
 
 import { useModuleDetails } from '@/hooks';
+import { truncateAddress } from '@/lib/utils';
+
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from './ui/card';
-import { truncateAddress } from '@/lib/utils';
 
 interface ModuleDetailsCardProps {
   eligibilityAddress?: `0x${string}`;

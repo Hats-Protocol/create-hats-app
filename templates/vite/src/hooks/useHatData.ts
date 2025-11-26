@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import _ from 'lodash';
 import { FALLBACK_ADDRESS, hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
 import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import { useQuery } from '@tanstack/react-query';
+import _ from 'lodash';
+import { Hex, zeroAddress } from 'viem';
+
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
-import { Hex, zeroAddress } from 'viem';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -23,7 +24,6 @@ async function getHatData({
   chainId,
   hatId,
 }: HatDataProps): Promise<ExtendedHat | null> {
-  console.log('getting hat', chainId, hatId);
   const trueHatId = _.first(hatId);
   if (!trueHatId) return null;
   const localHatId = hatIdIpToDecimal(trueHatId);
@@ -52,7 +52,6 @@ async function getHatData({
 
     let detailsContent: any = { name: '', description: '' }; // Default object structure
     let imageContent: string = '';
-    console.log('hat.details', hat.details);
 
     if (hat.details) {
       const resolvedDetails = await resolveIpfsUri(hat.details);
@@ -64,8 +63,6 @@ async function getHatData({
           };
         }
       );
-
-      console.log('criteria details', criteriaDetails);
 
       detailsContent = {
         name: resolvedDetails.name ?? '',
@@ -85,8 +82,6 @@ async function getHatData({
     if (hat.imageUri) {
       imageContent = (await ipfsToHttp(hat.imageUri)) || '';
     }
-
-    console.log('...hat', hat);
 
     return {
       ...hat,

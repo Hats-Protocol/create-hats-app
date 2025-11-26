@@ -1,14 +1,15 @@
 'use client';
 
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CircleAlert } from 'lucide-react';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function Error({
   error,
-  reset,
+  // reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  // reset: () => void;
 }) {
   return (
     <div>

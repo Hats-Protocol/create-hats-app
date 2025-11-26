@@ -1,10 +1,15 @@
 # Create Hats App
 
-Create Hats App is a tool for bootstrapping a new Hats app. Running create-hats-app (or via npx create-hats-app) initializes a command line interface where builders can enter an app name, choose a supported framework, and then a boilerplate app will be created using the selected framework template. Each template is a functional, deployable application that builders can use to begin building in the Hats ecosystem.
+Create Hats App will get you building in the Hats ecosystem quickly.
 
-- [Next Template](https://create-next-hats-app.vercel.app/)
-- [Vite Template](https://create-next-hats-app.vercel.app/)
-- [Remix Template](https://create-next-hats-app.vercel.app/)
+Running `pnpm create hats-app` (or via `npx create-hats-app`) initializes a new app for builders who can choose an app name, a supported framework to use for their template.
+
+![](https://ipfs.io/ipfs/QmQe9PrVRVfeTGkcw71MrAtUZ9KD2L79wzqoRRRTYxxLXz)
+
+See the templates live:
+- [Next Template Demo](https://create-hats-next-app.vercel.app/)
+- [Vite Template Demo](https://create-hats-vite-app.vercel.app/)
+- [Remix Template Demo](https://create-hats-remix-vite-app.vercel.app/)
 
 ## Prerequisites
 

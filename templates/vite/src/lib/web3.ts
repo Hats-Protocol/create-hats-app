@@ -1,13 +1,14 @@
-import { first, get, values } from 'lodash';
-import { Chain, http } from 'viem';
-import { chainsList } from './chains';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 import {
   rainbowWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets';
-import { mainnet, optimism, base, arbitrum, sepolia, polygon } from 'viem/chains';
-import { createStorage, createConfig } from 'wagmi';
+import { first, get, values } from 'lodash';
+import { Chain, http } from 'viem';
+import { arbitrum, base, mainnet, optimism, polygon, sepolia } from 'viem/chains';
+import { createConfig, createStorage } from 'wagmi';
+
+import { chainsList } from './chains';
 
 const ALCHEMY_ID = import.meta.env.VITE_ALCHEMY_ID;
 
@@ -37,9 +38,6 @@ const connectors = connectorsForWallets(
   }
 );
 
-// const storage = createStorage({ storage: window.localStorage });
-const storage = createStorage({ storage: localStorage });
-
 export const RPC_URLS = {
   [mainnet.id]: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
   [optimism.id]: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
@@ -49,6 +47,20 @@ export const RPC_URLS = {
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_ID}`,
 }
 
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => { },
+  removeItem: () => { },
+};
+
+// uses a fallback value noopStorage (saw this example in the wagmi docs) if not on the client
+// this is resolved in wagmi v2 with the "ssr" option in createConfig
+const storage = createStorage({
+  storage:
+    typeof window !== 'undefined' && window.localStorage
+      ? window.localStorage
+      : noopStorage,
+});
 
 export const wagmiConfig = createConfig({
   connectors,

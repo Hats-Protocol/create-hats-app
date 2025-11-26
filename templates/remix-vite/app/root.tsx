@@ -1,65 +1,75 @@
+import './styles/global.css';
+import '@rainbow-me/rainbowkit/styles.css';
+
 import {
+  connectorsForWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import {
+  rainbowWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
+import { LoaderFunction } from '@remix-run/node';
+import {
+  json,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  json,
   useLoaderData,
 } from '@remix-run/react';
-import './styles/global.css';
-import { LoaderFunctionArgs } from '@remix-run/node';
-import { useState } from 'react';
-import {
-  WagmiConfig,
-  configureChains,
-  createConfig,
-  mainnet,
-  sepolia,
-} from 'wagmi';
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
-import { getEnv } from './.server/env';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Toaster } from 'sonner';
+import {
+  arbitrum,
+  base,
+  mainnet,
+  optimism,
+  polygon,
+  sepolia,
+} from 'viem/chains';
+import { createConfig, createStorage, http, WagmiProvider } from 'wagmi';
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  return json({ env: getEnv() });
+interface LoaderData {
+  ENV: {
+    PUBLIC_ENABLE_TESTNETS: string;
+    ALCHEMY_ID: string;
+    WALLETCONNECT_PROJECT_ID: string;
+  };
 }
 
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+};
+
+// uses a fallback value noopStorage (saw this example in the wagmi docs) if not on the client
+// this is resolved in wagmi v2 with the "ssr" option in createConfig
+const storage = createStorage({
+  storage:
+    typeof window !== 'undefined' && window.localStorage
+      ? window.localStorage
+      : noopStorage,
+});
+
+// Note: These environment variables are hard coded for demonstration purposes.
+// See: https://remix.run/docs/en/v1/guides/envvars#browser-environment-variables
+export const loader: LoaderFunction = () => {
+  const data: LoaderData = {
+    ENV: {
+      PUBLIC_ENABLE_TESTNETS: process.env.PUBLIC_ENABLE_TESTNETS || 'false',
+      ALCHEMY_ID: process.env.VITE_ALCHEMY_ID || '',
+      WALLETCONNECT_PROJECT_ID: process.env.VITE_WALLETCONNECT_PROJECT_ID || '',
+    },
+  };
+
+  return json(data);
+};
+
 export default function App() {
-  const { env } = useLoaderData<typeof loader>();
-
-  const [{ config, chains }] = useState(() => {
-    const { chains, publicClient, webSocketPublicClient } = configureChains(
-      [sepolia, mainnet],
-      [
-        alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_ID || '' }),
-        publicProvider(),
-      ]
-    );
-
-    const { connectors } = getDefaultWallets({
-      appName: 'Hats App Template - Remix',
-      chains,
-      projectId: env.WALLETCONNECT_PROJECT_ID ?? '',
-    });
-
-    const config = createConfig({
-      autoConnect: true,
-      connectors,
-      publicClient,
-      webSocketPublicClient,
-    });
-
-    return {
-      config,
-      chains,
-    };
-  });
-
   function makeQueryClient() {
     return new QueryClient({
       defaultOptions: {
@@ -91,6 +101,57 @@ export default function App() {
 
   const queryClient = getQueryClient();
 
+  const { ENV } = useLoaderData<LoaderData>();
+
+  // Remix modules cannot have side effects so the initialization of `wagmi`
+  // client happens during render, but the result is cached via `useState`
+  // and a lazy initialization function.
+  // See: https://remix.run/docs/en/v1/guides/constraints#no-module-side-effects
+  const [{ config }] = useState(() => {
+    const ALCHEMY_ID = ENV.ALCHEMY_ID;
+
+    const RPC_URLS = {
+      [mainnet.id]: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      [optimism.id]: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      [polygon.id]: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      [base.id]: `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_ID}`,
+    };
+
+    const connectors = connectorsForWallets(
+      [
+        {
+          groupName: 'Recommended',
+          wallets: [rainbowWallet, walletConnectWallet],
+        },
+      ],
+      {
+        appName: 'Create Hats Next App',
+        projectId: ENV.WALLETCONNECT_PROJECT_ID ?? '',
+      },
+    );
+
+    const wagmiConfig = createConfig({
+      connectors,
+      chains: [mainnet, optimism, base, arbitrum, polygon, sepolia],
+      storage,
+      ssr: true, // If your dApp uses server side rendering (SSR)
+      transports: {
+        [mainnet.id]: http(RPC_URLS[mainnet.id]),
+        [optimism.id]: http(RPC_URLS[optimism.id]),
+        [polygon.id]: http(RPC_URLS[polygon.id]),
+        [base.id]: http(RPC_URLS[base.id]),
+        [arbitrum.id]: http(RPC_URLS[arbitrum.id]),
+        [sepolia.id]: http(RPC_URLS[sepolia.id]),
+      },
+    });
+
+    return {
+      config: wagmiConfig,
+    };
+  });
+
   return (
     <html lang="en">
       <head>
@@ -101,15 +162,16 @@ export default function App() {
       </head>
       <body>
         <Toaster />
-        {config && chains ? (
-          <WagmiConfig config={config}>
+        {config ? (
+          <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-              <RainbowKitProvider chains={chains} modalSize="compact">
+              <RainbowKitProvider modalSize="compact">
                 <Outlet />
               </RainbowKitProvider>
             </QueryClientProvider>
-          </WagmiConfig>
+          </WagmiProvider>
         ) : null}
+
         <ScrollRestoration />
         <Scripts />
       </body>

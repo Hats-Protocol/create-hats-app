@@ -1,4 +1,5 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+
 import App from './App';
 import ChainIdLayout from './routes/chain-id';
 import HatIdLayout from './routes/hat-id';

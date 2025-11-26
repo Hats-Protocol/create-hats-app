@@ -1,7 +1,6 @@
 import { hatIdDecimalToIp } from '@hatsprotocol/sdk-v1-core';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import _ from 'lodash';
-import { useAccount, useChainId } from 'wagmi';
+import { useChainId } from 'wagmi';
 
 import useHatContractWrite, { ValidFunctionName } from './useHatContractWrite';
 
@@ -14,10 +13,8 @@ const useHatBurn = ({
   waitForSubgraph?: () => void | undefined;
 }) => {
   const currentNetworkId = useChainId();
-  const { address } = useAccount();
 
   const hatId = selectedHat?.id;
-  const wearers = selectedHat?.wearers || [];
 
   const txDescription =
     hatId && `Renounced hat ${hatIdDecimalToIp(BigInt(hatId))}`;

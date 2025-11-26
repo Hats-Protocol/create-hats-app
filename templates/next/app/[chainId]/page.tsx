@@ -1,9 +1,10 @@
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+// import { HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
 import { CircleAlert } from 'lucide-react';
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
 const supportedChains = [1, 10, 42161, 137, 100, 11155111, 8453, 42220];
-const hatsSubgraphClient = new HatsSubgraphClient({});
+// const hatsSubgraphClient = new HatsSubgraphClient({});
 
 export default async function ChainIdPage({
   params,
@@ -32,27 +33,27 @@ export default async function ChainIdPage({
   );
 }
 
-const getHatData = async ({ chainId }: { chainId: number }) => {
-  const hat = await hatsSubgraphClient.getHat({
-    chainId: chainId,
-    hatId: BigInt(172),
-    props: {
-      maxSupply: true, // get the maximum amount of wearers for the hat
-      wearers: {
-        // get the hat's wearers
-        props: {}, // for each wearer, include only its ID (address)
-      },
-      events: {
-        // get the hat's events
-        props: {
-          transactionID: true, // for each event, include the transaction ID
-        },
-        filters: {
-          first: 10, // fetch only the latest 10 events
-        },
-      },
-    },
-  });
+// const getHatData = async ({ chainId }: { chainId: number }) => {
+//   const hat = await hatsSubgraphClient.getHat({
+//     chainId: chainId,
+//     hatId: BigInt(172),
+//     props: {
+//       maxSupply: true, // get the maximum amount of wearers for the hat
+//       wearers: {
+//         // get the hat's wearers
+//         props: {}, // for each wearer, include only its ID (address)
+//       },
+//       events: {
+//         // get the hat's events
+//         props: {
+//           transactionID: true, // for each event, include the transaction ID
+//         },
+//         filters: {
+//           first: 10, // fetch only the latest 10 events
+//         },
+//       },
+//     },
+//   });
 
-  return hat;
-};
+//   return hat;
+// };

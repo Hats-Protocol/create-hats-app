@@ -1,13 +1,14 @@
 'use client';
 
-import { Input } from './ui/input';
-import { useHatMint } from '@/hooks';
-import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import { WriteContractResult } from 'wagmi/actions';
-import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import { useHatMint } from '@/hooks';
+
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface MintFormProps {
   selectedHat: Hat;
@@ -18,19 +19,7 @@ export default function MintForm({ selectedHat }: MintFormProps) {
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
 
-  interface UseHatMintResult {
-    isLoading: boolean;
-    isSuccessTx: boolean;
-    writeAsync: (() => Promise<WriteContractResult>) | undefined;
-    prepareErrorMessage: string;
-  }
-
-  const {
-    isLoading: mintHatIsLoading,
-    isSuccessTx: mintHatIsSuccess,
-    writeAsync: mintHatAsync,
-    prepareErrorMessage: mintHatError,
-  }: UseHatMintResult = useHatMint({
+  const { isLoading: mintHatIsLoading, writeAsync: mintHatAsync } = useHatMint({
     selectedHat,
     chainId,
     wearer: ethAddress!,
@@ -38,24 +27,18 @@ export default function MintForm({ selectedHat }: MintFormProps) {
 
   const handleMintHat = async () => {
     if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
-      try {
-        mintHatAsync?.();
-        if (mintHatIsSuccess) {
-          console.log('success broadcast');
-        }
-      } catch (error) {
-        console.log('An error has occurred', mintHatError);
-      }
+      mintHatAsync?.();
     }
   };
 
   const isWearingHat = (
     wearers: { id: string }[],
-    connectedAddress: string | undefined
+    connectedAddress: string | undefined,
   ): boolean => {
     return connectedAddress
       ? wearers.some(
-          (wearer) => wearer.id.toLowerCase() === connectedAddress.toLowerCase()
+          (wearer) =>
+            wearer.id.toLowerCase() === connectedAddress.toLowerCase(),
         )
       : false;
   };

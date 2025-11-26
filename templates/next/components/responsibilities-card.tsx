@@ -1,13 +1,15 @@
+import { ExternalLink, Key, SquareCheckBig } from 'lucide-react';
+
 import { Authority, Responsibility } from '@/types';
+
+import { Button } from './ui/button';
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from './ui/card';
-import { ExternalLink, Key, SquareCheckBig } from 'lucide-react';
-import { Button } from './ui/button';
 
 interface AuthoritiesResponsibilitiesProps {
   authorities: Authority[];
@@ -32,7 +34,7 @@ export default function ResponsibilitiesCard({
         </span>
         {authorities.map((authority) => (
           <div className="flex flex-col gap-2" key={authority.label}>
-            <div className="flex flex-row items-center gap-2 justify-between">
+            <div className="flex flex-row items-center justify-between gap-2">
               <div className="flex flex-row items-center gap-2">
                 <Key className="h-4 w-4  text-violet-500" />
                 <span className="text-md">{authority.label}</span>

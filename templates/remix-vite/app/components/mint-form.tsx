@@ -1,43 +1,30 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useHatMint } from '@/hooks';
-import { useAccount, useChainId } from 'wagmi';
 import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
-import { WriteContractResult } from 'wagmi/actions';
-import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { z } from 'zod';
+import { useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useHatMint } from '@/hooks';
 
 interface MintFormProps {
   selectedHat: Hat;
 }
 
-const mintFormSchema = z.object({
-  ethAddress: z
-    .string()
-    .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
-});
+// const mintFormSchema = z.object({
+//   ethAddress: z
+//     .string()
+//     .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
+// });
 
 export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
   const { isConnected, address } = useAccount();
   const [ethAddress, setEthAddress] = useState<`0x${string}`>();
 
-  interface UseHatMintResult {
-    isLoading: boolean;
-    isSuccessTx: boolean;
-    writeAsync: (() => Promise<WriteContractResult>) | undefined;
-    prepareErrorMessage: string;
-  }
-
-  const {
-    isLoading: mintHatIsLoading,
-    isSuccessTx: mintHatIsSuccess,
-    writeAsync: mintHatAsync,
-    prepareErrorMessage: mintHatError,
-  }: UseHatMintResult = useHatMint({
+  const { isLoading: mintHatIsLoading, writeAsync: mintHatAsync } = useHatMint({
     selectedHat,
     chainId,
     wearer: ethAddress!,
@@ -45,21 +32,18 @@ export default function MintForm({ selectedHat }: MintFormProps) {
 
   const handleMintHat = async () => {
     if (!mintHatIsLoading && isConnected && chainId !== undefined && address) {
-      try {
-        mintHatAsync?.();
-      } catch (error) {
-        console.error('An error has occurred', mintHatError);
-      }
+      mintHatAsync?.();
     }
   };
 
   const isWearingHat = (
     wearers: { id: string }[],
-    connectedAddress: string | undefined
+    connectedAddress: string | undefined,
   ): boolean => {
     return connectedAddress
       ? wearers.some(
-          (wearer) => wearer.id.toLowerCase() === connectedAddress.toLowerCase()
+          (wearer) =>
+            wearer.id.toLowerCase() === connectedAddress.toLowerCase(),
         )
       : false;
   };

@@ -1,13 +1,15 @@
 'use client';
 
-import { useModuleDetails } from '@/hooks';
+import { get } from 'lodash';
+
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
+import { useModuleDetails } from '@/hooks';
 import { truncateAddress } from '@/lib/utils';
 
 interface ModuleDetailsCardProps {
@@ -23,21 +25,25 @@ export default function ModuleDetailsCard({
     address: eligibilityAddress,
     chainId,
   });
-
-  console.log('moduleDetails', moduleDetails);
-
-  if (!moduleDetails) {
-    return <div>Loading or error...</div>;
-  }
-
   const { details, isLoading } = moduleDetails;
 
-  if (isLoading)
+  if (!get(moduleDetails, 'details') && !isLoading) {
     return (
       <Card className="max-w-2xl shadow-xl">
-        <div>Loading</div>
+        <div className="flex h-full w-full items-center justify-center">
+          No Module Found
+        </div>
       </Card>
     );
+  }
+
+  if (isLoading) {
+    return (
+      <Card className="max-w-2xl shadow-xl">
+        <div>Loading...</div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="max-w-2xl shadow-xl">

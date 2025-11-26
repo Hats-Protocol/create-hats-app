@@ -1,14 +1,15 @@
 'use client';
 
-import * as React from 'react';
 import { Check, Copy } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
 
 const handleCopy = (
   itemToCopy: any, // this is specifically any since it can accept any value
   onSuccess: () => void,
-  onError: (error: Error) => void
+  onError: (error: Error) => void,
 ) => {
   if (itemToCopy !== null) {
     navigator.clipboard
@@ -23,7 +24,7 @@ const handleCopy = (
   }
 };
 export const CopyButton = ({ itemToCopy }: { itemToCopy: any }) => {
-  const [hasCopied, setHasCopied] = React.useState(false);
+  const [hasCopied, setHasCopied] = useState(false);
 
   const onSuccess = () => {
     setHasCopied(true);
@@ -31,7 +32,7 @@ export const CopyButton = ({ itemToCopy }: { itemToCopy: any }) => {
     toast.success('Address copied to clipboard.');
   };
 
-  const onError = (error: Error) => {
+  const onError = () => {
     toast.error('Address unable to be copied to clipboard. Please try again.');
   };
 

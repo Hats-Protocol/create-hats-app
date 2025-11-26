@@ -1,17 +1,18 @@
+import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
+import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
+import _ from 'lodash';
+import { Suspense } from 'react';
+
+import ContractInteractionsCard from '@/components/contract-interactions-card';
+import ControllersCard from '@/components/controllers-card';
 import Header from '@/components/header';
 import MetaCard from '@/components/meta-card';
+import ModuleDetailsCard from '@/components/module-details-card';
 import ResponsibilitiesCard from '@/components/responsibilities-card';
+import { Skeleton } from '@/components/ui/skeleton';
 import WearersListCard from '@/components/wearers-list-card';
 import { ipfsToHttp, resolveIpfsUri } from '@/lib/ipfs';
 import { IpfsDetails } from '@/types';
-import { hatIdIpToDecimal } from '@hatsprotocol/sdk-v1-core';
-import { Hat, HatsSubgraphClient } from '@hatsprotocol/sdk-v1-subgraph';
-import { Suspense } from 'react';
-import _ from 'lodash';
-import { Skeleton } from '@/components/ui/skeleton';
-import ControllersCard from '@/components/controllers-card';
-import ModuleDetailsCard from '@/components/module-details-card';
-import ContractInteractionsCard from '@/components/contract-interactions-card';
 
 const hatsSubgraphClient = new HatsSubgraphClient({});
 
@@ -39,14 +40,14 @@ export default async function HatPage({
   if (!hatData) return;
 
   return (
-    <main className=" min-h-screen gap-y-12 w-full">
+    <main className=" min-h-screen w-full gap-y-12">
       <Header />
-      <div className="grid md:grid-cols-2 gap-4 py-8 px-4 md:px-16">
+      <div className="grid gap-4 px-4 py-8 md:grid-cols-2 md:px-16">
         <Suspense
           fallback={
             <>
               <div className="h-10">
-                <Skeleton className="w-full h-30" />
+                <Skeleton className="h-30 w-full" />
               </div>
             </>
           }
@@ -137,7 +138,7 @@ const getHatData = async ({
             link: criterion.link,
             label: criterion.label,
           };
-        }
+        },
       );
 
       detailsContent = {
@@ -168,7 +169,7 @@ const getHatData = async ({
     if (error) {
       console.log(error);
       console.error(
-        `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`
+        `Hat with ID ${hatId} does not exist in the subgraph for chain ID ${chainId}.`,
       );
 
       return null;

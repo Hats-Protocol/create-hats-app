@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { useHatMint } from "@/hooks";
-import { useAccount, useChainId } from "wagmi";
-import { Hat } from "@hatsprotocol/sdk-v1-subgraph";
-import { WriteContractReturnType } from "wagmi/actions";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
-import { z } from "zod";
+import { Hat } from '@hatsprotocol/sdk-v1-subgraph';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import { Input } from '@/components/ui/input';
+import { useHatMint } from '@/hooks';
+
+import { Button } from './ui/button';
 
 interface MintFormProps {
   selectedHat: Hat;
 }
 
-const mintFormSchema = z.object({
-  ethAddress: z
-    .string()
-    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address"),
-});
+// const mintFormSchema = z.object({
+//   ethAddress: z
+//     .string()
+//     .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
+// });
 
 export default function MintForm({ selectedHat }: MintFormProps) {
   const chainId = useChainId();
@@ -85,7 +85,7 @@ export default function MintForm({ selectedHat }: MintFormProps) {
             In Progress...
           </div>
         ) : (
-          "Mint"
+          'Mint'
         )}
       </Button>
     </div>

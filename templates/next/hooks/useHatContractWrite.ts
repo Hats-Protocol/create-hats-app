@@ -1,6 +1,4 @@
-import { wagmiConfig } from '@/lib/web3';
-import { HATS_V1, HATS_ABI } from '@hatsprotocol/sdk-v1-core';
-import { useQueryClient } from '@tanstack/react-query';
+import { HATS_ABI, HATS_V1 } from '@hatsprotocol/sdk-v1-core';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -10,6 +8,8 @@ import {
   useWriteContract,
 } from 'wagmi';
 import { waitForTransactionReceipt } from 'wagmi/actions';
+
+import { wagmiConfig } from '@/lib/web3';
 
 type ExtractFunctionNames<ABI> = ABI extends {
   name: infer N;
@@ -34,18 +34,6 @@ interface ContractInteractionProps<T extends ValidFunctionName> {
   handleSuccess?: (data?: TransactionReceipt) => void; // passed with handlePendingTx
   waitForSubgraph?: (data?: TransactionReceipt) => void; // passed with handleSuccess
 }
-
-const extractErrorMessage = (error: Error | null) => {
-  if (!error) return '';
-
-  let errorMessage = error.message || '';
-  const errorMatch = errorMessage.match(/Error:\s*(.*)/);
-  const [, errorMessageMatch] = errorMatch || [];
-  errorMessage = errorMessageMatch || errorMessage;
-  errorMessage = errorMessage.replace(/\(.*\)/, '').trim();
-
-  return errorMessage || 'An unknown error occurred';
-};
 
 const useHatContractWrite = <T extends ValidFunctionName>({
   functionName,

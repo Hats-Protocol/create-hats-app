@@ -1,8 +1,9 @@
-import { createHatsModulesClient } from '@/lib/hats';
 import { Module, ModuleParameter } from '@hatsprotocol/modules-sdk';
 import { FALLBACK_ADDRESS } from '@hatsprotocol/sdk-v1-core';
+import { useQuery } from '@tanstack/react-query';
 import { Hex, zeroAddress } from 'viem';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+
+import { createHatsModulesClient } from '@/lib/hats';
 
 const useModuleDetails = ({
   address,
@@ -11,7 +12,7 @@ const useModuleDetails = ({
   editMode,
 }: {
   address: Hex | undefined;
-  chainId: number | undefined; // SupportedChains | undefined;
+  chainId: number | undefined;
   enabled?: boolean;
   editMode?: boolean;
 }) => {
@@ -26,14 +27,20 @@ const useModuleDetails = ({
       moduleClient.getModuleByInstance(address),
       moduleClient.getInstanceParameters(address),
     ];
-    const [moduleData, localModuleParameters] = await Promise.all(promises);
+    try {
+      const [moduleData, localModuleParameters] = await Promise.all(promises);
 
-    if (!moduleData) return null;
 
-    return {
-      details: moduleData as Module,
-      parameters: localModuleParameters as ModuleParameter[],
-    };
+      if (!moduleData) return null;
+
+      return {
+        details: moduleData as Module,
+        parameters: localModuleParameters as ModuleParameter[],
+      };
+    } catch (e) {
+      console.error('Error fetching module data:', e);
+      return null;
+    }
   };
 
   const { data, isLoading, fetchStatus } = useQuery({

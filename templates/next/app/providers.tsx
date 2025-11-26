@@ -1,13 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { mainnet, sepolia } from 'wagmi/chains';
-import {
-  WagmiProvider,
-  createStorage,
-} from 'wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as React from 'react';
+import { WagmiProvider } from 'wagmi';
+
 import { wagmiConfig } from '@/lib/web3';
 
 function makeQueryClient() {
@@ -40,29 +37,11 @@ function getQueryClient() {
 
 const queryClient = getQueryClient();
 
-const noopStorage = {
-  getItem: () => null,
-  setItem: () => {},
-  removeItem: () => {},
-};
-
-// uses a fallback value noopStorage (saw this example in the wagmi docs) if not on the client
-// this is resolved in wagmi v2 with the "ssr" option in createConfig
-const storage = createStorage({
-  storage:
-    typeof window !== 'undefined' && window.localStorage
-      ? window.localStorage
-      : noopStorage,
-});
-
-
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider modalSize="compact">
-          {children}
-        </RainbowKitProvider>
+        <RainbowKitProvider modalSize="compact">{children}</RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
